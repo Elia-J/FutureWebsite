@@ -73,6 +73,7 @@
 .data {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 .name {
   font-weight: 900;
