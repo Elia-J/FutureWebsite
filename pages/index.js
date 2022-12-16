@@ -1,6 +1,6 @@
 
 import Image from 'next/image'
-import styles from "../styles/Home.module.scss"
+import styles from "/styles/home.module.scss";
 import Navbar from "/components/navbar.js";
 import Theme from "/components/theme.js";
 
