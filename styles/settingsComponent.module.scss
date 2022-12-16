@@ -56,36 +56,30 @@
   right: 10px;
   top: 10px;
   // display: flex;
+  background-color: var(--special-3);
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgb(255, 255, 255);
   transition: all 0.2s ease-in-out;
   z-index: 3;
-
-  &:hover {
-    background-color: rgb(241 241 241);
-    transition: all 0.2s ease-in-out;
-  }
 }
-
+.closeButton svg path {
+  fill: var(--snowflake-1000);
+}
 @media (max-width: 1199.98px) {
   .panel {
-    background-color: rgb(255, 255, 255);
     width: 70%;
     height: 75%;
   }
 }
 @media (max-width: 991.98px) {
   .panel {
-    background-color: rgb(255, 255, 255);
     width: 80%;
     height: 85%;
   }
 }
 @media (max-width: 767.98px) {
   .panel {
-    background-color: rgb(255, 255, 255);
     width: 90%;
     height: 95%;
   }
