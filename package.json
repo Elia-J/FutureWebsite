@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "future",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,11 +9,43 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@next/font": "13.0.7",
-    "eslint": "8.29.0",
-    "eslint-config-next": "13.0.7",
-    "next": "13.0.7",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "@babel/preset-react": "^7.18.6",
+    "@floating-ui/react-dom-interactions": "^0.12.0",
+    "@fullcalendar/common": "^5.11.3",
+    "@fullcalendar/core": "^5.11.3",
+    "@fullcalendar/daygrid": "^5.11.3",
+    "@fullcalendar/interaction": "^5.11.3",
+    "@fullcalendar/react": "^5.11.3",
+    "@fullcalendar/resource-timeline": "^5.11.3",
+    "@fullcalendar/timegrid": "^5.11.3",
+    "@next/font": "^13.0.4",
+    "@popperjs/core": "^2.11.6",
+    "@radix-ui/react-popover": "1.0.2",
+    "@supabase/auth-helpers-nextjs": "^0.5.2",
+    "@supabase/auth-helpers-react": "^0.3.1",
+    "@supabase/auth-ui-react": "^0.2.6",
+    "@supabase/supabase-js": "^2.1.0",
+    "babel-plugin-transform-require-ignore": "^0.1.1",
+    "eslint": "8.27.0",
+    "eslint-config-next": "13.0.4",
+    "framer-motion": "^7.6.12",
+    "fullcalendar": "^5.11.3",
+    "moment": "^2.29.4",
+    "next": "13.0.4",
+    "next-themes": "^0.2.1",
+    "next-transpile-modules": "^10.0.0",
+    "react": "^18.2.0",
+    "react-big-calendar": "^1.5.2",
+    "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.0",
+    "react-redux": "^8.0.5",
+    "slate": "^0.86.0",
+    "slate-react": "^0.86.0",
+    "react-modal": "^3.16.1"
+
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^6.5.1",
+    "sass": "^1.56.1"
   }
 }
