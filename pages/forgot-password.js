@@ -20,7 +20,7 @@ function Reset() {
                 email,
                 {
                     //This is the url that will be sent to the user's email to redirect them to the password reset page
-                    redirectTo: "http://localhost:3000/passwordReset",
+                    redirectTo: "https://future-website.vercel.app/passwordReset",
                 }
             );
 

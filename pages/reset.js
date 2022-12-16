@@ -16,7 +16,7 @@ function Reset() {
             const { data, error } = await supabase.auth.resetPasswordForEmail(email,
                 {
                     // redirect to the password reset page
-                    redirectTo: "http://localhost:3000/password-reset",
+                    redirectTo: "https://future-website.vercel.app/password-reset",
                 }
             );
 

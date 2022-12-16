@@ -64,7 +64,7 @@ export default function Signin() {
         const { data, error } = await supabase.auth.signInWithOtp({
             email: email,
         }, {
-            redirectTo: "http://localhost:3000/app",
+            redirectTo: "https://future-website.vercel.app/app",
         })
 
         //if success, show message
