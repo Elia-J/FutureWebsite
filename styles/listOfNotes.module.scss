@@ -1,0 +1,91 @@
+.input {
+    border: none;
+    height: 30px;
+    width: 50%;
+    background-color: var(--lightGrey);
+    border-radius: 12px;
+    padding: 0.5rem 0.5rem 0.5rem 0.8rem; // top right bottom left
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    transition: box-shadow 0.2s ease-in-out;
+
+    margin-bottom: 10px;
+}
+
+.input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.input::placeholder {
+    color: rgb(136, 136, 136);
+    opacity: 1;
+}
+
+.mainButton {
+    width: 25%;
+    height: 30px;
+    background-color: var(--primary);
+    border-radius: 12px;
+
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.mainButton:hover {
+    cursor: pointer;
+    background-color: var(--primary);
+    transition: background-color 0.3s ease-in-out;
+}
+
+.isCollapsed {
+    width: 100%; 
+}
+
+.icon {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;   
+}
+
+.note {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px 10px;
+}
+
+.link {
+    border-radius: 10px;
+    padding: 10px;
+    width: 100%;
+    vertical-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.link:hover {
+    background-color: var(--Special-dark-gray);
+}
+
+@media (max-width: 575.98px) {
+    .input {
+        width: 100%;
+    }
+    .mainButton {
+        width: 100%;
+    }
+    .note {
+        padding: 0;
+    }
+}
