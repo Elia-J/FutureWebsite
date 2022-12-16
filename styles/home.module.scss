@@ -1,0 +1,96 @@
+.Home {
+  margin: 0;
+  font-family: "Times";
+  font-size: var(--fontSize);
+  font-weight: 700;
+}
+
+section.welcome {
+  display: inline-flex;
+  justify-content: center;
+  height: calc(100vh - 200px);
+}
+
+.About {
+  margin-left: 10px;
+}
+
+.welcometext {
+  margin-top: 0px;
+  width: 55%;
+  z-index: -100;
+  text-align: center;
+  font-size: 3.2vw;
+  font-weight: 700;
+}
+
+.plantLeft {
+  width: 18%;
+  position: absolute;
+  z-index: -100;
+  left: 0;
+  bottom: 0;
+
+  > div {
+    position: unset !important;
+  }
+
+  .ImagePlantLeft {
+    object-fit: contain;
+    width: 100% !important;
+    position: relative !important;
+    height: unset !important;
+  }
+}
+
+.tallPlantRight {
+  width: 15%;
+  position: absolute;
+  z-index: 100;
+  right: 0;
+  bottom: 0;
+
+  > div {
+    position: unset !important;
+  }
+
+  .ImagePlantRight {
+    object-fit: contain;
+    width: 100% !important;
+    position: relative !important;
+    height: unset !important;
+  }
+}
+
+.topRightLeaves {
+  width: 20%;
+  position: absolute;
+  z-index: 100;
+  right: 0;
+  top: 10;
+
+  > div {
+    position: unset !important;
+  }
+
+  .ImageRightLeaves {
+    object-fit: contain;
+    width: 100% !important;
+    position: relative !important;
+    height: unset !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .welcometext {
+    width: 80%;
+    font-size: 5.2vw;
+  }
+}
+
+.backgroundImage {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -100;
+}
