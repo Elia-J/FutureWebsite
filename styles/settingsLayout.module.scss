@@ -1,0 +1,89 @@
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--dynamic-black-200);
+  padding: 14px 20px 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background-color: var(--special-5);
+}
+
+.settingsLayout {
+  padding: 15px 20px;
+}
+
+.savaAndCancelButtons {
+  width: 100%;
+  height: 50px;
+
+  position: sticky;
+  bottom: 0px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 10px;
+  //gradient
+  background: linear-gradient(
+    180deg,
+    rgb(34 22 6 / 0%) 0%,
+    var(--special-5) 100%
+  );
+
+  padding-right: 6px;
+  padding-bottom: 6px;
+  align-items: flex-end;
+}
+
+.buttong {
+  width: 64px;
+  height: 32px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.saveButton {
+  color: white;
+  background: #4c7987;
+}
+.cancelButton {
+  background: var(--snowflake-300);
+}
+.closeButton {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--special-3);
+  transition: all 0.2s ease-in-out;
+  z-index: 3;
+
+  // &:hover {
+  //   background-color: rgb(241 241 241);
+  //   transition: all 0.2s ease-in-out;
+  // }
+}
+.closeButton svg path {
+  fill: var(--snowflake-1000);
+}
+
+@media (max-width: 1199.98px) {
+}
+@media (max-width: 991.98px) {
+}
+@media (max-width: 767.98px) {
+  .title {
+    display: none;
+  }
+}
+@media (max-width: 575.98px) {
+}
+@media (max-width: 320px) {
+}
