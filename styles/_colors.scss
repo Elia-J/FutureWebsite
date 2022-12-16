@@ -1,0 +1,245 @@
+/* root */
+//we need to choose a better color for dark mode and light mode
+:root {
+  --primary: #4c7987;
+  // --primary => --night-train-600
+
+  --lightGrey: #f5f5f5;
+  //--lightGrey => --
+
+  --L-white-D-Grey: #ffffff;
+  --lightGrey1: #e6e6e6;
+
+  --white: #ffffff;
+  //--white => --snowflake-100
+  --black: #000000;
+  //--black => --snowflake-1000
+
+  //new colors palette for light mode
+  //main colors is always 600
+
+  //sepecial colors
+  --special-1-black-black: #000000;
+  --special-2-white-white: #ffffff;
+
+  --special-3: #f5f5f5;
+  --special-4: #fafafa;
+  --special-5: #ffffff; //white - dark grey
+  --Special-gray: #d3d3d3;
+  --Special-dark-gray: #c4c4c4;
+  --Special-darker-gray: #adadad;
+
+  //grey light 1
+  --snowflake-100: #ffffff; //white
+  --snowflake-200: #fcfcfc;
+  --snowflake-300: #f8f8f8;
+  --snowflake-400: #f5f5f5;
+  --snowflake-500: #f2f2f2;
+  --snowflake-600: #d8d8d8; //main color
+  --snowflake-700: #a3a3a3;
+  --snowflake-800: #6e6e6e;
+  --snowflake-900: #3a3a3a;
+  --snowflake-1000: #000000; //black
+
+  //grey light 2
+  --dynamic-black-100: #e9e9e9;
+  --dynamic-black-200: #d2d2d2;
+  --dynamic-black-300: #a5a5a5;
+  --dynamic-black-400: #787878;
+  --dynamic-black-500: #4b4b4b;
+  --dynamic-black-600: #1e1e1e; //main color
+  --dynamic-black-700: #181818;
+  --dynamic-black-800: #121212;
+  --dynamic-black-900: #0c0c0c;
+  --dynamic-black-1000: #060606;
+
+  //primary light
+  --night-train-100: #edf2f3;
+  --night-train-200: #dbe4e7;
+  --night-train-300: #b7c9cf;
+  --night-train-400: #94afb7;
+  --night-train-500: #70949f;
+  --night-train-600: #4c7987; //main color
+  --night-train-700: #3d616c;
+  --night-train-800: #2e4951;
+  --night-train-900: #1e3036;
+  --night-train-1000: #0f181b;
+
+  //blue light
+  --blue-sparkle-100: #e6f1ff;
+  --blue-sparkle-200: #cce3ff;
+  --blue-sparkle-300: #99c8ff;
+  --blue-sparkle-400: #66acff;
+  --blue-sparkle-500: #3391ff;
+  --blue-sparkle-600: #0075ff; //main color
+  --blue-sparkle-700: #005ecc;
+  --blue-sparkle-800: #004699;
+  --blue-sparkle-900: #002f66;
+  --blue-sparkle-1000: #001733;
+
+  //red light
+  --anarchy-100: #fce6e6;
+  --anarchy-200: #f8cdcd;
+  --anarchy-300: #f29b9b;
+  --anarchy-400: #eb6969;
+  --anarchy-500: #e53737;
+  --anarchy-600: #de0505; //main color
+  --anarchy-700: #b20404;
+  --anarchy-800: #850303;
+  --anarchy-900: #590202;
+  --anarchy-1000: #2c0101;
+
+  //orange light
+  --heat-wave-100: #fff2e6;
+  --heat-wave-200: #ffe4cc;
+  --heat-wave-300: #ffca99;
+  --heat-wave-400: #ffaf66;
+  --heat-wave-500: #ff9533;
+  --heat-wave-600: #ff7a00;
+  --heat-wave-700: #cc6200;
+  --heat-wave-800: #994900;
+  --heat-wave-900: #663100;
+  --heat-wave-1000: #331800;
+
+  //purple light
+  --purple-pirate-100: #f8e6f6;
+  --purple-pirate-200: #f0cced;
+  --purple-pirate-300: #e299db;
+  --purple-pirate-400: #d366c8;
+  --purple-pirate-500: #c533b6;
+  --purple-pirate-600: #b600a4;
+  --purple-pirate-700: #920083;
+  --purple-pirate-800: #6d0062;
+  --purple-pirate-900: #490042;
+  --purple-pirate-1000: #240021;
+
+  //yellow light
+  --star-100: #fffce6;
+  --star-200: #fffacc;
+  --star-300: #fff599;
+  --star-400: #ffef66;
+  --star-500: #ffea33;
+  --star-600: #ffe500;
+  --star-700: #ccb700;
+  --star-800: #998900;
+  --star-900: #665c00;
+  --star-1000: #332e00;
+}
+
+//dark mode
+[data-theme="dark"] {
+  --primary: #4c7987;
+  --lightGrey: #1e1e1e;
+  --L-white-D-Grey: #121212;
+  --lightGrey1: #2a2a2a;
+
+  --white: #323232;
+  --black: #ffffff;
+
+  //new colors palette for dark mode
+  --special-1-black-black: #000000;
+  --special-2-white-white: #ffffff;
+
+  --special-3: #1e1e1e;
+  --special-4: #191919;
+  --special-5: #121212;
+  --Special-gray: #444444;
+  --Special-dark-gray: #373737;
+  --Special-darker-gray: #474747;
+
+  //grey dark 1
+  --snowflake-100: #000000; //white
+  --snowflake-200: #353535;
+  --snowflake-300: #6a6a6a;
+  --snowflake-400: #9e9e9e;
+  --snowflake-500: #d3d3d3;
+  --snowflake-600: #f2f2f2; //main color
+  --snowflake-700: #f5f5f5;
+  --snowflake-800: #f8f8f8;
+  --snowflake-900: #fbfbfb;
+  --snowflake-1000: #ffffff; //black
+
+  //grey dark 2
+  --dynamic-black-100: #030303;
+  --dynamic-black-200: #060606;
+  --dynamic-black-300: #0c0c0c;
+  --dynamic-black-400: #121212;
+  --dynamic-black-500: #181818;
+  --dynamic-black-600: #1e1e1e; //main color
+  --dynamic-black-700: #4b4b4b;
+  --dynamic-black-800: #787878;
+  --dynamic-black-900: #a5a5a5;
+  --dynamic-black-1000: #d2d2d2;
+
+  //primary dark
+  --night-train-100: #080c0e;
+  --night-train-200: #0f181b;
+  --night-train-300: #1e3036;
+  --night-train-400: #2e4951;
+  --night-train-500: #3d616c;
+  --night-train-600: #4c7987; //main color
+  --night-train-700: #70949f;
+  --night-train-800: #94afb7;
+  --night-train-900: #b7c9cf;
+  --night-train-1000: #dbe4e7;
+
+  //blue dark
+  --blue-sparkle-100: #000c1a;
+  --blue-sparkle-200: #001733;
+  --blue-sparkle-300: #002f66;
+  --blue-sparkle-400: #004699;
+  --blue-sparkle-500: #005ecc;
+  --blue-sparkle-600: #0075ff; //main color
+  --blue-sparkle-700: #3391ff;
+  --blue-sparkle-800: #66acff;
+  --blue-sparkle-900: #99c8ff;
+  --blue-sparkle-1000: #cce3ff;
+
+  //red dark
+  --anarchy-100: #160101;
+  --anarchy-200: #2c0101;
+  --anarchy-300: #590202;
+  --anarchy-400: #850303;
+  --anarchy-500: #b20404;
+  --anarchy-600: #de0505; //main color
+  --anarchy-700: #e53737;
+  --anarchy-800: #eb6969;
+  --anarchy-900: #f29b9b;
+  --anarchy-1000: #f8cdcd;
+
+  //orange dark
+  --heat-wave-100: #1a0c00;
+  --heat-wave-200: #331800;
+  --heat-wave-300: #663100;
+  --heat-wave-400: #994900;
+  --heat-wave-500: #cc6200;
+  --heat-wave-600: #ff7a00; //main color
+  --heat-wave-700: #ff9533;
+  --heat-wave-800: #ffaf66;
+  --heat-wave-900: #ffca99;
+  --heat-wave-1000: #ffe4cc;
+
+  //purple dark
+  --purple-pirate-100: #120010;
+  --purple-pirate-200: #240021;
+  --purple-pirate-300: #490042;
+  --purple-pirate-400: #6d0062;
+  --purple-pirate-500: #920083;
+  --purple-pirate-600: #b600a4; //main color
+  --purple-pirate-700: #c533b6;
+  --purple-pirate-800: #d366c8;
+  --purple-pirate-900: #e299db;
+  --purple-pirate-1000: #f0cced;
+
+  //yellow dark
+  --star-100: #1a1700;
+  --star-200: #332e00;
+  --star-300: #665c00;
+  --star-400: #998900;
+  --star-500: #ccb700;
+  --star-600: #ffe500; //main color
+  --star-700: #ffea33;
+  --star-800: #ffef66;
+  --star-900: #fff599;
+  --star-1000: #fffacc;
+}
