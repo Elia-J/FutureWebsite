@@ -1,0 +1,13 @@
+.Link {
+  font-weight: 600;
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+  color: rgb(139, 139, 139);
+}
+.Link:hover {
+  color: var(--black);
+  background-color: var(--lightGrey);
+  transition: all 0.3s ease-in-out;
+}
