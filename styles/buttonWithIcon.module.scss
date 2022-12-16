@@ -57,7 +57,7 @@
   justify-content: center;
 
   &:hover {
-    background-color: #f4f4f4;
+    background-color: var(--snowflake-200);
     transition: all 0.2s ease-in-out;
   }
 }
