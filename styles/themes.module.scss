@@ -1,0 +1,47 @@
+.DropDownDiv {
+    position: relative;
+    display: inline-block;
+    // z-index: 1000;
+}
+
+.dropbtn {
+    position: relative;
+    background-color: var(--primary);
+    padding: 8px;
+    font-size: 20px;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.dropdownContent {
+    display: none;
+    position: absolute;
+    width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 100;
+}
+
+.dropdownContent button {
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    display: block;
+}
+
+.dropdownContent button:hover {
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.show {
+    display: block;
+}
+
+@media (max-width: 575.98px) {
+    .dropbtn {
+        font-size: 4vw;
+    }
+}
