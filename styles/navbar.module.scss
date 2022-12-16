@@ -1,0 +1,66 @@
+.nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.nav ul {
+    list-style-type: none;
+    margin: 0 20px;
+    padding: 0;
+    overflow: hidden;
+    font-size: var(--fontSize);
+}
+
+.nav li {
+    float: left;
+    display: block;
+    text-align: center;
+    padding: 10px;
+    font-family: Times;
+    font-size: var(--fontSize);
+    font-weight: bold;
+}
+  
+.nav li a {
+    text-decoration: none;
+}
+  
+.nav li.logo {
+    padding: 10px 3px;
+}
+
+.About {
+    margin-left: 20px;
+}
+  
+.nav a.signup {
+    color: white;
+    background-color: var(--primary);
+    border-radius: 5px;
+    padding: 3px;
+}
+
+.listNav:hover {
+    text-decoration: underline;
+}
+
+.active {
+    background-color: var(--primary);
+    border-radius: 15px;
+}
+
+.left{
+    display: flex;
+    flex-direction: row;
+    align-items: center
+}
+
+.hidden {
+    display: none;
+}
