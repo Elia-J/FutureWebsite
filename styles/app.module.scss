@@ -1,0 +1,59 @@
+.topNav {
+  position: absolute;
+  right: 0;
+  top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 16px;
+  z-index: 1;
+}
+
+.mainCalendar {
+  display: flex;
+  flex-direction: row;
+  background-size: cover;
+  height: 100%;
+}
+.CalendarHeader {
+  width: 100%;
+  // background-color: #350075;
+}
+
+.todoPnael {
+  background: var(--special-3);
+  flex-basis: 420px;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.todoPnaelOpen {
+  margin-right: 0px;
+  transition: all 0.2s ease-in-out;
+}
+.todoPnaelClose {
+  margin-right: -420px;
+  transition: all 0.2s ease-in-out;
+}
+
+.buttonTodo {
+  background: var(--special-3);
+  border: 1px solid var(--snowflake-100);
+  border-radius: 6px;
+
+  font-weight: 700;
+  font-size: 14px;
+
+  padding: 0px 6px;
+  height: 30px;
+}
+
+@media (max-width: 1199.98px) {
+}
+@media (max-width: 991.98px) {
+}
+@media (max-width: 767.98px) {
+}
+@media (max-width: 575.98px) {
+}
+@media (max-width: 320px) {
+}
