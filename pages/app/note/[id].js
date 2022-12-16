@@ -58,7 +58,7 @@ const CustomEditor = {
 
         return !!match;
     },
-    
+
     isH1BlockActive(editor) {
         const [match] = Editor.nodes(editor, {
             match: (n) => n.type === "h1",
@@ -67,7 +67,7 @@ const CustomEditor = {
 
         return !!match;
     },
-    
+
     isH2BlockActive(editor) {
         const [match] = Editor.nodes(editor, {
             match: (n) => n.type === "h2",
@@ -75,7 +75,7 @@ const CustomEditor = {
 
         return !!match;
     },
-    
+
     isQuoteBlockActive(editor) {
         const [match] = Editor.nodes(editor, {
             match: (n) => n.type === "quote",
@@ -83,7 +83,7 @@ const CustomEditor = {
 
         return !!match;
     },
-    
+
     isBulletListBlockActive(editor) {
         const [match] = Editor.nodes(editor, {
             match: (n) => n.type === "bullet",
@@ -91,7 +91,7 @@ const CustomEditor = {
 
         return !!match;
     },
-    
+
     isRightAlignBlockActive(editor) {
         const [match] = Editor.nodes(editor, {
             match: (n) => n.align === "right",
@@ -107,7 +107,7 @@ const CustomEditor = {
 
         return !!match;
     },
-    
+
     isCenterAlignBlockActive(editor) {
         const [match] = Editor.nodes(editor, {
             match: (n) => n.align === "center",
@@ -115,7 +115,7 @@ const CustomEditor = {
 
         return !!match;
     },
-    
+
     isJustifyAlignBlockActive(editor) {
         const [match] = Editor.nodes(editor, {
             match: (n) => n.align === "justify",
@@ -137,7 +137,7 @@ const CustomEditor = {
         const isActive = CustomEditor.isItalicMarkActive(editor);
         Transforms.setNodes(
             editor,
-            { italic: isActive? null : true },
+            { italic: isActive ? null : true },
             { match: (n) => Text.isText(n), split: true }
         )
     },
@@ -159,7 +159,7 @@ const CustomEditor = {
             { match: (n) => Text.isText(n), split: true }
         );
     },
-    
+
     toggleH1Block(editor) {
         const isActive = CustomEditor.isH1BlockActive(editor);
         Transforms.setNodes(
@@ -168,41 +168,41 @@ const CustomEditor = {
             { match: (n) => Editor.isBlock(editor, n) }
         );
     },
-        
+
     toggleH2Block(editor) {
         const isActive = CustomEditor.isH2BlockActive(editor);
         Transforms.setNodes(
             editor,
             { type: isActive ? null : "h2" },
             { match: (n) => Editor.isBlock(editor, n) }
-        );    
+        );
     },
-    
+
     toggleQuoteBlock(editor) {
         const isActive = CustomEditor.isQuoteBlockActive(editor);
         Transforms.setNodes(
             editor,
             { type: isActive ? null : "quote" },
             { match: (n) => Editor.isBlock(editor, n) }
-        );    
+        );
     },
-    
+
     toggleBulletListBlock(editor) {
         const isActive = CustomEditor.isBulletListBlockActive(editor);
         Transforms.setNodes(
             editor,
             { type: isActive ? null : "bullet" },
             { match: (n) => Editor.isBlock(editor, n) }
-        );    
+        );
     },
-    
+
     toggleRightAlignBlock(editor) {
         const isActive = CustomEditor.isRightAlignBlockActive(editor);
         Transforms.setNodes(
             editor,
             { align: isActive ? null : "right" },
             { match: (n) => Editor.isBlock(editor, n) }
-        );    
+        );
     },
     toggleCenterAlignBlock(editor) {
         const isActive = CustomEditor.isCenterAlignBlockActive(editor);
@@ -210,7 +210,7 @@ const CustomEditor = {
             editor,
             { align: isActive ? null : "center" },
             { match: (n) => Editor.isBlock(editor, n) }
-        );    
+        );
     },
     toggleLeftAlignBlock(editor) {
         const isActive = CustomEditor.isLeftAlignBlockActive(editor);
@@ -218,7 +218,7 @@ const CustomEditor = {
             editor,
             { align: isActive ? null : "left" },
             { match: (n) => Editor.isBlock(editor, n) }
-        );    
+        );
     },
     toggleJustifyAlignBlock(editor) {
         const isActive = CustomEditor.isJustifyAlignBlockActive(editor);
@@ -226,7 +226,7 @@ const CustomEditor = {
             editor,
             { align: isActive ? null : "justify" },
             { match: (n) => Editor.isBlock(editor, n) }
-        );    
+        );
     },
 };
 
@@ -675,17 +675,17 @@ export default function Notes({ notes }) {
     }
 }
 
-export async function getStaticPaths() {
-    const { data, error } = await supabase
-        .from('notesv2')
-        .select('id')
-    const paths = data.map((note) => ({
-        params: { id: JSON.stringify(note.id) },
-    }))
-    return { paths, fallback: false }
-}
+// export async function getStaticPaths() {
+//     const { data, error } = await supabase
+//         .from('notesv2')
+//         .select('id')
+//     const paths = data.map((note) => ({
+//         params: { id: JSON.stringify(note.id) },
+//     }))
+//     return { paths, fallback: false }
+// }
 
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
     const { id } = params
 
     const { data } = await supabase
