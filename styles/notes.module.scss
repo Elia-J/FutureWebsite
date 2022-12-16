@@ -1,0 +1,140 @@
+.SavedNotes {
+    padding: 10px;
+    float: left;
+    height: 100vh;
+    width: 30%;
+    background-color: var(--Special-gray);
+    transition: all 1s ease;
+}
+
+.TextEditor {
+    padding: 10px;
+    float: left;
+    width: 70%;
+    height: 100vh;
+    background-color: var(--Special-dark-gray);
+    transition: all 1s ease;
+    overflow-y: auto;
+}
+
+.close:hover {
+    cursor: pointer;
+    color: red;
+}
+
+.collapsedSavedNote {
+    width: 15%;
+}
+
+.extenedNote {
+    width: 85%;
+}
+
+.buttonWithoutStyle {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+.titleNoNotes {
+    text-align: center;
+}
+
+.toolbar {
+    width: 100%;
+    display: inline-flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.icon:hover {
+    background-color: var(--Special-darker-gray);
+    border-radius: 5px;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.noteTitle {
+    background-color: var(--Special-gray);
+    border-radius: 20px;
+    padding-left: 10px;
+    width: 100%;
+}
+
+.noteDescription {
+    background-color: var(--Special-gray);
+    min-height: 79vh;
+    max-height: 100%;
+    padding: 5px 20px;
+    border-radius: 20px;
+}
+
+.mainButton {
+    position: fixed;
+    margin: 20px 30px;
+    right: 0;
+    bottom: 0;
+    width: 100px;
+    height: 30px;
+    background-color: var(--primary);
+    border-radius: 12px;
+
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.mainButton:hover {
+    cursor: pointer;
+    background-color: #3b5760;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.content {
+    position: relative;
+    overflow: auto;
+    min-height: 100%;
+    z-index: 0;
+}
+
+
+@media (max-width: 575.98px) {
+    .SavedNotes {
+        padding: 5px;
+    }
+
+    .close {
+        display: none !important;
+    }
+
+    .content {
+        min-height: 80%;
+    }
+
+    .toolbar {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .noteTitle {
+        font-size: 10px !important;
+    }
+
+    .noteDescription {
+        min-height: 50vh;
+    }
+
+    .mainButton {
+        margin: 80px 10px;
+    }
+}
