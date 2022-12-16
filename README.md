@@ -15,4 +15,4 @@ The link to our website is: https://future-website.vercel.app/
 The following section is for Nick:
 > Because we switched from Gitlab to github, you cannot see our changes. <br />
 > For that reason we ask you to take a look in our Gitlab. https://git.science.uu.nl/0866296/future<br />
-> Note that this is not the current version of the project. Elia made some changes to make it hostable.<br />
+> Note that the gitlab is not the current version of the project. Elia made some changes to make it hostable.<br />
