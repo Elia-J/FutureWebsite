@@ -1,0 +1,59 @@
+.buttonTools {
+  //   background-color: aqua;
+  margin-top: 15px;
+  padding-left: 20px;
+  margin-bottom: 65px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  transition: all 0.2s ease-in-out;
+}
+
+.toolbarNavigationButton {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+}
+.WithMargin {
+  margin-right: 160px;
+  transition: all 0.2s ease-in-out;
+}
+.WithoutMargin {
+  margin-right: 30px;
+}
+
+.select {
+  width: 80px;
+  border: none;
+  height: 30px;
+  background-color: var(--special-3);
+  border-radius: 6px;
+  padding: 0px 3px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.weekNumber {
+  min-width: 80px;
+  height: 30px;
+  padding: 0px 6px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: var(--special-3);
+  border-radius: 6px;
+
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.bigDate {
+  min-width: 340px;
+  text-align: center;
+  font-weight: 900;
+  font-size: 22px;
+}
