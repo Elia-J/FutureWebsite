@@ -1,0 +1,26 @@
+.brandLogo {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  width: fit-content;
+}
+.brandLogo svg {
+  width: 35px;
+}
+.logoName {
+  font-family: "Times";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 35px;
+
+  margin-left: 12px;
+}
+
+@media (max-width: 575.95px) {
+  .logoName {
+    font-size: 15px;
+  }
+  .brandLogo svg {
+    width: 15px;
+  }
+}
