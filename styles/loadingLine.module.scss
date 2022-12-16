@@ -1,0 +1,32 @@
+.holder {
+  overflow: hidden;
+  width: 300px;
+  height: 2px;
+  margin: 20px auto 0px auto;
+  background-color: #cfcfcf;
+}
+
+.line {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.line:after {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 50%;
+
+  background-color: #000000;
+  animation: line_second 1.5s infinite ease-in-out;
+}
+
+@keyframes line_second {
+  0% {
+    left: -90%;
+  }
+  100% {
+    left: 100%;
+  }
+}
