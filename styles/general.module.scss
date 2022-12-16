@@ -1,0 +1,83 @@
+.optionsVertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  margin-bottom: 40px;
+}
+.optionsHorizontal {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.minititle {
+  font-size: 18px;
+  font-weight: 700;
+}
+.discription {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgb(97, 97, 97);
+  margin-bottom: 20px;
+}
+.select {
+  max-width: 300px;
+  height: 40px;
+  border: 1px solid rgb(188, 188, 188);
+  border-radius: 5px;
+  padding: 0 10px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--snowflake-1000);
+}
+
+/* Style the container for the toggle */
+.toggleContainer {
+  display: inline-block;
+  position: relative;
+}
+
+/* Style the checkbox input for the toggle */
+.toggleContainer input {
+  display: none;
+}
+
+/* Style the label for the toggle */
+.toggleContainer label {
+  display: block;
+  cursor: pointer;
+
+  background-color: var(--special-3);
+  transition: 0.4s;
+  border-radius: 34px;
+  padding: 3px;
+  width: 50px;
+}
+.span1 input:checked {
+  color: #fff;
+}
+
+/* Style the label when it is clicked (the toggle is on) */
+.toggleContainer input:checked + label {
+  background-color: var(--night-train-600);
+}
+
+/* Style the toggle knob */
+.toggleContainer label:before {
+  content: "";
+  display: block;
+
+  width: 22px;
+  height: 22px;
+  background-color: white;
+  border-radius: 50%;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+/* Style the toggle knob when it is clicked (the toggle is on) */
+.toggleContainer input:checked + label:before {
+  transform: translateX(22px);
+}
