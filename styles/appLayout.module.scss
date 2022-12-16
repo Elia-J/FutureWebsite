@@ -1,0 +1,107 @@
+.mainPage {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.dynamic {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+.sidebar {
+  width: 60px;
+  background-color: var(--special-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+}
+.box {
+  width: 40px;
+  height: 40px;
+
+  background: var(--dynamic-black-100);
+  border-radius: 14px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 30px;
+}
+
+.box svg {
+  width: 22px;
+  height: 22px;
+}
+
+.mainContent {
+  width: calc(100% - 60px);
+  height: calc(100vh - 0px);
+  background-color: var(--special-5);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.settings {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #82828213;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.blackBG {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  cursor: pointer;
+}
+// .Notclickable {
+//   pointer-events: none;
+// }
+// .clickable {
+//   pointer-events: all;
+// }
+@media (max-width: 1199.98px) {
+}
+@media (max-width: 991.98px) {
+}
+@media (max-width: 767.98px) {
+}
+@media (max-width: 575.98px) {
+  .dynamic {
+    flex-direction: column-reverse;
+  }
+
+  .mainContent {
+    width: calc(100% - 0px);
+    height: calc(100vh - 70px);
+  }
+  .sidebar {
+    flex-direction: row;
+    width: 100%;
+    height: 70px;
+    justify-content: center;
+    gap: 8%;
+    padding: 0;
+    z-index: 1;
+  }
+  .box {
+    margin-top: 0px;
+  }
+}
+@media (max-width: 320px) {
+}
