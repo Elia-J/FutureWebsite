@@ -1,0 +1,77 @@
+.dropdown {
+  position: relative;
+}
+
+.profileImage {
+  width: 40px;
+  height: 40px;
+  background-color: #c2c2c2;
+  position: relative;
+  border-radius: 14px;
+}
+.image {
+  border-radius: 14px;
+  text-indent: 100%;
+}
+.dropdownList {
+  position: absolute;
+  top: 48px;
+
+  z-index: 10;
+
+  width: 170px;
+  padding: 5px;
+  background-color: var(--snowflake-200);
+  border-radius: 15px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  //shadow
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+}
+.dropdownListOpen {
+  opacity: 1;
+  margin-top: 0px;
+  transition: all 0.3s ease-in-out;
+}
+.dropdownListClose {
+  pointer-events: none;
+  opacity: 0;
+  margin-top: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+.bgClose {
+  position: absolute;
+  //skip the relative parent
+
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #3ede53;
+  z-index: 1;
+}
+
+.version {
+  font-weight: 700;
+  font-size: 10px;
+  text-align: center;
+  margin-top: 6px;
+}
+
+@media (max-width: 1199.98px) {
+}
+@media (max-width: 991.98px) {
+}
+@media (max-width: 767.98px) {
+}
+@media (max-width: 575.98px) {
+  .dropdownList {
+    top: auto;
+    bottom: 51px;
+  }
+}
+@media (max-width: 320px) {
+}
