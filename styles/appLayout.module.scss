@@ -40,7 +40,7 @@
 
 .mainContent {
   width: calc(100% - 60px);
-  height: calc(100dvh - 0px);
+  height: calc(100vh - 0px);
   background-color: var(--special-5);
   overflow-y: auto;
   overflow-x: hidden;
@@ -88,7 +88,7 @@
 
   .mainContent {
     width: calc(100% - 0px);
-    height: calc(100vh - 70px);
+    height: calc(100dvh - 70px);
   }
   .sidebar {
     flex-direction: row;
