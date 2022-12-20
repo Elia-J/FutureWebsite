@@ -1,34 +1,18 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+We have build our application using NEXT.JS
 
-## Getting Started
+Because we use a database with personal info, we have decided to host our application
 
-First, run the development server:
+This way, you can see our code and see the product without installing anything on your computer too
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+NEXT.JS is easily hostable with vercel, but we could only make it work with github.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+So you can take a look in our code in the github repository, especially in the pages and components folder, because that is where the magic happens
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+The link to our website is: https://future-website.vercel.app/
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+<br />
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The following section is for Nick:
+> Because we switched from Gitlab to github, you cannot see our changes. <br />
+> For that reason we ask you to take a look in our Gitlab. https://git.science.uu.nl/0866296/future<br />
+> Note that the gitlab is not the current version of the project. Elia made some changes to make it hostable.<br />
