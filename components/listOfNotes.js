@@ -121,6 +121,11 @@ export default function ListOfNotes({ collapsed }) {
                 <input ref={collapsElementInput} type="text" placeholder="Title: " onChange={(e) => setNoteTitle(e.target.value)} className={styles.input} required />
                 <button ref={collapsElementButton} className={styles.mainButton} type="submit" >Create note</button>
             </form>
+            <select>
+                test
+            </select>
+            <Image alt="sort" src="/sort.svg" width={25} height={25} />
+            <hr />
 
             {/* Loops through the data */}
             {/* Sort of like foreach (element in List), but it has an index too */}
