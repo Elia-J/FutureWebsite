@@ -15,6 +15,9 @@ export default function ListOfNotes({ collapsed }) {
     //data
     const [data, setData] = useState([])
     const [noteTitle, setNoteTitle] = useState("")
+    // Aa for alphabetical ascending
+    // Ad for alphabetical descending
+    const [wayOfSorting, setWayOfSorting] = useState("Aa")
 
     // Gets all the notes where the userid=the session userid and puts that in the data variable
     async function getNotes() {
@@ -26,7 +29,7 @@ export default function ListOfNotes({ collapsed }) {
         if (data) {
             //array of todos
             setData(data)
-            sortNotes(data)
+            checkSorting(data)
         }
 
         if (error) {
@@ -62,6 +65,12 @@ export default function ListOfNotes({ collapsed }) {
     let collapsElementButton = React.createRef();
     let collapsElementInput = React.createRef();
 
+    let dropdownSorting = React.createRef();
+
+    function setDropdownSorting() {
+        dropdownSorting.current.classList.toggle(`${styles.show}`)
+    }
+
     function changCollapsed() {
         if (collapsed) {
             collapsElementButton.current.classList.add(`${styles.isCollapsed}`)
@@ -88,7 +97,7 @@ export default function ListOfNotes({ collapsed }) {
     }
 
     // A function that sets the data variable to the data which will be sorted
-    async function sortNotes(d) {
+    function sortNotesAlphAsc(d) {
         // Makes a copy so that the originial data is not lost
         var sortedData = [...d]
 
@@ -104,27 +113,96 @@ export default function ListOfNotes({ collapsed }) {
         })
         setData(sortedData)
     }
+
+    function sortNotesAlphDesc(d) {
+        // Makes a copy so that the originial data is not lost
+        var sortedData = [...d]
+
+        sortedData.sort(function(a, b) {
+            // Compares the title of all the elements
+            if (JSON.parse(a.title)[0].children[0].text > JSON.parse(b.title)[0].children[0].text) {
+                return -1;
+            }
+            if (JSON.parse(b.title)[0].children[0].text > JSON.parse(a.title)[0].children[0].text) {
+                return 1;
+            }
+            return 0;
+        })
+        setData(sortedData)
+    }
+
+    function sortNotesDateAsc(d) {
+        // Makes a copy so that the originial data is not lost
+        var sortedData = [...d]
+
+        sortedData.sort(function(a, b) {
+            // Compares the title of all the elements
+            if (a.created_at > b.created_at) {
+                return -1;
+            }
+            if (b.created_at > a.created_at) {
+                return 1;
+            }
+            return 0;
+        })
+        setData(sortedData)
+    }
+    
+    function sortNotesDateDesc(d) {
+        // Makes a copy so that the originial data is not lost
+        var sortedData = [...d]
+
+        sortedData.sort(function(a, b) {
+            // Compares the title of all the elements
+            if (a.created_at < b.created_at) {
+                return -1;
+            }
+            if (b.created_at < a.created_at) {
+                return 1;
+            }
+            return 0;
+        })
+        setData(sortedData)
+    }
+
+    function checkSorting(d) {
+        if (wayOfSorting == 'Aa') {
+            sortNotesAlphAsc(d)
+        } else if (wayOfSorting == 'Ad') {
+            sortNotesAlphDesc(d)
+        } else if (wayOfSorting == 'Da') {
+            sortNotesDateAsc(d)
+        } else {
+            sortNotesDateDesc(d)
+        }
+    }
     
     // Loop to check if you clicked the red X that collapses the sections
     useEffect(() => {
-        changCollapsed()
+        changCollapsed();
     })
-
+    
     // Everytime the user creates a new note, the list of notes will update
     useEffect(() => {
+        // checkSorting();
         getNotes()
     }, [createNote, removeNote])
 
     return (
         <div>
-            <form onSubmit={createNote}>
+            <form onSubmit={createNote} className={styles.form}>
                 <input ref={collapsElementInput} type="text" placeholder="Title: " onChange={(e) => setNoteTitle(e.target.value)} className={styles.input} required />
                 <button ref={collapsElementButton} className={styles.mainButton} type="submit" >Create note</button>
             </form>
-            <select>
-                test
-            </select>
-            <Image alt="sort" src="/sort.svg" width={25} height={25} />
+            <button className={styles.dropdownSort} onClick={setDropdownSorting}>
+                <Image alt="sort" src="/sort.svg" width={25} height={25} />
+            </button>
+            <div ref={dropdownSorting} className={styles.dropdownContent}>
+                <button onClick={() => {setWayOfSorting('Aa'); setDropdownSorting()}} className={styles.dropdownstylebutton}>Alphabetical (a-z)</button>
+                <button onClick={() => {setWayOfSorting('Ad'); setDropdownSorting()}}className={styles.dropdownstylebutton}>Alphabetical (z-a)</button>
+                <button onClick={() => {setWayOfSorting('Da'); setDropdownSorting()}}className={styles.dropdownstylebutton}>Created at (ascending)</button>
+                <button onClick={() => {setWayOfSorting('Dd'); setDropdownSorting()}}className={styles.dropdownstylebutton}>Created at (descending)</button>
+            </div>
             <hr />
 
             {/* Loops through the data */}

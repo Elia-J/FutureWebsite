@@ -78,6 +78,38 @@
     background-color: var(--Special-dark-gray);
 }
 
+.dropdownSort{
+    background-color: var(--Special-gray);
+}
+
+.dropdownContent {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: var(--Special-light-gray);
+}
+
+.dropdownstylebutton {
+    padding: 5px 15px;
+    border-radius: 10px;
+}
+
+.dropdownstylebutton:hover {
+    background-color: var(--Special-dark-gray);
+}
+
+.show {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;    
+}
+
 @media (max-width: 575.98px) {
     .input {
         width: 100%;
