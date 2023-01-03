@@ -46,7 +46,7 @@ export default function ListOfNotes({ collapsed }) {
         const { data, error } = await supabase
             .from('notesv2')
             .insert([
-                { title: [{ "type": "h1", "children": [{ "text": noteTitle }] }], description: [{ "type": "paragraph", "children": [{ "text": "..." }] }], user_id: user?.id },
+                { title: noteTitle, description: [{ "type": "paragraph", "children": [{ "text": "..." }] }], user_id: user?.id },
             ])
 
         // Resets the note title
@@ -103,10 +103,10 @@ export default function ListOfNotes({ collapsed }) {
 
         sortedData.sort(function(a, b) {
             // Compares the title of all the elements
-            if (JSON.parse(a.title)[0].children[0].text < JSON.parse(b.title)[0].children[0].text) {
+            if (a.title < b.title) {
                 return -1;
             }
-            if (JSON.parse(b.title)[0].children[0].text < JSON.parse(a.title)[0].children[0].text) {
+            if (b.title < a.title) {
                 return 1;
             }
             return 0;
@@ -120,10 +120,10 @@ export default function ListOfNotes({ collapsed }) {
 
         sortedData.sort(function(a, b) {
             // Compares the title of all the elements
-            if (JSON.parse(a.title)[0].children[0].text > JSON.parse(b.title)[0].children[0].text) {
+            if (a.title > b.title) {
                 return -1;
             }
-            if (JSON.parse(b.title)[0].children[0].text > JSON.parse(a.title)[0].children[0].text) {
+            if (b.title > a.title) {
                 return 1;
             }
             return 0;
@@ -208,7 +208,7 @@ export default function ListOfNotes({ collapsed }) {
             {/* Loops through the data */}
             {/* Sort of like foreach (element in List), but it has an index too */}
             {data.map((note, i) => {
-                var title = JSON.parse(note.title)[0].children[0].text
+                var title = note.title
                 return (
                     <div key={i} className={styles.note}>
                         {/* The use of dynamic paging makes sure if you click on the title it will go to the appropriate link */}

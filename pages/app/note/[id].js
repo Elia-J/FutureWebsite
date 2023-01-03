@@ -237,7 +237,7 @@ export default function Notes({ notes }) {
     const router = useRouter();
 
     const [initialValue, setInitialValue] = useState(notes.description)
-    const [initialTitle, setInitialTitle] = useState(JSON.parse(notes.title))
+    const [initialTitle, setInitialTitle] = useState([{"type":"h1","children":[{"text":notes.title}]}])
     const [collapsed, setCollapsed] = useState(false)
     const [fontSize, setFontSize] = useState(8)
 
@@ -657,7 +657,7 @@ export default function Notes({ notes }) {
                             <button
                                 className={styles.mainButton}
                                 onClick={() => {
-                                    updateData(JSON.stringify(valueTitle), valueDescription)
+                                    updateData(valueTitle, valueDescription)
                                 }}
                             >
                                 Save

@@ -72,7 +72,7 @@ export default function Setting1({ children }) {
                         <Tasks />
                     </Link>
 
-                    <Link href="#" className={styles.box}>
+                    <Link href="/app/search" className={styles.box}>
                         <Search />
                     </Link>
 
