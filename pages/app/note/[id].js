@@ -657,7 +657,7 @@ export default function Notes({ notes }) {
                             <button
                                 className={styles.mainButton}
                                 onClick={() => {
-                                    updateData(valueTitle, valueDescription)
+                                    updateData(valueTitle[0].children[0].text, valueDescription)
                                 }}
                             >
                                 Save

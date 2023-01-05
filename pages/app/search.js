@@ -1,5 +1,6 @@
 import styles from "/styles/search.module.scss";
 import React, { useState, useEffect } from "react";
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import LoadingLine from '/components/loadingLine'
 
@@ -19,7 +20,41 @@ export default function Index() {
     const [dataEvents, setDataEvents] = useState()
     const [dataNotes, setDataNotes] = useState()
     const [dataTodos, setDataTodos] = useState()
-    const [bigData, setBigData] = useState()
+
+    let idMatches = [{
+        "id": 2173,
+        "created_at": "2023-01-05T18:08:50.373024+00:00",
+        "title": "hoi",
+        "description": [
+            {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "text": "HALLO"
+                    }
+                ]
+            },
+            {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "text": "mooie text"
+                    }
+                ]
+            },
+            {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "text": "ik hoop dat dit werkt",
+                        "underline": true
+                    }
+                ]
+            }
+        ],
+        "user_id": "c56771bd-eed0-48f3-b791-aa9e1aaf72ca",
+        "descriptionText": null
+    }]
 
     async function getDataNotes() {
         const { data, error } = await supabase.from('notesv2').select('*').eq('user_id', user?.id)
@@ -48,16 +83,23 @@ export default function Index() {
 
     function getSearchElements() {
         event.preventDefault()
-        // loop through notes title
-        // loop through notes description
         let notes = [...dataNotes]
         for (let i=0; i<notes.length; i++) {
-        }
-        // loop through todos title
-        // loop through todos description
+            // loop through notes title
+            if (notes[i].title.toLowerCase().includes(input.toLowerCase())) {
+                // idMatches.indexOf(notes[i].id) == -1 ? idMatches.push(notes[i].id) : console.log('')
+            }
 
-        // loop through events title
-        // loop through events description
+            // loop through notes description
+            notes[i].description.forEach(partOfDescription => {
+                // console.log(omschrijving.children)
+                partOfDescription.children.forEach(child => {
+                    if (child.text.toLowerCase().includes(input.toLowerCase())) {
+                        idMatches.indexOf(notes[i]) == -1 ? idMatches.push(notes[i].id) : console.log('nee')
+                    }
+                })
+            })
+        }
     }
 
     if (session) {
@@ -68,6 +110,11 @@ export default function Index() {
                         <input onChange={(e) => {setInput(e.target.value)}} required></input>
                         <button type="submit">submit</button>
                     </form>
+                    {idMatches.map((item, i) => {
+                        return (
+                            <Link href={`/app/note/${item.id}`}>{item.title}</Link>
+                        )
+                    })}
                 </AppLayout>
             </SettingsProvider >
         )
