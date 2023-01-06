@@ -20,215 +20,98 @@ import { useRouter } from "next/router";
 import { useSession } from "@supabase/auth-helpers-react";
 
 import { supabase } from "/lib/supasbaseClient"
+import { Transform } from "stream";
+import { match } from "assert";
 
-// Function to toggle and select all the different styles for the editor
-const CustomEditor = {
-    isUnderlineMarkActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.underline === true,
-            universal: true,
-        });
-
-        return !!match;
+const CustomEditorV2 = {
+    isActive(editor, prop, format) {
+        switch(prop) {
+            case "underline":
+                const [match1] = Editor.nodes(editor, {
+                    match: (n) => n.underline === true,
+                    universal: true,
+                });
+                return !!match1;
+            case "bold":
+                const [match2] = Editor.nodes(editor, {
+                    match: (n) => n.bold === true,
+                    universal: true,
+                });
+                return !!match2;
+            case "italic":
+                const [match3] = Editor.nodes(editor, {
+                    match: (n) => n.italic === true,
+                    universal: true,
+                })
+                return !!match3;
+            case "code":
+                const [match4] = Editor.nodes(editor, {
+                    match: (n) => n.code === true,
+                    universal: true,
+                })
+                return !!match4;
+            case "type":
+                const [match5] = Editor.nodes(editor, {
+                    match: (n) => n.type === format,
+                    // universal: true,
+                })
+                return !!match5;
+            case "align":
+                const [match6] = Editor.nodes(editor, {
+                    match: (n) => n.align === format,
+                    universal: true,
+                })
+                return !!match6;
+        }
     },
 
-    isBoldMarkActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.bold === true,
-            universal: true,
-        });
-
-        return !!match;
-    },
-
-    isItalicMarkActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.italic === true,
-            universal: true,
-        })
-
-        return !!match;
-    },
-
-    isCodeBlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.code === true,
-            universal: true,
-        });
-
-        return !!match;
-    },
-
-    isH1BlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.type === "h1",
-            universal: true,
-        });
-
-        return !!match;
-    },
-
-    isH2BlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.type === "h2",
-        });
-
-        return !!match;
-    },
-
-    isQuoteBlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.type === "quote",
-        });
-
-        return !!match;
-    },
-
-    isBulletListBlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.type === "bullet",
-        });
-
-        return !!match;
-    },
-
-    isRightAlignBlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.align === "right",
-        });
-
-        return !!match;
-    },
-
-    isLeftAlignBlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.align === "left",
-        });
-
-        return !!match;
-    },
-
-    isCenterAlignBlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.align === "center",
-        });
-
-        return !!match;
-    },
-
-    isJustifyAlignBlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.align === "justify",
-        });
-
-        return !!match;
-    },
-
-    toggleBoldMark(editor) {
-        const isActive = CustomEditor.isBoldMarkActive(editor);
-        Transforms.setNodes(
-            editor,
-            { bold: isActive ? null : true },
-            { match: (n) => Text.isText(n), split: true }
-        );
-    },
-
-    toggleItalicMark(editor) {
-        const isActive = CustomEditor.isItalicMarkActive(editor);
-        Transforms.setNodes(
-            editor,
-            { italic: isActive ? null : true },
-            { match: (n) => Text.isText(n), split: true }
-        )
-    },
-
-    toggleUnderlineMark(editor) {
-        const isActive = CustomEditor.isUnderlineMarkActive(editor);
-        Transforms.setNodes(
-            editor,
-            { underline: isActive ? null : true },
-            { match: (n) => Text.isText(n), split: true }
-        );
-    },
-
-    toggleCodeBlock(editor) {
-        const isActive = CustomEditor.isCodeBlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { code: isActive ? null : true },
-            { match: (n) => Text.isText(n), split: true }
-        );
-    },
-
-    toggleH1Block(editor) {
-        const isActive = CustomEditor.isH1BlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { type: isActive ? null : "h1" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-
-    toggleH2Block(editor) {
-        const isActive = CustomEditor.isH2BlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { type: isActive ? null : "h2" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-
-    toggleQuoteBlock(editor) {
-        const isActive = CustomEditor.isQuoteBlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { type: isActive ? null : "quote" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-
-    toggleBulletListBlock(editor) {
-        const isActive = CustomEditor.isBulletListBlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { type: isActive ? null : "bullet" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-
-    toggleRightAlignBlock(editor) {
-        const isActive = CustomEditor.isRightAlignBlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { align: isActive ? null : "right" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-    toggleCenterAlignBlock(editor) {
-        const isActive = CustomEditor.isCenterAlignBlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { align: isActive ? null : "center" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-    toggleLeftAlignBlock(editor) {
-        const isActive = CustomEditor.isLeftAlignBlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { align: isActive ? null : "left" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-    toggleJustifyAlignBlock(editor) {
-        const isActive = CustomEditor.isJustifyAlignBlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { align: isActive ? null : "justify" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-};
+    toggle(editor, prop, format) {
+        const isActive = CustomEditorV2.isActive(editor, prop, format)
+        switch (prop) {
+            case "underline":
+                Transforms.setNodes(
+                    editor,
+                    { underline: isActive ? null : true },
+                    { match: (n) => Text.isText(n), split: true }
+                );
+                break;
+            case "bold":
+                Transforms.setNodes(
+                    editor,
+                    { bold: isActive ? null : true },
+                    { match: (n) => Text.isText(n), split: true }
+                );
+                break;
+            case "italic":
+                Transforms.setNodes(
+                    editor,
+                    { italic: isActive ? null : true },
+                    { match: (n) => Text.isText(n), split: true }
+                );
+                break;
+            case "code":
+                Transforms.setNodes(
+                    editor,
+                    { code: isActive ? null : true },
+                    { match: (n) => Text.isText(n), split: true }
+                );
+                break;
+            case "type":
+                Transforms.setNodes(
+                    editor,
+                    { type: isActive ? null : format },
+                    { match: (n) => Editor.isBlock(editor, n) }
+                );
+                break;
+            case "align":
+                Transforms.setNodes(
+                    editor,
+                    { align: isActive ? null : format },
+                    { match: (n) => Editor.isBlock(editor, n) }
+                );
+        }
+    }   
+}
 
 let globalAlign = "left";
 
@@ -324,7 +207,7 @@ export default function Notes({ notes }) {
                 return <H2Element {...props} />;
             case "quote":
                 return <QuoteElement {...props} />;
-            case "bullet":
+            case "list-bulleted":
                 return <BulletElement {...props} />;
             default:
                 return <DefaultElement {...props} />;
@@ -337,99 +220,28 @@ export default function Notes({ notes }) {
         return <Leaf {...props} />;
     }, []);
 
-    // This function returns a Toolbar with buttons which add styling to the text
-    const Toolbar = () => {
+    const Buttons = ["bold", "italic", "underline", "code", "h1", "h2", "quote", "list-bulleted", "align-left", "align-center", "align-right", "align-justify"]
+    const ToolbarV2 = () => {
         return (
             <div className={styles.toolbar}>
-                <button className={styles.buttonWithoutStyle}
-                    // If you click on the button it will toggle the appropriate function to add the style
-                    onMouseDown={() => {
-                        CustomEditor.toggleBoldMark(editor);
-                    }}
-                >
-                    <Image alt="Bold" className={styles.icon} src="/rich-text-icons/editor-bold.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleItalicMark(editor);
-                    }}
-                >
-                    <Image alt="Italic" className={styles.icon} src="/rich-text-icons/editor-italic.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleUnderlineMark(editor);
-                    }}
-                >
-                    <Image alt="Underline" className={styles.icon} src="/rich-text-icons/editor-underline.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleCodeBlock(editor);
-                    }}
-                >
-                    <Image alt="Code" className={styles.icon} src="/rich-text-icons/editor-code.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleH1Block(editor);
-                    }}
-                >
-                    <Image alt="H1" className={styles.icon} src="/rich-text-icons/editor-h1.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleH2Block(editor);
-                    }}
-                >
-                    <Image alt="H2" className={styles.icon} src="/rich-text-icons/editor-h2.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleQuoteBlock(editor);
-                    }}
-                >
-                    <Image alt="Quote" className={styles.icon} src="/rich-text-icons/editor-quote.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleBulletListBlock(editor);
-                    }}
-                >
-                    <Image alt="List Bullet" className={styles.icon} src="/rich-text-icons/editor-list-bulleted.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleLeftAlignBlock(editor);
-                    }}
-                >
-                    <Image alt="Left align" className={styles.icon} src="/rich-text-icons/editor-align-left.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleCenterAlignBlock(editor);
-                    }}
-                >
-                    <Image alt="Center align" className={styles.icon} src="/rich-text-icons/editor-align-center.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleRightAlignBlock(editor);
-                    }}
-                >
-                    <Image alt="Right Align" className={styles.icon} src="/rich-text-icons/editor-align-right.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleJustifyAlignBlock(editor);
-                    }}
-                >
-                    <Image alt="justivy Align" className={styles.icon} src="/rich-text-icons/editor-align-justify.svg" width={25} height={25} />
-                </button>
-                {/* event.preventdefault prevents the site from reloading when you submit the form */}
-                {/* <form onSubmit={(event) => {event.preventDefault()}}>
-                    <input type="number" min="8" max="28" value={fontSize} onChange={(e) => {setFontSize(e.target.value)}}></input>
-                </form> */}
+                {
+                    Buttons.map((button, i) => {
+                        return (
+                            <button key={i} className={styles.buttonWithoutStyle} onMouseDown={() => {
+                                if (button.slice(0,5) == "align") {
+                                    CustomEditorV2.toggle(editor, "align", button.split('-')[1])
+                                } else if (i<4) {
+                                    CustomEditorV2.toggle(editor, button, true)
+                                } else {
+                                    CustomEditorV2.toggle(editor, "type", button)
+                                }
+                                
+                            }}>
+                                <Image alt={button} className={styles.icon} src={`/rich-text-icons/editor-${button}.svg`} width={25} height={25} />
+                            </button>
+                        )
+                    })
+                }
             </div>
         )
     }
@@ -561,7 +373,8 @@ export default function Notes({ notes }) {
                                 {/* Returns the Toolbar with too breaks above and underneath it */}
                                 {/* The Toolbar element is defined in this file */}
                                 <hr />
-                                <Toolbar />
+                                {/* <Toolbar /> */}
+                                <ToolbarV2 />
                                 <hr />
 
                                 <div className={styles.description}>
@@ -588,63 +401,64 @@ export default function Notes({ notes }) {
                                                 switch (event.key) {
                                                     case ",": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleCodeBlock(editor);
+                                                        CustomEditorV2.toggle(editor, "code", true)
                                                         break;
                                                     }
 
                                                     case "b": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleBoldMark(editor);
+                                                        CustomEditorV2.toggle(editor, "bold", true)
                                                         break;
                                                     }
                                                     case "i": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleItalicMark(editor);
+                                                        CustomEditorV2.toggle(editor, "italic", true)
                                                         break;
                                                     }
                                                     case "u": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleUnderlineMark(editor);
+                                                        CustomEditorV2.toggle(editor, "underline", true)
                                                         break;
                                                     }
                                                     case "1": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleH1Block(editor);
+                                                        CustomEditorV2.toggle(editor, "type", "h1")
                                                         break;
                                                     }
                                                     case "2": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleH2Block(editor);
+                                                        CustomEditorV2.toggle(editor, "type", "h2")
                                                         break;
                                                     }
                                                     case "q": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleQuoteBlock(editor);
+                                                        CustomEditorV2.toggle(editor, "type", "quote")
                                                         break;
                                                     }
                                                     case "b" && "l": {
+                                                        console.log('huh')
                                                         event.preventDefault();
-                                                        CustomEditor.toggleBulletListBlock(editor);
+                                                        CustomEditorV2.toggle(editor, "type", "list-bulleted")
                                                         break;
                                                     }
                                                     case "Shift" && "R": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleRightAlignBlock(editor);
+                                                        CustomEditorV2.toggle(editor, "align", "right")
                                                         break;
                                                     }
                                                     case "Shift" && "L": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleLeftAlignBlock(editor);
+                                                        CustomEditorV2.toggle(editor, "align", "left")
                                                         break;
                                                     }
                                                     case "Shift" && "E": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleCenterAlignBlock(editor);
+                                                        CustomEditorV2.toggle(editor, "align", "center")
                                                         break;
                                                     }
                                                     case "Shift" && "J": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleJustifyAlignBlock(editor);
+                                                        CustomEditorV2.toggle(editor, "align", "justify")
                                                         break;
                                                     }
                                                 }
@@ -674,16 +488,6 @@ export default function Notes({ notes }) {
         )
     }
 }
-
-// export async function getStaticPaths() {
-//     const { data, error } = await supabase
-//         .from('notesv2')
-//         .select('id')
-//     const paths = data.map((note) => ({
-//         params: { id: JSON.stringify(note.id) },
-//     }))
-//     return { paths, fallback: false }
-// }
 
 export async function getServerSideProps({ params }) {
     const { id } = params
