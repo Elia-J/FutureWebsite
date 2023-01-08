@@ -5,14 +5,14 @@ import LoadingLine from '/components/loadingLine'
 
 import AppLayout from "/layouts/appLayout"
 import { SettingsProvider } from "/layouts/stateStore"
-import { useSession, useUser } from "@supabase/auth-helpers-react";
+import { useSession, useUser, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { preventDefault } from "fullcalendar";
-import { supabase } from "/lib/supasbaseClient";
 
 
 export default function Index() {
 
     const session = useSession()
+    const supabase = useSupabaseClient()
     const user = useUser()
 
     const [input, setInput] = useState('')
@@ -22,6 +22,18 @@ export default function Index() {
 
     let idMatches = []
 
+    async function getDataTodos() {
+        const { data, error } = await supabase
+            .from('todos')
+            .select('*')
+            if (data) {
+                setDataTodos(data)
+            }
+            if (error) {
+                console.log('error', error)
+                return
+            }
+    }
     async function getDataNotes() {
         const { data, error } = await supabase.from('notesv2').select('*').eq('user_id', user?.id)
         if (data) {
@@ -29,15 +41,9 @@ export default function Index() {
         }
     }
     async function getDataEvents() {
-        const { data, error } = await supabase.from('events').select('*').eq('user_id', user?.id)
+        const { data, error } = await supabase.from('events').select('*')
         if (data) {
             setDataEvents(data)
-        }
-    }
-    async function getDataTodos() {
-        const { data, error } = await supabase.from('todos').select('*').eq('user_id', user?.id)
-        if (data) {
-            setDataTodos(data)
         }
     }
 
@@ -46,7 +52,7 @@ export default function Index() {
         let notes = [...dataNotes]
         for (let i=0; i<notes.length; i++) {
             // loop through notes title
-            if (notes[i].title.toLowerCase().includes(input.toLowerCase())) {
+            if (notes[i].title.toLowerCase().includes(input)) {
                 idMatches.indexOf(notes[i]) == -1 ? idMatches.push(notes[i]) : console.log('')
             }
 
@@ -54,18 +60,40 @@ export default function Index() {
             notes[i].description.forEach(partOfDescription => {
                 // console.log(omschrijving.children)
                 partOfDescription.children.forEach(child => {
-                    if (child.text.toLowerCase().includes(input.toLowerCase())) {
+                    if (child.text.toLowerCase().includes(input)) {
                         idMatches.indexOf(notes[i]) == -1 ? idMatches.push(notes[i]) : idMatches.push()
                     }
                 })
             })
         }
+
+        let todos = [...dataTodos]
+        for (let i=0; i<todos.length; i++) {
+            if (todos[i].title.toLowerCase().includes(input)) {
+                idMatches.indexOf(todos[i]) == -1 ? idMatches.push(todos[i]) : console.log('')
+            }
+            if (todos[i].description.toLowerCase().includes(input)) {
+                idMatches.indexOf(todos[i]) == -1 ? idMatches.push(todos[i]) : console.log('')
+            }
+        }
+
+        let events = [...dataEvents]
+        for (let i=0; i<events.length; i++) {
+            if (events[i].title.toLowerCase().includes(input)) {
+                idMatches.indexOf(events[i]) == -1 ? idMatches.push(events[i]) : console.log('')
+            }
+            if (events[i].description != null && events[i].description.toLowerCase().includes(input)) {
+                idMatches.indexOf(events[i]) == -1 ? idMatches.push(events[i]) : console.log('')
+            }
+        }
+
+        console.log(idMatches)
     }
 
     useEffect(() => {
-        getDataNotes()
-        getDataEvents()
         getDataTodos()
+        getDataEvents()
+        getDataNotes()
     }, [])
 
     if (session) {
@@ -73,7 +101,7 @@ export default function Index() {
             <SettingsProvider>
                 <AppLayout>
                     <form onSubmit={getSearchElements}>
-                        <input onChange={(e) => {setInput(e.target.value); getSearchElements()}} required></input>
+                        <input onChange={(e) => {setInput(e.target.value.toLowerCase()); getSearchElements()}} required></input>
                         <button type="submit">submit</button>
                     </form>
                     <div>
