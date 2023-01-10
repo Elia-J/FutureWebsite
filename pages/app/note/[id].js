@@ -9,7 +9,7 @@ import styles from "../../../styles/notes.module.scss";
 import React, { useState, useCallback, useEffect } from "react";
 import { createEditor, Editor, Text, Transforms } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
-import Image from 'next/image'
+import Image from 'next/image';
 import ListOfNotes from '../../../components/listOfNotes'
 
 import AppLayout from "/layouts/appLayout"
@@ -20,8 +20,7 @@ import { useRouter } from "next/router";
 import { useSession } from "@supabase/auth-helpers-react";
 
 import { supabase } from "/lib/supasbaseClient"
-import { Transform } from "stream";
-import { match } from "assert";
+import { useTheme } from 'next-themes'
 
 const CustomEditorV2 = {
     isActive(editor, prop, format) {
@@ -65,48 +64,60 @@ const CustomEditorV2 = {
         }
     },
 
-    toggle(editor, prop, format) {
+    toggle(editor, prop, format, fontSize) {
         const isActive = CustomEditorV2.isActive(editor, prop, format)
         switch (prop) {
             case "underline":
                 Transforms.setNodes(
                     editor,
-                    { underline: isActive ? null : true },
+                    {   underline: isActive ? null : true,
+                        fontSize: fontSize   
+                    },
                     { match: (n) => Text.isText(n), split: true }
                 );
                 break;
             case "bold":
                 Transforms.setNodes(
                     editor,
-                    { bold: isActive ? null : true },
+                    {   bold: isActive ? null : true,
+                        fontSize: fontSize
+                    },
                     { match: (n) => Text.isText(n), split: true }
                 );
                 break;
             case "italic":
                 Transforms.setNodes(
                     editor,
-                    { italic: isActive ? null : true },
+                    {   italic: isActive ? null : true,
+                        fontSize: fontSize 
+                    },
                     { match: (n) => Text.isText(n), split: true }
                 );
                 break;
             case "code":
                 Transforms.setNodes(
                     editor,
-                    { code: isActive ? null : true },
+                    {   code: isActive ? null : true,
+                        fontSize: fontSize 
+                    },
                     { match: (n) => Text.isText(n), split: true }
                 );
                 break;
             case "type":
                 Transforms.setNodes(
                     editor,
-                    { type: isActive ? null : format },
+                    {   type: isActive ? null : format,
+                        fontSize: fontSize 
+                    },
                     { match: (n) => Editor.isBlock(editor, n) }
                 );
                 break;
             case "align":
                 Transforms.setNodes(
                     editor,
-                    { align: isActive ? null : format },
+                    {   align: isActive ? null : format,
+                        fontSize: fontSize
+                    },
                     { match: (n) => Editor.isBlock(editor, n) }
                 );
         }
@@ -120,9 +131,21 @@ export default function Notes({ notes }) {
     const router = useRouter();
 
     const [initialValue, setInitialValue] = useState(notes.description)
+    const { theme, setTheme } = useTheme()
+
+    const [THEME, setTHEME] = useState()
+
     const [initialTitle, setInitialTitle] = useState([{"type":"h1","children":[{"text":notes.title}]}])
     const [collapsed, setCollapsed] = useState(false)
-    const [fontSize, setFontSize] = useState(8)
+    const [fontSize, setFontSize] = useState()
+    // H1: 32
+    // H2: 26
+    // default: 16
+
+    useEffect(() => {
+        const html = document.querySelector('html')
+        // console.log(html.getAttribute('data-theme'))
+    }, [theme])
 
     // Checks if there is a change in the url, if so, it reloads the page
     // This is to make sure that the correct initialValue and initialTitle is loaded into the editor
@@ -140,7 +163,6 @@ export default function Notes({ notes }) {
             router.events.off('routeChangeComplete', handleRouteChange)
         }
     }, [])
-
     // Variables to see if there have been changes.
     var valueDescription = initialValue;
     var valueTitle = initialTitle;
@@ -219,7 +241,7 @@ export default function Notes({ notes }) {
     const renderLeaf = useCallback((props) => {
         return <Leaf {...props} />;
     }, []);
-
+    
     const Buttons = ["bold", "italic", "underline", "code", "h1", "h2", "quote", "list-bulleted", "align-left", "align-center", "align-right", "align-justify"]
     const ToolbarV2 = () => {
         return (
@@ -229,19 +251,26 @@ export default function Notes({ notes }) {
                         return (
                             <button key={i} className={styles.buttonWithoutStyle} onMouseDown={() => {
                                 if (button.slice(0,5) == "align") {
-                                    CustomEditorV2.toggle(editor, "align", button.split('-')[1])
+                                    CustomEditorV2.toggle(editor, "align", button.split('-')[1], fontSize)
                                 } else if (i<4) {
-                                    CustomEditorV2.toggle(editor, button, true)
+                                    CustomEditorV2.toggle(editor, button, true, fontSize)
                                 } else {
-                                    CustomEditorV2.toggle(editor, "type", button)
+                                    if (button=="h1") {
+                                        CustomEditorV2.toggle(editor, "type", button, 32)
+                                    } else if (button=="h2") {
+                                        CustomEditorV2.toggle(editor, "type", button, 26)
+                                    } else {
+                                        CustomEditorV2.toggle(editor, "type", button, fontSize)
+                                    }
                                 }
                                 
                             }}>
-                                <Image alt={button} className={styles.icon} src={`/rich-text-icons/editor-${button}.svg`} width={25} height={25} />
+                                <Image alt={button} className={styles.icon} src={`/rich-text-icons-dark/editor-${button}.svg`} width={25} height={25} />
                             </button>
                         )
                     })
                 }
+                <input type="number" min="5" max="50" defaultValue={fontSize} onChange={(e) => {setFontSize(parseInt(e.target.value)); setInitialValue(valueDescription)}}></input>
             </div>
         )
     }
@@ -288,6 +317,7 @@ export default function Notes({ notes }) {
     };
 
     const DefaultElement = (props) => {
+        console.log(props.element.children)
         return (
             <p style={{ textAlign: globalAlign }} {...props.attributes}>
                 {props.children}
@@ -401,64 +431,63 @@ export default function Notes({ notes }) {
                                                 switch (event.key) {
                                                     case ",": {
                                                         event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "code", true)
+                                                        CustomEditorV2.toggle(editor, "code", true, fontSize)
                                                         break;
                                                     }
 
                                                     case "b": {
                                                         event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "bold", true)
+                                                        CustomEditorV2.toggle(editor, "bold", true, fontSize)
                                                         break;
                                                     }
                                                     case "i": {
                                                         event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "italic", true)
+                                                        CustomEditorV2.toggle(editor, "italic", true, fontSize)
                                                         break;
                                                     }
                                                     case "u": {
                                                         event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "underline", true)
+                                                        CustomEditorV2.toggle(editor, "underline", true, fontSize)
                                                         break;
                                                     }
                                                     case "1": {
                                                         event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "type", "h1")
+                                                        CustomEditorV2.toggle(editor, "type", "h1", fontSize)
                                                         break;
                                                     }
                                                     case "2": {
                                                         event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "type", "h2")
+                                                        CustomEditorV2.toggle(editor, "type", "h2", fontSize)
                                                         break;
                                                     }
                                                     case "q": {
                                                         event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "type", "quote")
+                                                        CustomEditorV2.toggle(editor, "type", "quote", fontSize)
                                                         break;
                                                     }
                                                     case "b" && "l": {
-                                                        console.log('huh')
                                                         event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "type", "list-bulleted")
+                                                        CustomEditorV2.toggle(editor, "type", "list-bulleted", fontSize)
                                                         break;
                                                     }
                                                     case "Shift" && "R": {
                                                         event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "align", "right")
+                                                        CustomEditorV2.toggle(editor, "align", "right", fontSize)
                                                         break;
                                                     }
                                                     case "Shift" && "L": {
                                                         event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "align", "left")
+                                                        CustomEditorV2.toggle(editor, "align", "left", fontSize)
                                                         break;
                                                     }
                                                     case "Shift" && "E": {
                                                         event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "align", "center")
+                                                        CustomEditorV2.toggle(editor, "align", "center", fontSize)
                                                         break;
                                                     }
                                                     case "Shift" && "J": {
                                                         event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "align", "justify")
+                                                        CustomEditorV2.toggle(editor, "align", "justify", fontSize)
                                                         break;
                                                     }
                                                 }
@@ -471,7 +500,8 @@ export default function Notes({ notes }) {
                             <button
                                 className={styles.mainButton}
                                 onClick={() => {
-                                    updateData(valueTitle[0].children[0].text, valueDescription)
+                                    // updateData(valueTitle[0].children[0].text, valueDescription)
+                                    console.log(valueDescription)
                                 }}
                             >
                                 Save

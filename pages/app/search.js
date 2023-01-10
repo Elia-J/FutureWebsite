@@ -100,14 +100,11 @@ export default function Index() {
         return (
             <SettingsProvider>
                 <AppLayout>
-                    <form onSubmit={getSearchElements}>
-                        <input onChange={(e) => {setInput(e.target.value.toLowerCase()); getSearchElements()}} required></input>
-                        <button type="submit">submit</button>
-                    </form>
+                    <input onChange={(e) => {setInput(e.target.value.toLowerCase()); getSearchElements()}} required></input>
                     <div>
                         {idMatches.map((item, i) => {
                             return (
-                                <div key={i}><Link href={`/app/note/${item.id}`}>{item.title}</Link></div>
+                                <div key={i}><Link href={`/app/note/${item.id}`}>{item.title}H</Link></div>
                             )
                         })}
                     </div>  

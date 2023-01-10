@@ -216,7 +216,7 @@ export default function ListOfNotes({ collapsed }) {
                             {title}
                         </Link>
                         <button className={styles.icon} onClick={() => removeNote(note.id)}>
-                            <Image alt="Bold" src="/rich-text-icons/trash.svg" width={25} height={25} />
+                            <Image alt="Bold" src="/rich-text-icons-dark/trash.svg" width={25} height={25} />
                         </button>
 
                     </div>
