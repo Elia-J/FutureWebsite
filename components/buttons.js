@@ -34,3 +34,13 @@ export function RightIconButton({ icon, text, onClick }) {
         </button>
     )
 }
+
+export function ButtonWithShortCut({ text, onClick, shortcut, main }) {
+    return (
+        <button className={`${styles.buttonWithShortCut} ${main ? styles.theme1 : styles.theme2}`} onClick={onClick} >
+            <div className={styles.ButtonWithShortCutText}>{text}</div>
+            <div className={`${styles.shortcut} ${main ? styles.shortcutTheme1 : styles.shortcutTheme2} `
+            }>{shortcut}</div>
+        </button>
+    )
+}
