@@ -12,9 +12,10 @@
     "@babel/preset-react": "^7.18.6",
     "@floating-ui/react-dom-interactions": "^0.12.0",
     "@fullcalendar/common": "^5.11.3",
-    "@fullcalendar/core": "^5.11.3",
+    "@fullcalendar/core": "^6.0.1",
     "@fullcalendar/daygrid": "^5.11.3",
     "@fullcalendar/interaction": "^5.11.3",
+    "@fullcalendar/list": "^6.0.1",
     "@fullcalendar/react": "^5.11.3",
     "@fullcalendar/resource-timeline": "^5.11.3",
     "@fullcalendar/timegrid": "^5.11.3",
@@ -38,11 +39,10 @@
     "react-big-calendar": "^1.5.2",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.0",
+    "react-modal": "^3.16.1",
     "react-redux": "^8.0.5",
     "slate": "^0.86.0",
-    "slate-react": "^0.86.0",
-    "react-modal": "^3.16.1"
-
+    "slate-react": "^0.86.0"
   },
   "devDependencies": {
     "@svgr/webpack": "^6.5.1",
