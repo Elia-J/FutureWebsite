@@ -3,7 +3,7 @@ import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-r
 import styles from "/styles/task.module.scss"
 import Check from "/public/Check.svg"
 import AppLayout from "/layouts/appLayout"
-import { SettingsProvider } from "/layouts/stateStore"
+import { StateProvider } from "/layouts/stateStore"
 
 export default function Tasks() {
     const session = useSession()
@@ -290,7 +290,7 @@ export default function Tasks() {
         return (
             <div>
                 <div className={creatingTask || editingTask ? styles.blur : null}>
-                    <SettingsProvider>
+                    <StateProvider>
                         <AppLayout>
                             <div>
                                 <div>
@@ -329,7 +329,7 @@ export default function Tasks() {
                                 </main>
                             </div>
                         </AppLayout>
-                    </SettingsProvider>
+                    </StateProvider>
                 </div>
 
                 <div className={creatingTask || editingTask ? styles.taskForm : `${styles.hiddenTaskForm} ${styles.taskForm}`}>
