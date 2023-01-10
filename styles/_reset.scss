@@ -39,6 +39,23 @@ select:focus {
   box-shadow: 0 0 0px 2px var(--night-train-600);
 }
 
+//every label will have cursor pointer
+label {
+  cursor: pointer;
+}
+
+//every input type text will have cursor text
+input[type="text"] {
+  cursor: text;
+}
+//every input type date or time or checkbox will have cursor pointer
+input[type="date"],
+input[type="time"],
+input[type="checkbox"],
+select {
+  cursor: pointer;
+}
+
 /* Set core body defaults */
 body {
   min-height: 100vh;
