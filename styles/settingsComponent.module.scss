@@ -66,6 +66,40 @@
 .closeButton svg path {
   fill: var(--snowflake-1000);
 }
+
+.savaAndCancelButtons {
+  width: 100%;
+  height: 50px;
+
+  position: sticky;
+  bottom: 0px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  //gradient
+  background-color: var(--special-5);
+  border-top: 1px solid var(--dynamic-black-200);
+  padding-right: 10px;
+}
+
+.buttong {
+  width: 64px;
+  height: 32px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.saveButton {
+  color: white;
+  background: #4c7987;
+}
+.cancelButton {
+  background: var(--snowflake-300);
+}
+
 @media (max-width: 1199.98px) {
   .panel {
     width: 70%;
@@ -100,8 +134,13 @@
 
   .leftPanel {
     height: auto;
-    border: none;
-    padding: 10px 0px;
+
+    padding: 10px 0px 2px 0px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    border-bottom: 1px solid var(--dynamic-black-200);
+    background-color: var(--special-5);
   }
   .rightPanel {
     height: auto;
@@ -117,6 +156,12 @@
   }
 }
 @media (max-width: 575.98px) {
+  .title {
+    margin: 0px 0px 10px 14px;
+  }
+  .panel {
+    width: 95%;
+  }
 }
 @media (max-width: 320px) {
 }
