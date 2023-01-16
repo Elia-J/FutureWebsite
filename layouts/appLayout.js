@@ -2,11 +2,12 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import styles from "/styles/appLayout.module.scss"
 import { motion } from "framer-motion"
-import { useSettingsContext } from "/layouts/stateStore"
+import { useStateStoreContext } from "/layouts/stateStore"
 
 //components
 import Settings from '/components/settings/settingsComponent'
 import DropdownApp from '/components/dropdownApp'
+import Shortcuts from '/components/shortcuts'
 
 //icons
 import Calendar from "/public/Calendar.svg"
@@ -18,8 +19,7 @@ import Search from "/public/Search.svg"
 
 export default function Setting1({ children }) {
     //provider
-    const [showSettings, setShowSettings] = useSettingsContext();
-    console.log(showSettings)
+    const [showSettings, setShowSettings] = useStateStoreContext();
 
     const [setting, setSetting] = useState(false);
     const bgClick = showSettings ? `${styles.clickable}` : `${styles.Notclickable}`;
@@ -80,6 +80,7 @@ export default function Setting1({ children }) {
 
                 <div className={styles.mainContent}>
                     {children}
+                    <Shortcuts />
                 </div>
 
             </div>
