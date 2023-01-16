@@ -137,7 +137,7 @@ export default function Notes({ notes }) {
 
     const [initialTitle, setInitialTitle] = useState([{"type":"h1","children":[{"text":notes.title}]}])
     const [collapsed, setCollapsed] = useState(false)
-    const [fontSize, setFontSize] = useState()
+    const [fontSize, setFontSize] = useState(16)
     // H1: 32
     // H2: 26
     // default: 16
@@ -270,7 +270,10 @@ export default function Notes({ notes }) {
                         )
                     })
                 }
-                <input type="number" min="5" max="50" defaultValue={fontSize} onChange={(e) => {setFontSize(parseInt(e.target.value)); setInitialValue(valueDescription)}}></input>
+                <div>
+                    <button onClick={() => {setFontSize(fontSize + 1)}}>&#129093;</button>
+                    <button onClick={() => {setFontSize(fontSize - 1)}}>&#129095;</button>
+                </div>
             </div>
         )
     }
@@ -317,9 +320,9 @@ export default function Notes({ notes }) {
     };
 
     const DefaultElement = (props) => {
-        console.log(props.element.children)
+        console.log(props.element.children[0].fontSize)
         return (
-            <p style={{ textAlign: globalAlign }} {...props.attributes}>
+            <p style={{ textAlign: globalAlign, fontSize: props.element.children[0].fontSize}} {...props.attributes}>
                 {props.children}
             </p>
         );
@@ -500,8 +503,7 @@ export default function Notes({ notes }) {
                             <button
                                 className={styles.mainButton}
                                 onClick={() => {
-                                    // updateData(valueTitle[0].children[0].text, valueDescription)
-                                    console.log(valueDescription)
+                                    updateData(valueTitle[0].children[0].text, valueDescription)
                                 }}
                             >
                                 Save

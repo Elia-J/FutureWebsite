@@ -1,3 +1,26 @@
+.text {
+    display: flex;
+    gap: 5px;
+}
+
+.folder {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px 10px;
+}
+
+.folderText{
+    display: flex;
+    gap: 5px;
+}
+
+.folderText:hover {
+    background-color: var(--Special-dark-gray);
+    cursor: pointer;
+}
+
 .input {
     border: none;
     height: 30px;
@@ -24,8 +47,8 @@
 }
 
 .mainButton {
-    width: 25%;
-    height: 30px;
+    width: 120px;
+    height: 40px;
     background-color: var(--primary);
     border-radius: 12px;
 
@@ -108,6 +131,27 @@
     display: flex;
     flex-direction: column;
     gap: 10px;    
+}
+
+.answer {
+    display: none;
+}
+
+.answerShow {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: 60px;
+}
+
+.accordionNotes {
+    display: flex;
+    gap: 5px;
+}
+
+.addAndSortFolder {
+    display: flex;
+    justify-content: space-between;
 }
 
 @media (max-width: 575.98px) {
