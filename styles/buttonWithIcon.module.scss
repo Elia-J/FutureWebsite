@@ -30,6 +30,7 @@
 
 .item svg {
   width: 16px;
+  height: 16px;
   aspect-ratio: 1;
   object-fit: contain;
 }
@@ -40,6 +41,9 @@
 .iteamText {
   font-weight: 700;
   font-size: 16px;
+}
+.iteamText::first-letter {
+  text-transform: uppercase;
 }
 
 .IconsOnlyButton {
@@ -89,4 +93,41 @@
   font-weight: 700;
   font-size: 18px;
   line-height: 22px;
+}
+
+.buttonWithShortCut {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border-radius: 10px;
+  padding: 6px 8px;
+}
+.ButtonWithShortCutText {
+  font-weight: 700;
+  font-size: 18px;
+}
+.shortcut {
+  padding: 2px 4px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.theme1 {
+  background: var(--night-train-600);
+  color: #ffffff;
+}
+.shortcutTheme1 {
+  background: var(--night-train-700);
+}
+
+.theme2 {
+  background-color: var(--special-3);
+  color: var(--snowflake-1000);
+}
+.shortcutTheme2 {
+  background: var(--dynamic-black-100);
 }
