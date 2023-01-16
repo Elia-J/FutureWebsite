@@ -7,7 +7,7 @@ import ListOfNotes from '../../../components/listOfNotes'
 import LoadingLine from '/components/loadingLine'
 
 import AppLayout from "/layouts/appLayout"
-import { SettingsProvider } from "/layouts/stateStore"
+import { StateProvider } from "/layouts/stateStore"
 import { useSession } from "@supabase/auth-helpers-react";
 
 
@@ -45,39 +45,39 @@ export default function Index() {
             router.push("/")
         }
     })
-    
+
     if (session) {
         return (
-            <SettingsProvider>
+            <StateProvider>
                 <AppLayout>
 
-                <div className={styles.content}>
-                    <div
-                        ref={collapsableElementSavedNotes}
-                        id="SavedNotes"
-                        className={styles.SavedNotes}
-                    >
-                        <p style={{ display: "inline-block" }}>Saved Notes</p>
-                        <p
-                            className={styles.close}
-                            style={{ display: "inline-block", float: "right" }}
-                            onClick={changeSavedNotesBar}
+                    <div className={styles.content}>
+                        <div
+                            ref={collapsableElementSavedNotes}
+                            id="SavedNotes"
+                            className={styles.SavedNotes}
                         >
-                            &times;
-                        </p>
-                        <ListOfNotes collapsed={collapsed}/>
+                            <p style={{ display: "inline-block" }}>Saved Notes</p>
+                            <p
+                                className={styles.close}
+                                style={{ display: "inline-block", float: "right" }}
+                                onClick={changeSavedNotesBar}
+                            >
+                                &times;
+                            </p>
+                            <ListOfNotes collapsed={collapsed} />
+                        </div>
+                        <div
+                            ref={collapsableElementNotes}
+                            id="TextEditor"
+                            className={`${styles.TextEditor} ${styles.titleNoNotes}`}
+                        >
+                            <h1>Select one of your notes or create a note!</h1>
+                        </div>
                     </div>
-                    <div
-                        ref={collapsableElementNotes}
-                        id="TextEditor"
-                        className={`${styles.TextEditor} ${styles.titleNoNotes}`}
-                    >
-                        <h1>Select one of your notes or create a note!</h1>
-                    </div>
-                </div>
 
                 </AppLayout>
-            </SettingsProvider >
+            </StateProvider >
         )
     }
     else {
