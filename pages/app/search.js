@@ -84,7 +84,7 @@ export default function Search() {
         idMatches = []
 
         let todos = [...dataTodos]
-        for (let i=0; i<todos.length; i++) {
+        for (let i = 0; i < todos.length; i++) {
             if (todos[i].title.toLowerCase().includes(input.toLowerCase())) {
                 idMatches.indexOf(todos[i]) == -1 ? idMatches.push([todos[i], "todo"]) : console.log('')
             }
@@ -94,13 +94,13 @@ export default function Search() {
         }
 
         let notes = dataNotes.slice()
-        for (let i=0; i<notes.length; i++) {
+        for (let i = 0; i < notes.length; i++) {
             // loop through notes title
             if (notes[i].title.toLowerCase().includes(input.toLowerCase())) {
                 idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : console.log('')
             }
             else {
-            // loop through notes description
+                // loop through notes description
                 notes[i].description.forEach(partOfDescription => {
                     // console.log(omschrijving.children)
                     partOfDescription.children.forEach(child => {
@@ -114,7 +114,7 @@ export default function Search() {
 
 
         let events = [...dataEvents]
-        for (let i=0; i<events.length; i++) {
+        for (let i = 0; i < events.length; i++) {
             if (events[i].title.toLowerCase().includes(input.toLowerCase())) {
                 idMatches.indexOf(events[i]) == -1 ? idMatches.push([events[i], "event"]) : console.log('')
             }
@@ -124,7 +124,7 @@ export default function Search() {
         }
 
         let folders = [...dataFolders]
-        for (let i=0; i<folders.length; i++) {
+        for (let i = 0; i < folders.length; i++) {
             if (folders[i].title.toLowerCase().includes(input.toLowerCase())) {
                 idMatches.indexOf(folders[i]) == -1 ? idMatches.push([folders[i], "folder"]) : console.log('')
             }
@@ -132,7 +132,7 @@ export default function Search() {
 
         setMatch(idMatches)
     }
-    
+
     useEffect(() => {
         getNotes()
         getFolders()
@@ -148,59 +148,57 @@ export default function Search() {
         router.push("/app/tasks")
     }
 
-    function toNote(id){
+    function toNote(id) {
         router.push(`/app/note/${id}`)
     }
 
     function toFolder() {
         router.push("/app/note")
     }
-    
+
     if (session) {
         return (
-            <StateProvider>
-                <AppLayout>
-                    <div className={styles.container}>
-                        <h1>Search</h1>
-                        <form onSubmit={getSearchElements}>
-                            <div className={styles.form}>
-                                <input className={styles.input} type="search" onChange={(e) => {setInput(e.target.value)}}></input>
-                                <button className={styles.submitButton} type="submit">submit</button>
-                            </div>
-                        </form>
-                        <div className={styles.items}>
-                            {match.map((item, i) => {
-                                // make four cases, one for event, one for folders, one for todos and one for notes
-                                // instead of just {item.title} it should link appropriatly
-                                return (
-                                    <div key={i} className={styles.item}>
-                                        <div className={styles.textAndIcon} onClick={() => {
-                                            switch(item[1]) {
-                                                case 'todo':
-                                                    toTodo()
-                                                    break;
-                                                case 'event':
-                                                    toEvent()
-                                                    break;
-                                                case 'folder':
-                                                    toFolder()
-                                                    break;
-                                                case 'note':
-                                                    toNote(item[0].id)
-                                                    break;
-                                            }
-                                        }}>
-                                            <Image alt="Bold" src={`/rich-text-icons-light/${item[1]}.svg`} width={25} height={25} />
-                                            {item[0].title}
-                                        </div>
-                                        <p className={styles.arrow}>&rarr;</p>
-                                    </div>
-                                )
-                            })}
+            <AppLayout>
+                <div className={styles.container}>
+                    <h1>Search</h1>
+                    <form onSubmit={getSearchElements}>
+                        <div className={styles.form}>
+                            <input className={styles.input} type="search" onChange={(e) => { setInput(e.target.value) }}></input>
+                            <button className={styles.submitButton} type="submit">submit</button>
                         </div>
+                    </form>
+                    <div className={styles.items}>
+                        {match.map((item, i) => {
+                            // make four cases, one for event, one for folders, one for todos and one for notes
+                            // instead of just {item.title} it should link appropriatly
+                            return (
+                                <div key={i} className={styles.item}>
+                                    <div className={styles.textAndIcon} onClick={() => {
+                                        switch (item[1]) {
+                                            case 'todo':
+                                                toTodo()
+                                                break;
+                                            case 'event':
+                                                toEvent()
+                                                break;
+                                            case 'folder':
+                                                toFolder()
+                                                break;
+                                            case 'note':
+                                                toNote(item[0].id)
+                                                break;
+                                        }
+                                    }}>
+                                        <Image alt="Bold" src={`/rich-text-icons-light/${item[1]}.svg`} width={25} height={25} />
+                                        {item[0].title}
+                                    </div>
+                                    <p className={styles.arrow}>&rarr;</p>
+                                </div>
+                            )
+                        })}
                     </div>
-                </AppLayout>
-            </StateProvider >
+                </div>
+            </AppLayout>
         )
     }
     else {
