@@ -70,7 +70,7 @@ export default function ListOfNotes({ collapsed }) {
     }
 
     // Create new notes
-    async function createNote(event) {
+    async function createNote() {
         // Makes sure it does not reload the page
         event.preventDefault()
         // Inserts the data into the database
@@ -252,7 +252,7 @@ export default function ListOfNotes({ collapsed }) {
         // Makes a copy so that the originial data is not lost
         var sortedData = [...d]
 
-        sortedData.sort(function (a, b) {
+        sortedData.sort(function(a, b) {
             // Compares the title of all the elements
             if (a.created_at > b.created_at) {
                 return -1;
@@ -269,7 +269,7 @@ export default function ListOfNotes({ collapsed }) {
         // Makes a copy so that the originial data is not lost
         var sortedData = [...d]
 
-        sortedData.sort(function (a, b) {
+        sortedData.sort(function(a, b) {
             // Compares the title of all the elements
             if (a.created_at < b.created_at) {
                 return -1;
@@ -313,7 +313,6 @@ export default function ListOfNotes({ collapsed }) {
         }
         setSelected(i)
     }
-
     // useEffect(() => {
     //     // checkSorting(data);
     // }, [createNote, removeNote])
@@ -429,7 +428,7 @@ export default function ListOfNotes({ collapsed }) {
 
                     </div>
                 )
-
+                
             })}
 
         </div>
