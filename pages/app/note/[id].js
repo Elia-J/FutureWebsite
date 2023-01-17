@@ -359,7 +359,7 @@ export default function Notes({ notes }) {
         // Returns the html is there is a session
         return (
             // The settingsProvider and AppLayout add the sidebar with settings functions
-            <SettingsProvider>
+            <StateProvider>
                 <AppLayout>
                     <div className={styles.content}>
                         <div
@@ -514,7 +514,7 @@ export default function Notes({ notes }) {
                         </div>
                     </div>
                 </AppLayout>
-            </SettingsProvider>
+            </StateProvider>
         );
     } else {
         // If there is not a session, return the loadingline
@@ -525,12 +525,16 @@ export default function Notes({ notes }) {
 }
 
 export async function getServerSideProps({ params }) {
-
     const { id } = params
 
+    const { data } = await supabase
+        .from('notesv2')
+        .select('*')
+        .filter('id', 'eq', id)
+        .single()
     return {
         props: {
-            id: id
+            notes: data
         }
     }
 }

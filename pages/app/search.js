@@ -4,7 +4,7 @@ import Link from 'next/link'
 import LoadingLine from '/components/loadingLine'
 
 import AppLayout from "/layouts/appLayout"
-import { SettingsProvider } from "/layouts/stateStore"
+import { StateProvider } from "/layouts/stateStore"
 import { useSession, useUser, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { preventDefault } from "fullcalendar";
 
@@ -135,7 +135,6 @@ export default function Search() {
         }
 
         setMatch(idMatches)
-        console.log(match)
     }
     
     useEffect(() => {
@@ -163,7 +162,7 @@ export default function Search() {
     
     if (session) {
         return (
-            <SettingsProvider>
+            <StateProvider>
                 <AppLayout>
                     <div className={styles.container}>
                         <h1>Search</h1>
@@ -205,7 +204,7 @@ export default function Search() {
                         </div>
                     </div>
                 </AppLayout>
-            </SettingsProvider >
+            </StateProvider >
         )
     }
     else {
