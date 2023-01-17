@@ -7,7 +7,7 @@ import ChangePictureIcon from "/public/changePictureIcon.svg"
 import { TextOnly } from '/components/buttons';
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/router'
-//global variables
+//global variables 
 import { useStateStoreContext } from "/layouts/stateStore"
 
 
@@ -133,6 +133,26 @@ export default function Account() {
     // }
     //#################################### Image Upload and Download end ####################################
 
+
+
+    // const supabase2 = supabaseAdmin()
+    //handleDeleteAccount
+    async function handleDeleteAccount() {
+
+        const { data, error } = await supabase
+            // .from('profiles')
+            // .delete()
+            // .eq('id', user.id)
+            .rpc('delete_user', { user_id: user.id })
+
+        if (error) {
+            console.log(error)
+        }
+        else {
+            console.log("deleted")
+        }
+
+    }
 
 
 
@@ -267,6 +287,15 @@ export default function Account() {
                 </div>
 
             </div> */}
+
+            {/* delete account */}
+            <button onClick={handleDeleteAccount}>Delete Account</button>
+
+            <br />
+            <button>fsef</button>
+            <br />
+
+            <button>fsef</button>
 
 
         </SettingsLayout >
