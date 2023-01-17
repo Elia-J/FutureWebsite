@@ -126,12 +126,12 @@ const CustomEditorV2 = {
 
 let globalAlign = "left";
 
-// export default function Notes({ notes }) {
-//     const router = useRouter();
-//     //supabase
-//     const supabase = useSupabaseClient()
-//     const session = useSession()
-//     const user = useUser()
+export default function Notes({ notes }) {
+    const router = useRouter();
+    //supabase
+    const supabase = useSupabaseClient()
+    const session = useSession()
+    const user = useUser()
 
     const [initialValue, setInitialValue] = useState(notes.description)
     const { theme, setTheme } = useTheme()
@@ -150,15 +150,15 @@ let globalAlign = "left";
         // console.log(html.getAttribute('data-theme'))
     }, [theme])
 
-//     // Checks if there is a change in the url, if so, it reloads the page
-//     // This is to make sure that the correct initialValue and initialTitle is loaded into the editor
-//     // Else the server will load the value one time and won't change it
-//     useEffect(() => {
-//         const handleRouteChange = () => {
-//             location.reload()
-//         }
+    // Checks if there is a change in the url, if so, it reloads the page
+    // This is to make sure that the correct initialValue and initialTitle is loaded into the editor
+    // Else the server will load the value one time and won't change it
+    useEffect(() => {
+        const handleRouteChange = () => {
+            location.reload()
+        }
 
-//         router.events.on('routeChangeComplete', handleRouteChange)
+        router.events.on('routeChangeComplete', handleRouteChange)
 
         // If the component is unmounted, unsubscribe
         // from the event with the `off` method:
@@ -170,58 +170,58 @@ let globalAlign = "left";
     var valueDescription = initialValue;
     var valueTitle = initialTitle;
 
-//     // updateData gets a title and a description and updates them with the according note id
-//     async function updateData(t, d) {
-//         const { data, error } = await supabase
-//             .from('notesv2')
-//             .update({ title: t, description: d })
-//             .eq('id', notes.id)
-//         alert('succes!')
-//     }
+    // updateData gets a title and a description and updates them with the according note id
+    async function updateData(t, d) {
+        const { data, error } = await supabase
+            .from('notesv2')
+            .update({ title: t, description: d })
+            .eq('id', notes.id)
+        alert('succes!')
+    }
 
-//     let collapsableElementSavedNotes = React.createRef();
-//     let collapsableElementNotes = React.createRef();
+    let collapsableElementSavedNotes = React.createRef();
+    let collapsableElementNotes = React.createRef();
 
 
-//     // Initializes the editors
-//     // We have two editors, one for the title and one for the description
-//     const [editor] = useState(() => withReact(createEditor()));
-//     const [editorTitle] = useState(() => withReact(createEditor()));
+    // Initializes the editors
+    // We have two editors, one for the title and one for the description
+    const [editor] = useState(() => withReact(createEditor()));
+    const [editorTitle] = useState(() => withReact(createEditor()));
 
-//     // Function to make the saved notes bar smaller and bigger by adding a class to its classlist
-//     // This is picked up by the css and changes it's width
-//     function changeSavedNotesBar() {
-//         collapsableElementSavedNotes.current.classList.toggle(
-//             `${styles.collapsedSavedNote}`
-//         );
-//         collapsableElementNotes.current.classList.toggle(
-//             `${styles.extenedNote}`
-//         );
-//         if (collapsed) {
-//             setCollapsed(false)
-//         } else {
-//             setCollapsed(true)
-//         }
-//     }
+    // Function to make the saved notes bar smaller and bigger by adding a class to its classlist
+    // This is picked up by the css and changes it's width
+    function changeSavedNotesBar() {
+        collapsableElementSavedNotes.current.classList.toggle(
+            `${styles.collapsedSavedNote}`
+        );
+        collapsableElementNotes.current.classList.toggle(
+            `${styles.extenedNote}`
+        );
+        if (collapsed) {
+            setCollapsed(false)
+        } else {
+            setCollapsed(true)
+        }
+    }
 
-//     const renderElement = useCallback((props) => {
-//         // If the editor renders an eliment and there is an alignment prop then it sents the global align to its value
-//         // This is picked up by the other elements so that all different styles can have an alignment
-//         if (props.element.align) {
-//             switch (props.element.align) {
-//                 case "left":
-//                     globalAlign = "left";
-//                     break;
-//                 case "right":
-//                     globalAlign = "right";
-//                     break;
-//                 case "center":
-//                     globalAlign = "center";
-//                     break;
-//                 case "justify":
-//                     globalAlign = "justify";
-//             }
-//         }
+    const renderElement = useCallback((props) => {
+        // If the editor renders an eliment and there is an alignment prop then it sents the global align to its value
+        // This is picked up by the other elements so that all different styles can have an alignment
+        if (props.element.align) {
+            switch (props.element.align) {
+                case "left":
+                    globalAlign = "left";
+                    break;
+                case "right":
+                    globalAlign = "right";
+                    break;
+                case "center":
+                    globalAlign = "center";
+                    break;
+                case "justify":
+                    globalAlign = "justify";
+            }
+        }
 
         // To see which element it needs to render with the different types
         // It gives a copy of the props list so that if it changes in the element it doens't change globaly
@@ -281,46 +281,46 @@ let globalAlign = "left";
         )
     }
 
-//     // A function that returns all the different elements if called by the renderElement function
-//     const H1Element = (props) => {
-//         return (
-//             <h1 style={{ textAlign: globalAlign, margin: 5 }} {...props.attributes}>
-//                 {props.children}
-//             </h1>
-//         );
-//     };
+    // A function that returns all the different elements if called by the renderElement function
+    const H1Element = (props) => {
+        return (
+            <h1 style={{ textAlign: globalAlign, margin: 5 }} {...props.attributes}>
+                {props.children}
+            </h1>
+        );
+    };
 
-//     const H2Element = (props) => {
-//         return (
-//             <h2 style={{ textAlign: globalAlign }} {...props.attributes}>
-//                 {props.children}
-//             </h2>
-//         );
-//     };
+    const H2Element = (props) => {
+        return (
+            <h2 style={{ textAlign: globalAlign }} {...props.attributes}>
+                {props.children}
+            </h2>
+        );
+    };
 
-//     const BulletElement = (props) => {
-//         return (
-//             <div style={{ textAlign: globalAlign }}>
-//                 <ul
-//                     style={{ display: "inline-block", textAlign: "left" }}
-//                     {...props.attributes}
-//                 >
-//                     <li>{props.children}</li>
-//                 </ul>
-//             </div>
-//         );
-//     };
+    const BulletElement = (props) => {
+        return (
+            <div style={{ textAlign: globalAlign }}>
+                <ul
+                    style={{ display: "inline-block", textAlign: "left" }}
+                    {...props.attributes}
+                >
+                    <li>{props.children}</li>
+                </ul>
+            </div>
+        );
+    };
 
-//     const QuoteElement = (props) => {
-//         return (
-//             <blockquote
-//                 {...props.attributes}
-//                 style={{ color: "gray", textAlign: globalAlign }}
-//             >
-//                 {props.children}
-//             </blockquote>
-//         );
-//     };
+    const QuoteElement = (props) => {
+        return (
+            <blockquote
+                {...props.attributes}
+                style={{ color: "gray", textAlign: globalAlign }}
+            >
+                {props.children}
+            </blockquote>
+        );
+    };
 
     const DefaultElement = (props) => {
         console.log(props.element.children[0].fontSize)
@@ -331,29 +331,29 @@ let globalAlign = "left";
         );
     };
 
-//     const Leaf = ({ attributes, children, leaf }) => {
-//         if (leaf.bold) {
-//             children = <strong>{children}</strong>;
-//         }
-//         if (leaf.italic) {
-//             children = <em>{children}</em>;
-//         }
-//         if (leaf.underline) {
-//             children = <u>{children}</u>;
-//         }
-//         if (leaf.code) {
-//             children = <code>{children}</code>;
-//         }
+    const Leaf = ({ attributes, children, leaf }) => {
+        if (leaf.bold) {
+            children = <strong>{children}</strong>;
+        }
+        if (leaf.italic) {
+            children = <em>{children}</em>;
+        }
+        if (leaf.underline) {
+            children = <u>{children}</u>;
+        }
+        if (leaf.code) {
+            children = <code>{children}</code>;
+        }
 
-//         return (
-//             <span
-//                 {...attributes}
-//                 style={{ backgroundColor: leaf.code ? "lightgray" : "transparent" }}
-//             >
-//                 {children}
-//             </span>
-//         );
-//     };
+        return (
+            <span
+                {...attributes}
+                style={{ backgroundColor: leaf.code ? "lightgray" : "transparent" }}
+            >
+                {children}
+            </span>
+        );
+    };
 
     if (session) {
         // Returns the html is there is a session
@@ -413,26 +413,26 @@ let globalAlign = "left";
                                 <ToolbarV2 />
                                 <hr />
 
-//                                 <div className={styles.description}>
-//                                     {/* Descriptor itself */}
-//                                     <Slate
-//                                         editor={editor}
-//                                         value={initialValue}
-//                                         /* saving the data */
-//                                         onChange={(value) => {
-//                                             valueDescription = value;
-//                                         }}
-//                                     >
-//                                         <Editable
-//                                             className={styles.noteDescription}
-//                                             renderElement={renderElement}
-//                                             renderLeaf={renderLeaf}
-//                                             onKeyDown={(event) => {
-//                                                 // Checks for shortcut
-//                                                 // Only if the ctrl key is pressed
-//                                                 if (!event.ctrlKey) {
-//                                                     return;
-//                                                 }
+                                 <div className={styles.description}>
+                                     {/* Descriptor itself */}
+                                     <Slate
+                                        editor={editor}
+                                        value={initialValue}
+                                        /* saving the data */
+                                        onChange={(value) => {
+                                            valueDescription = value;
+                                        }}
+                                    >
+                                        <Editable
+                                            className={styles.noteDescription}
+                                            renderElement={renderElement}
+                                            renderLeaf={renderLeaf}
+                                            onKeyDown={(event) => {
+                                                // Checks for shortcut
+                                                // Only if the ctrl key is pressed
+                                                if (!event.ctrlKey) {
+                                                    return;
+                                                }
 
                                                 switch (event.key) {
                                                     case ",": {
