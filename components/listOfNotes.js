@@ -366,8 +366,8 @@ export default function ListOfNotes({ collapsed }) {
 
             {folderData.map((folder, i) => {
                 return (
-                    <div>
-                        <div key={i} className={styles.folder}>
+                    <div key={i}>
+                        <div className={styles.folder}>
                             <div className={`${styles.link}`}>
                                 <div className={`${styles.accordion} ${styles.folderText}`} onClick={() => toggle(i)}>
                                     <Image alt="Bold" src="/rich-text-icons-dark/folder.svg" width={25} height={25} />
