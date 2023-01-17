@@ -92,7 +92,7 @@ export default function Search() {
             if (todos[i].title.toLowerCase().includes(input.toLowerCase())) {
                 idMatches.indexOf(todos[i]) == -1 ? idMatches.push([todos[i], "todo"]) : console.log('')
             }
-            if (todos[i].description != undefined && todos[i].description.toLowerCase().includes(input.toLowerCase())) {
+            else if (todos[i].description != undefined && todos[i].description.toLowerCase().includes(input.toLowerCase())) {
                 idMatches.indexOf(todos[i]) == -1 ? idMatches.push([todos[i], "todo"]) : console.log('')
             }
         }
@@ -103,16 +103,17 @@ export default function Search() {
             if (notes[i].title.toLowerCase().includes(input.toLowerCase())) {
                 idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : console.log('')
             }
-
+            else {
             // loop through notes description
-            notes[i].description.forEach(partOfDescription => {
-                // console.log(omschrijving.children)
-                partOfDescription.children.forEach(child => {
-                    if (child.text.toLowerCase().includes(input.toLowerCase())) {
-                        idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : idMatches.push()
-                    }
+                notes[i].description.forEach(partOfDescription => {
+                    // console.log(omschrijving.children)
+                    partOfDescription.children.forEach(child => {
+                        if (child.text.toLowerCase().includes(input.toLowerCase())) {
+                            idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : idMatches.push()
+                        }
+                    })
                 })
-            })
+            }
         }
 
 
@@ -121,7 +122,7 @@ export default function Search() {
             if (events[i].title.toLowerCase().includes(input.toLowerCase())) {
                 idMatches.indexOf(events[i]) == -1 ? idMatches.push([events[i], "event"]) : console.log('')
             }
-            if (events[i].description != null && events[i].description.toLowerCase().includes(input.toLowerCase())) {
+            else if (events[i].description != null && events[i].description.toLowerCase().includes(input.toLowerCase())) {
                 idMatches.indexOf(events[i]) == -1 ? idMatches.push([events[i], "event"]) : console.log('')
             }
         }

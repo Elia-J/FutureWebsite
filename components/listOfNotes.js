@@ -405,7 +405,6 @@ export default function ListOfNotes({ collapsed }) {
             {/* Sort of like foreach (element in List), but it has an index too */}
             {data.map((note, index) => {
                 var title = note.title
-                // console.log(2213 in notesInFolder)
                 for (let i=0; i<notesInFolder.length; i++) {
                     if (note.id == notesInFolder[i]) {
                         console.log(note.id)
