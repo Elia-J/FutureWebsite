@@ -359,7 +359,6 @@ export default function Notes({ notes }) {
         // Returns the html is there is a session
         return (
             // The settingsProvider and AppLayout add the sidebar with settings functions
-            <StateProvider>
                 <AppLayout>
                     <div className={styles.content}>
                         <div
@@ -514,7 +513,6 @@ export default function Notes({ notes }) {
                         </div>
                     </div>
                 </AppLayout>
-            </StateProvider>
         );
     } else {
         // If there is not a session, return the loadingline

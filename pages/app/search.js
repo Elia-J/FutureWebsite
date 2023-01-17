@@ -1,15 +1,11 @@
 import styles from "/styles/search.module.scss";
 import React, { useState, useEffect } from "react";
-import Link from 'next/link'
 import LoadingLine from '/components/loadingLine'
 
 import AppLayout from "/layouts/appLayout"
-import { StateProvider } from "/layouts/stateStore"
 import { useSession, useUser, useSupabaseClient } from "@supabase/auth-helpers-react";
-import { preventDefault } from "fullcalendar";
 
 import Image from 'next/image'
-import { EventEmitter } from "stream";
 import { useRouter } from 'next/router'
 
 

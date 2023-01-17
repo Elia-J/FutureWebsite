@@ -2,19 +2,17 @@ import styles from "../../../styles/notes.module.scss";
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router'
 import { createEditor } from "slate";
-import { Slate, Editable, withReact } from "slate-react";
+import { withReact } from "slate-react";
 import ListOfNotes from '../../../components/listOfNotes'
 import LoadingLine from '/components/loadingLine'
 
 import AppLayout from "/layouts/appLayout"
-import { StateProvider } from "/layouts/stateStore"
 import { useSession } from "@supabase/auth-helpers-react";
 
 
 export default function Index() {
 
     const session = useSession()
-    const router = useRouter();
 
     const [collapsed, setCollapsed] = useState(false)
 
@@ -48,36 +46,34 @@ export default function Index() {
     
     if (session) {
         return (
-            <StateProvider>
-                <AppLayout>
+            <AppLayout>
 
-                    <div className={styles.content}>
-                        <div
-                            ref={collapsableElementSavedNotes}
-                            id="SavedNotes"
-                            className={styles.SavedNotes}
+                <div className={styles.content}>
+                    <div
+                        ref={collapsableElementSavedNotes}
+                        id="SavedNotes"
+                        className={styles.SavedNotes}
+                    >
+                        <p style={{ display: "inline-block" }}>Saved Notes</p>
+                        <p
+                            className={styles.close}
+                            style={{ display: "inline-block", float: "right" }}
+                            onClick={changeSavedNotesBar}
                         >
-                            <p style={{ display: "inline-block" }}>Saved Notes</p>
-                            <p
-                                className={styles.close}
-                                style={{ display: "inline-block", float: "right" }}
-                                onClick={changeSavedNotesBar}
-                            >
-                                &times;
-                            </p>
-                            <ListOfNotes collapsed={collapsed} />
-                        </div>
-                        <div
-                            ref={collapsableElementNotes}
-                            id="TextEditor"
-                            className={`${styles.TextEditor} ${styles.titleNoNotes}`}
-                        >
-                            <h1>Select one of your notes or create a note!</h1>
-                        </div>
+                            &times;
+                        </p>
+                        <ListOfNotes collapsed={collapsed} />
                     </div>
+                    <div
+                        ref={collapsableElementNotes}
+                        id="TextEditor"
+                        className={`${styles.TextEditor} ${styles.titleNoNotes}`}
+                    >
+                        <h1>Select one of your notes or create a note!</h1>
+                    </div>
+                </div>
 
-                </AppLayout>
-            </StateProvider >
+            </AppLayout>
         )
     }
     else {
