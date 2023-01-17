@@ -58,7 +58,7 @@ export default function IndexApp() {
 
 
 
-    //get all task from supabase
+    // get all task from supabase
     // async function getAllTask() {
     //     const { data, error } = await supabase
     //         .from('todos')
@@ -177,7 +177,7 @@ export default function IndexApp() {
                                         (e) => { setTodoPanelToggle(!todoPanelToggle) }
                                     }>
 
-                                    {todoPanelToggle ? "Close" : "Open Tasks"}
+                                    {todoPanelToggle ? "Close" : "Tasks & Notes"}
                                 </button>
                             </div>
 
