@@ -21,6 +21,11 @@ export default function Search() {
     const [dataTodos, setDataTodos] = useState([])
     const [dataFolders, setDataFolders] = useState([])
     const [match, setMatch] = useState([])
+    const [wayOfSorting, setWayOfSorting] = useState('Aa')
+    // Aa = alphabetical ascending
+    // Ad = alphabetical descending
+    // Da = date ascending
+    // Dd = date descending
 
     let idMatches = []
 
@@ -129,8 +134,90 @@ export default function Search() {
                 idMatches.indexOf(folders[i]) == -1 ? idMatches.push([folders[i], "folder"]) : console.log('')
             }
         }
+        setMatch(checkSorting(idMatches))
+    }
 
-        setMatch(idMatches)
+    function sortAlphAsc(d) {
+
+        let data = [...d]
+        console.log(data)
+        data.sort(function(a, b) {
+            // Compares the title of all the elements
+            if (a[0].title.toLowerCase() < b[0].title.toLowerCase()) {
+                return -1;
+            }
+            if (b[0].title.toLowerCase() < a[0].title.toLowerCase()) {
+                return 1;
+            }
+            return 0;
+        })
+        return data
+    }
+
+    function sortAlphDesc(d) {
+        let data = [...d]
+        console.log(data)
+        data.sort(function(a, b) {
+            // Compares the title of all the elements
+            if (a[0].title.toLowerCase() > b[0].title.toLowerCase()) {
+                return -1;
+            }
+            if (b[0].title.toLowerCase() > a[0].title.toLowerCase()) {
+                return 1;
+            }
+            return 0;
+        })
+        return data
+    }
+
+    function sortDateAsc(d) {
+        var data = [...d]
+
+        data.sort(function(a, b) {
+            // Compares the title of all the elements
+            if (a[0].created_at > b[0].created_at) {
+                return -1;
+            }
+            if (b[0].created_at > a[0].created_at) {
+                return 1;
+            }
+            return 0;
+        })
+        return data
+    }
+
+    function sortDateDesc(d) {
+        var data = [...d]
+
+        data.sort(function(a, b) {
+            // Compares the title of all the elements
+            if (a[0].created_at < b[0].created_at) {
+                return -1;
+            }
+            if (b[0].created_at < a[0].created_at) {
+                return 1;
+            }
+            return 0;
+        })
+        return data
+    }
+
+    function checkSorting(data) {
+        if (wayOfSorting == 'Aa') {
+            return sortAlphAsc(data)
+        } else if (wayOfSorting == 'Ad') {
+            return sortAlphDesc(data)
+        } else if (wayOfSorting == 'Da') {
+            return sortDateAsc(data)
+        } else {
+            return sortDateDesc(data)
+        }
+    }
+
+    let dropdownSorting = React.createRef();
+
+    function setDropdownSorting() {
+        dropdownSorting.current.classList.toggle(`${styles.show}`)
     }
 
     useEffect(() => {
@@ -168,6 +255,19 @@ export default function Search() {
                         </div>
                     </form>
                     <div className={styles.items}>
+                        <div style={{display: "flex", justifyContent: "flex-end"}}>
+                            <div>
+                                <button className={styles.dropdownSort} onClick={setDropdownSorting}>
+                                    <Image alt="sort" src="/sort.svg" width={25} height={25} />
+                                </button>
+                                <div ref={dropdownSorting} className={styles.dropdownContent}>
+                                    <button onClick={() => {setWayOfSorting('Aa'); getSearchElements()}} className={styles.dropdownstylebutton}>Alphabetical (a-z)</button>
+                                    <button onClick={() => {setWayOfSorting('Ad'); getSearchElements()}} className={styles.dropdownstylebutton}>Alphabetical (z-a)</button>
+                                    <button onClick={() => {setWayOfSorting('Da'); getSearchElements()}} className={styles.dropdownstylebutton}>Created at (ascending)</button>
+                                    <button onClick={() => {setWayOfSorting('Dd'); getSearchElements()}} className={styles.dropdownstylebutton}>Created at (descending)</button>
+                                </div>
+                            </div>
+                        </div>
                         {match.map((item, i) => {
                             // make four cases, one for event, one for folders, one for todos and one for notes
                             // instead of just {item.title} it should link appropriatly
