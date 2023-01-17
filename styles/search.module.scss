@@ -46,6 +46,10 @@
     align-items: center;
     width: 100%;
     gap: 10px;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .items {
@@ -75,4 +79,14 @@
 
 .textAndIcon:hover + .arrow {
     display: block;
+}
+
+@media (max-width: 575.98px) {
+    .items {
+        width: 70%;
+    }
+
+    .arrow {
+        display: block;
+    }
 }

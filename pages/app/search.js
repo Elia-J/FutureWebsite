@@ -196,7 +196,7 @@ export default function Search() {
                                             }
                                         }}>
                                             <Image alt="Bold" src={`/rich-text-icons-light/${item[1]}.svg`} width={25} height={25} />
-                                            <p>{item[0].title}</p>
+                                            {item[0].title}
                                         </div>
                                         <p className={styles.arrow}>&rarr;</p>
                                     </div>
