@@ -20,6 +20,7 @@ export default function Search() {
     const [dataNotes, setDataNotes] = useState([])
     const [dataTodos, setDataTodos] = useState([])
     const [dataFolders, setDataFolders] = useState([])
+    const [dataTodoFolders, setDataTodoFolders] = useState([])
     const [match, setMatch] = useState([])
     const [wayOfSorting, setWayOfSorting] = useState('Aa')
     // Aa = alphabetical ascending
@@ -83,6 +84,19 @@ export default function Search() {
         }
     }
 
+    async function getTodoFolders() {
+        const { data, error } = await supabase
+            .from('todosFolders')
+            .select('*')
+        if (data) {
+            setDataTodoFolders(data)
+        }
+        if (error) {
+            console.log('error', error)
+            return
+        }
+    }
+
     function getSearchElements() {
         event.preventDefault()
         setMatch([])
@@ -134,6 +148,14 @@ export default function Search() {
                 idMatches.indexOf(folders[i]) == -1 ? idMatches.push([folders[i], "folder"]) : console.log('')
             }
         }
+
+        let todoFolders = [...dataTodoFolders]
+        for (let i = 0; i < todoFolders.length; i++) {
+            if (todoFolders[i].title.toLowerCase().includes(input.toLowerCase())) {
+                idMatches.indexOf(todoFolders[i]) == -1 ? idMatches.push([todoFolders[i], "todoFolder"]) : console.log('')
+            }
+        }
+
         setMatch(checkSorting(idMatches))
     }
 
@@ -225,6 +247,7 @@ export default function Search() {
         getFolders()
         getTodos()
         getEvents()
+        getTodoFolders()
     }, [])
 
     function toEvent() {
@@ -286,6 +309,9 @@ export default function Search() {
                                                 break;
                                             case 'note':
                                                 toNote(item[0].id)
+                                                break;
+                                            case 'todoFolder':
+                                                toTodo()
                                                 break;
                                         }
                                     }}>
