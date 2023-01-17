@@ -4,6 +4,8 @@ import styles from '/styles/general.module.scss'
 import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react'
 import toast, { Toaster } from 'react-hot-toast';
 
+//global variable
+import { useStateStoreContext } from "/layouts/stateStore"
 
 //theme
 import { useTheme } from 'next-themes'
@@ -14,12 +16,13 @@ export default function General() {
     const user = useUser()
 
     const timeZones = Intl.supportedValuesOf('timeZone')
-    const dayOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
     const { theme, setTheme } = useTheme()
     const [checkboxThemeSync, setCheckboxThemeSync] = useState(false)
     const [timeZone, setTimeZone] = useState('')
     const [firstDayOfWeek, setFirstDayOfWeek] = useState('')
+
+    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy] = useStateStoreContext();
 
     //change theme by clicking on dropdown menu in settings
     function changeTheme(e) {
@@ -41,7 +44,6 @@ export default function General() {
         if (data) {
             setCheckboxThemeSync(data.syncTheme)
             setTimeZone(data.timeZone)
-            console.log(data.timeZone)
             // setFirstDayOfWeek(data.firstDayOfWeek)
             // setTheme(data.mode)
         }
@@ -67,45 +69,43 @@ export default function General() {
     }
 
     //update time zone in database
-    async function UpdateTimeZone(e) {
-        const { data, error } = await supabase
-            .from('profiles')
-            .update({ timeZone: e })
-            .eq('id', user.id)
+    // async function UpdateTimeZone(e) {
+    //     const { data, error } = await supabase
+    //         .from('profiles')
+    //         .update({ timeZone: e })
+    //         .eq('id', user.id)
 
-        if (error) {
-            console.log(error)
-        }
-        else {
-            console.log(data)
-        }
-    }
+    //     if (error) {
+    //         console.log(error)
+    //     }
+    //     else {
+    //         console.log(data)
+    //     }
+    // }
 
     //updat theme in database
-    async function UpdateTheme(e) {
-        const { data, error } = await supabase
-            .from('profiles')
-            .update({ mode: e })
-            .eq('id', user.id)
+    // async function UpdateTheme(e) {
+    //     const { data, error } = await supabase
+    //         .from('profiles')
+    //         .update({ mode: e })
+    //         .eq('id', user.id)
 
-        if (error) {
-            toast.error(error.message)
-        }
-        else {
-            toast.success('Theme updated', {
-                iconTheme: {
-                    primary: '#4C7987',
-                    secondary: '#ffffff',
-                }
-            });
-        }
+    //     if (error) {
+    //         toast.error(error.message)
+    //     }
+    //     else {
+    //         toast.success('Theme updated', {
+    //             iconTheme: {
+    //                 primary: '#4C7987',
+    //                 secondary: '#ffffff',
+    //             }
+    //         });
+    //     }
 
 
-    }
+    // }
 
-    function lg() {
-        console.log(checkboxThemeSync)
-    }
+
 
     //note done yet
     // useEffect(() => {
@@ -118,10 +118,10 @@ export default function General() {
         GetData()
     }, [])
 
-
     return (
         <SettingsLayout title="General">
-            <button onClick={GetData}>Get Data</button>
+
+
             <div className={styles.optionsVertical}>
 
                 <div className={styles.details}>
@@ -131,10 +131,16 @@ export default function General() {
 
                 </div>
 
-                <select name="timeZone" id="timeZone" className={styles.select} onChange={(e) => UpdateTimeZone(e.target.value)}>
+                <select name="timeZone" id="timeZone" className={styles.select}
+                    onChange={(e) => { setSettings({ ...settings, TimeZone: e.target.value }) }}
+                >
 
+                    <option value="Local" selected={"Local" === `${settings.TimeZone}` ? "selected" : null}>Local</option>
                     {timeZones.map((zone) => (
-                        <option key={zone} value={zone} Sselected={zone == timeZone ? true : false} >
+                        <option key={zone}
+                            value={zone}
+                            selected={zone === `${settings.TimeZone}` ? "selected" : null}
+                        >
                             {zone}
                         </option>
                     ))}
@@ -142,35 +148,24 @@ export default function General() {
                 </select>
 
             </div>
+
+
             <div className={styles.optionsVertical}>
-
-                <div className={styles.details}>
-
-                    <div className={styles.minititle}>First day of the week</div>
-                    <div className={styles.discription}> Choose the first day of the week in your calendar. </div>
-
-                </div>
-
-                <select name="timeZone" id="timeZone" className={styles.select}>
-
-                    {dayOfWeek.map((day) => (
-                        <option key={day} value={day}>
-                            {day}
-                        </option>
-                    ))}
-
-                </select>
-
-            </div>
-
-            <div className={styles.optionsHorizontal}>
 
                 <div className={styles.details}>
                     <div className={styles.minititle}>Theme</div>
                     <div className={styles.discription}> Choose between light, dark, and system theme.</div>
                 </div>
 
-                <select name="theme" id="theme" className={styles.select} onChange={changeTheme}>
+                <select name="theme" id="theme" className={styles.select}
+                    onChange={
+                        (e) => {
+                            setSettings({ ...settings, Theme: e.target.value })
+                            changeTheme(e)
+                        }
+                    }
+                    value={theme}
+                >
 
                     <option value="light">Light</option>
                     <option value="dark">Dark</option>
@@ -180,7 +175,7 @@ export default function General() {
 
             </div>
 
-            <div className={styles.optionsHorizontal}>
+            <div className={styles.optionsVertical}>
 
                 <div className={styles.details}>
 
@@ -191,12 +186,15 @@ export default function General() {
 
                 <div className={styles.toggleContainer}>
                     <input type="checkbox" name="toggle" id="toggle" className={styles.toggleInput}
-                        onChange={() => { setCheckboxThemeSync(!checkboxThemeSync), updateThemeBoolean() }} checked={checkboxThemeSync}
+                        onChange={() => {
+                            setSettings({ ...settings, syncTheme: !settings.syncTheme })
+                        }} checked={settings.syncTheme}
                     />
                     <label htmlFor="toggle" className={styles.toggleLabel}></label>
                 </div>
 
             </div>
+
             <Toaster position="bottom-right" reverseOrder={false} />
 
 
