@@ -2,15 +2,15 @@
     padding: 10px;
     float: left;
     height: 100vh;
-    width: 30%;
+    width: 25%;
     background-color: var(--Special-gray);
     transition: all 1s ease;
 }
 
-.TextEditor {
+.TextEditor {   
     padding: 10px;
     float: left;
-    width: 70%;
+    width: 75%;
     height: 100vh;
     background-color: var(--Special-dark-gray);
     transition: all 1s ease;
@@ -75,6 +75,16 @@
     max-height: 100%;
     padding: 5px 20px;
     border-radius: 20px;
+}
+
+.createButton {
+    width: 100px;
+    height: 30px;
+    background-color: var(--primary);
+    border-radius: 12px;
+
+    color: white;
+    margin-bottom: 10px;
 }
 
 .mainButton {

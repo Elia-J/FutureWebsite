@@ -40,12 +40,12 @@ export default function Index() {
         }
     }
 
-    useEffect(() => {
-        if (!session) {
-            router.push("/")
-        }
-    })
-
+    // useEffect(() => {
+    //     if (!session) {
+    //         router.push("/")
+    //     }
+    // })
+    
     if (session) {
         return (
             <StateProvider>
