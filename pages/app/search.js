@@ -101,6 +101,7 @@ export default function Search() {
         event.preventDefault()
         setMatch([])
         idMatches = []
+        console.log("Zoekende!")
 
         let todos = [...dataTodos]
         for (let i = 0; i < todos.length; i++) {
@@ -131,7 +132,6 @@ export default function Search() {
             }
         }
 
-
         let events = [...dataEvents]
         for (let i = 0; i < events.length; i++) {
             if (events[i].title.toLowerCase().includes(input.toLowerCase())) {
@@ -155,84 +155,51 @@ export default function Search() {
                 idMatches.indexOf(todoFolders[i]) == -1 ? idMatches.push([todoFolders[i], "todoFolder"]) : console.log('')
             }
         }
-
-        setMatch(checkSorting(idMatches))
+        setMatch(idMatches)
     }
 
-    function sortAlphAsc(d) {
-
-        let data = [...d]
-        console.log(data)
-        data.sort(function(a, b) {
+    function sortAlphAsc(match) {
+        match = match.sort(function(a, b) {
             // Compares the title of all the elements
-            if (a[0].title.toLowerCase() < b[0].title.toLowerCase()) {
-                return -1;
-            }
-            if (b[0].title.toLowerCase() < a[0].title.toLowerCase()) {
-                return 1;
-            }
-            return 0;
+            return a[0].title.localeCompare(b[0].title, { ignorePuncuation: true })
         })
-        return data
     }
 
-    function sortAlphDesc(d) {
-        let data = [...d]
-        console.log(data)
-        data.sort(function(a, b) {
+    function sortAlphDesc(match) {
+        match = match.sort(function(a, b) {
             // Compares the title of all the elements
-            if (a[0].title.toLowerCase() > b[0].title.toLowerCase()) {
-                return -1;
-            }
-            if (b[0].title.toLowerCase() > a[0].title.toLowerCase()) {
-                return 1;
-            }
-            return 0;
+            return b[0].title.localeCompare(a[0].title, { ignorePuncuation: true })
         })
-        return data
     }
 
-    function sortDateAsc(d) {
-        var data = [...d]
-
-        data.sort(function(a, b) {
+    function sortDateAsc(match) {
+        match = match.sort(function(a, b) {
             // Compares the title of all the elements
-            if (a[0].created_at > b[0].created_at) {
-                return -1;
-            }
-            if (b[0].created_at > a[0].created_at) {
-                return 1;
-            }
-            return 0;
+            if (a[0].created_at == b[0].created_at) { return 0; }
+            else if (a[0].created_at > b[0].created_at) { return 1; }
+            else{ return -1; }
         })
-        return data
     }
 
-    function sortDateDesc(d) {
-        var data = [...d]
-
-        data.sort(function(a, b) {
+    function sortDateDesc(match) {
+        match = match.sort(function(a, b) {
             // Compares the title of all the elements
-            if (a[0].created_at < b[0].created_at) {
-                return -1;
-            }
-            if (b[0].created_at < a[0].created_at) {
-                return 1;
-            }
-            return 0;
+            if (a[0].created_at == b[0].created_at) { return 0; }
+            else if (a[0].created_at > b[0].created_at) { return -1; }
+            else{ return 1; }
         })
-        return data
     }
 
-    function checkSorting(data) {
+    function checkSorting(match, wayOfSorting) {
+        console.log("Sorteerende!")
         if (wayOfSorting == 'Aa') {
-            return sortAlphAsc(data)
+            sortAlphAsc(match)
         } else if (wayOfSorting == 'Ad') {
-            return sortAlphDesc(data)
+            sortAlphDesc(match)
         } else if (wayOfSorting == 'Da') {
-            return sortDateAsc(data)
-        } else {
-            return sortDateDesc(data)
+            sortDateAsc(match)
+        } else if (wayOfSorting == 'Dd') {
+            sortDateDesc(match)
         }
     }
 
@@ -266,6 +233,8 @@ export default function Search() {
         router.push("/app/note")
     }
 
+    checkSorting(match, wayOfSorting)
+
     if (session) {
         return (
             <AppLayout>
@@ -284,10 +253,10 @@ export default function Search() {
                                     <Image alt="sort" src="/sort.svg" width={25} height={25} />
                                 </button>
                                 <div ref={dropdownSorting} className={styles.dropdownContent}>
-                                    <button onClick={() => {setWayOfSorting('Aa'); getSearchElements()}} className={styles.dropdownstylebutton}>Alphabetical (a-z)</button>
-                                    <button onClick={() => {setWayOfSorting('Ad'); getSearchElements()}} className={styles.dropdownstylebutton}>Alphabetical (z-a)</button>
-                                    <button onClick={() => {setWayOfSorting('Da'); getSearchElements()}} className={styles.dropdownstylebutton}>Created at (ascending)</button>
-                                    <button onClick={() => {setWayOfSorting('Dd'); getSearchElements()}} className={styles.dropdownstylebutton}>Created at (descending)</button>
+                                    <button onClick={() => {setWayOfSorting('Aa')}} className={styles.dropdownstylebutton}>Alphabetical (a-z)</button>
+                                    <button onClick={() => {setWayOfSorting('Ad')}} className={styles.dropdownstylebutton}>Alphabetical (z-a)</button>
+                                    <button onClick={() => {setWayOfSorting('Da')}} className={styles.dropdownstylebutton}>Created at (ascending)</button>
+                                    <button onClick={() => {setWayOfSorting('Dd')}} className={styles.dropdownstylebutton}>Created at (descending)</button>
                                 </div>
                             </div>
                         </div>
