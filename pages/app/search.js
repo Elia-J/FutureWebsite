@@ -101,7 +101,6 @@ export default function Search() {
         event.preventDefault()
         setMatch([])
         idMatches = []
-        console.log("Zoekende!")
 
         let todos = [...dataTodos]
         for (let i = 0; i < todos.length; i++) {
@@ -191,7 +190,6 @@ export default function Search() {
     }
 
     function checkSorting(match, wayOfSorting) {
-        console.log("Sorteerende!")
         if (wayOfSorting == 'Aa') {
             sortAlphAsc(match)
         } else if (wayOfSorting == 'Ad') {
