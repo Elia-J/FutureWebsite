@@ -295,6 +295,7 @@ export default function Search() {
                         {match.map((item, i) => {
                             // make four cases, one for event, one for folders, one for todos and one for notes
                             // instead of just {item.title} it should link appropriatly
+                            console.log(item[1])
                             return (
                                 <div key={i} className={styles.item}>
                                     <div className={styles.textAndIcon} onClick={() => {
@@ -316,7 +317,7 @@ export default function Search() {
                                                 break;
                                         }
                                     }}>
-                                        <Image alt="Bold" src={`/rich-text-icons-light/${item[1]}.svg`} width={25} height={25} />
+                                        <Image alt="Bold" src={`/rich-text-icons-dark/${item[1]}.svg`} width={25} height={25} />
                                         {item[0].title}
                                     </div>
                                     <p className={styles.arrow}>&rarr;</p>
