@@ -273,7 +273,7 @@ export default function Search() {
                     <h1>Search</h1>
                     <form onSubmit={getSearchElements}>
                         <div className={styles.form}>
-                            <input className={styles.input} type="search" onChange={(e) => { setInput(e.target.value) }}></input>
+                            <input placeholder="Search:" className={styles.input} type="search" onChange={(e) => { setInput(e.target.value) }}></input>
                             <button className={styles.submitButton} type="submit">submit</button>
                         </div>
                     </form>
@@ -291,6 +291,7 @@ export default function Search() {
                                 </div>
                             </div>
                         </div>
+                        <hr />
                         {match.map((item, i) => {
                             // make four cases, one for event, one for folders, one for todos and one for notes
                             // instead of just {item.title} it should link appropriatly

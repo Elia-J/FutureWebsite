@@ -112,7 +112,8 @@
 .show {
     display: flex;
     flex-direction: column;
-    gap: 10px;    
+    gap: 10px;
+    margin-left: -190px;
 }
 
 @media (max-width: 575.98px) {
