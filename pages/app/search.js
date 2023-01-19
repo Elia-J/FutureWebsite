@@ -7,7 +7,7 @@ import { useSession, useUser, useSupabaseClient } from "@supabase/auth-helpers-r
 
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-
+import Fuse from 'fuse.js'
 
 export default function Search() {
     const session = useSession()
@@ -99,64 +99,81 @@ export default function Search() {
 
     function getSearchElements() {
         event.preventDefault()
+        let data = []
         setMatch([])
         idMatches = []
 
         let todos = [...dataTodos]
         for (let i = 0; i < todos.length; i++) {
-            if (todos[i].title.toLowerCase().includes(input.toLowerCase())) {
-                idMatches.indexOf(todos[i]) == -1 ? idMatches.push([todos[i], "todo"]) : console.log('')
-            }
-            else if (todos[i].description != undefined && todos[i].description.toLowerCase().includes(input.toLowerCase())) {
-                idMatches.indexOf(todos[i]) == -1 ? idMatches.push([todos[i], "todo"]) : console.log('')
-            }
+            data.push(todos[i])
+            // if (todos[i].title.toLowerCase().includes(input.toLowerCase())) {
+            //     idMatches.indexOf(todos[i]) == -1 ? idMatches.push([todos[i], "todo"]) : console.log('')
+            // }
+            // else if (todos[i].description != undefined && todos[i].description.toLowerCase().includes(input.toLowerCase())) {
+            //     idMatches.indexOf(todos[i]) == -1 ? idMatches.push([todos[i], "todo"]) : console.log('')
+            // }
         }
 
         let notes = dataNotes.slice()
         for (let i = 0; i < notes.length; i++) {
             // loop through notes title
-            if (notes[i].title.toLowerCase().includes(input.toLowerCase())) {
-                idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : console.log('')
-            }
-            else {
-                // loop through notes description
-                notes[i].description.forEach(partOfDescription => {
-                    // console.log(omschrijving.children)
-                    partOfDescription.children.forEach(child => {
-                        if (child.text.toLowerCase().includes(input.toLowerCase())) {
-                            idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : idMatches.push()
-                        }
-                    })
-                })
-            }
+            data.push(notes[i])
+            // if (notes[i].title.toLowerCase().includes(input.toLowerCase())) {
+            //     idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : console.log('')
+            // }
+            // else {
+            //     // loop through notes description
+            //     notes[i].description.forEach(partOfDescription => {
+            //         // console.log(omschrijving.children)
+            //         partOfDescription.children.forEach(child => {
+            //             if (child.text.toLowerCase().includes(input.toLowerCase())) {
+            //                 idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : idMatches.push()
+            //             }
+            //         })
+            //     })
+            // }
         }
 
 
         let events = [...dataEvents]
         for (let i = 0; i < events.length; i++) {
-            if (events[i].title.toLowerCase().includes(input.toLowerCase())) {
-                idMatches.indexOf(events[i]) == -1 ? idMatches.push([events[i], "event"]) : console.log('')
-            }
-            else if (events[i].description != null && events[i].description.toLowerCase().includes(input.toLowerCase())) {
-                idMatches.indexOf(events[i]) == -1 ? idMatches.push([events[i], "event"]) : console.log('')
-            }
+            data.push(events[i])
+            // if (events[i].title.toLowerCase().includes(input.toLowerCase())) {
+            //     idMatches.indexOf(events[i]) == -1 ? idMatches.push([events[i], "event"]) : console.log('')
+            // }
+            // else if (events[i].description != null && events[i].description.toLowerCase().includes(input.toLowerCase())) {
+            //     idMatches.indexOf(events[i]) == -1 ? idMatches.push([events[i], "event"]) : console.log('')
+            // }
         }
 
         let folders = [...dataFolders]
         for (let i = 0; i < folders.length; i++) {
-            if (folders[i].title.toLowerCase().includes(input.toLowerCase())) {
-                idMatches.indexOf(folders[i]) == -1 ? idMatches.push([folders[i], "folder"]) : console.log('')
-            }
+            data.push(folders[i])
+            // if (folders[i].title.toLowerCase().includes(input.toLowerCase())) {
+            //     idMatches.indexOf(folders[i]) == -1 ? idMatches.push([folders[i], "folder"]) : console.log('')
+            // }
         }
 
         let todoFolders = [...dataTodoFolders]
         for (let i = 0; i < todoFolders.length; i++) {
-            if (todoFolders[i].title.toLowerCase().includes(input.toLowerCase())) {
-                idMatches.indexOf(todoFolders[i]) == -1 ? idMatches.push([todoFolders[i], "todoFolder"]) : console.log('')
-            }
+            data.push(todoFolders[i])
+            // if (todoFolders[i].title.toLowerCase().includes(input.toLowerCase())) {
+            //     idMatches.indexOf(todoFolders[i]) == -1 ? idMatches.push([todoFolders[i], "todoFolder"]) : console.log('')
+            // }
         }
 
-        setMatch(checkSorting(idMatches))
+        const options = {
+            keys: ['title']
+        }
+
+        const fuse = new Fuse(data, options)
+        // console.log(fuse)
+        const result = fuse.search(input.toLowerCase())
+
+        // console.log(data)
+        console.log(result)
+        // setMatch(result)
+        // setMatch(checkSorting(idMatches))
     }
 
     function sortAlphAsc(d) {
@@ -295,7 +312,6 @@ export default function Search() {
                         {match.map((item, i) => {
                             // make four cases, one for event, one for folders, one for todos and one for notes
                             // instead of just {item.title} it should link appropriatly
-                            console.log(item[1])
                             return (
                                 <div key={i} className={styles.item}>
                                     <div className={styles.textAndIcon} onClick={() => {

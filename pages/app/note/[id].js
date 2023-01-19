@@ -181,6 +181,44 @@ export default function Notes({ notes }) {
 
     let collapsableElementSavedNotes = React.createRef();
     let collapsableElementNotes = React.createRef();
+    let collapsableElementAI = React.createRef();
+
+    function changeSavedNotesBar() {
+        if (collapsableElementAI.current.classList[1] == styles.showAIPanel) {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.SuperCollapsedTextEditor}`
+            );
+            collapsableElementSavedNotes.current.classList.toggle(
+                `${styles.hideNotesPanel}`
+            )
+        } else {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.CollapsedTextEditor}`
+            );
+            collapsableElementSavedNotes.current.classList.toggle(
+                `${styles.hideNotesPanel}`
+            )
+        }
+    }
+
+    function changeAIPanel() {
+        if (collapsableElementSavedNotes.current.classList[1] == undefined) {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.SuperCollapsedTextEditor}`
+            );
+            collapsableElementAI.current.classList.toggle(
+                `${styles.showAIPanel}`
+            )
+        }
+         else {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.CollapsedTextEditor}`
+            );
+            collapsableElementAI.current.classList.toggle(
+                `${styles.showAIPanel}`
+            )
+        }
+    }
 
 
     // Initializes the editors
@@ -190,19 +228,6 @@ export default function Notes({ notes }) {
 
     // Function to make the saved notes bar smaller and bigger by adding a class to its classlist
     // This is picked up by the css and changes it's width
-    function changeSavedNotesBar() {
-        collapsableElementSavedNotes.current.classList.toggle(
-            `${styles.collapsedSavedNote}`
-        );
-        collapsableElementNotes.current.classList.toggle(
-            `${styles.extenedNote}`
-        );
-        if (collapsed) {
-            setCollapsed(false)
-        } else {
-            setCollapsed(true)
-        }
-    }
 
     const renderElement = useCallback((props) => {
         // If the editor renders an eliment and there is an alignment prop then it sents the global align to its value
@@ -362,26 +387,23 @@ export default function Notes({ notes }) {
                 <AppLayout>
                     <div className={styles.content}>
                         <div
+                            className={styles.openSavedNotes}
+                            onClick={changeSavedNotesBar}
+                        >
+                            Saved Notes
+                        </div>
+                        <div
                             ref={collapsableElementSavedNotes}
                             id="SavedNotes"
                             className={styles.SavedNotes}
                         >
-                            <p style={{ display: "inline-block" }}>Saved Notes</p>
-                            {/* The X on the saved notes section */}
-                            <p
-                                className={styles.close}
-                                style={{ display: "inline-block", float: "right" }}
-                                onClick={changeSavedNotesBar}
-                            >
-                                &times;
-                            </p>
                             {/* Returns the list of notes */}
-                            <ListOfNotes collapsed={collapsed} />
+                            <ListOfNotes />
                         </div>
                         <div
                             ref={collapsableElementNotes}
                             id="TextEditor"
-                            className={styles.TextEditor}
+                            className={`${styles.TextEditor} ${styles.CollapsedTextEditor}`}
                         >
                             <div className={styles.editorDiv}>
                                 {/* Title editor */}
@@ -510,6 +532,18 @@ export default function Notes({ notes }) {
                             >
                                 Save
                             </button>
+                        </div>
+                        <div
+                            ref={collapsableElementAI}
+                            id="AI"
+                            className={styles.AI}
+                        >
+                        </div>
+                        <div
+                            className={styles.AIAssisctance}
+                            onClick={changeAIPanel}
+                        >
+                            AI Assistance
                         </div>
                     </div>
                 </AppLayout>

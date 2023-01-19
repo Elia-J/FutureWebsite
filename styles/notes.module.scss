@@ -1,33 +1,55 @@
 .SavedNotes {
+    display: block;
     padding: 10px;
     float: left;
     height: 100vh;
-    width: 25%;
-    background-color: var(--Special-gray);
-    transition: all 1s ease;
+    width: 20%;
+}
+
+.hideNotesPanel {
+    display: none;
 }
 
 .TextEditor {   
     padding: 10px;
     float: left;
-    width: 75%;
+    width: 100%;
     height: 100vh;
-    background-color: var(--Special-dark-gray);
-    transition: all 1s ease;
+    background-color: var(--special-5);
     overflow-y: auto;
 }
 
-.close:hover {
-    cursor: pointer;
-    color: red;
+.CollapsedTextEditor {
+    width: 80%;
 }
 
-.collapsedSavedNote {
-    width: 15%;
+.SuperCollapsedTextEditor {
+    width: 60%;
 }
 
-.extenedNote {
-    width: 85%;
+.AI {
+    display: none;
+}
+
+.showAIPanel {
+    float: right;
+    background-color: gray;
+    width: 20%;
+    display: block;
+    height: 100vh;
+}
+
+.AIAssisctance {
+    position: absolute;
+    z-index: 1;
+    right: 10px;
+    top: 0;
+}
+
+.openSavedNotes {
+    position: absolute;
+    z-index: 1;
+    left: 10px;
 }
 
 .buttonWithoutStyle {
@@ -101,13 +123,11 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: background-color 0.3s ease-in-out;
 }
 
 .mainButton:hover {
     cursor: pointer;
     background-color: #3b5760;
-    transition: background-color 0.3s ease-in-out;
 }
 
 .content {

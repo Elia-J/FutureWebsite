@@ -5,7 +5,7 @@ import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-r
 import styles from '../styles/listOfNotes.module.scss';
 import Image from 'next/image'
 
-export default function ListOfNotes({ collapsed }) {
+export default function ListOfNotes() {
 
     //supabase
     const supabase = useSupabaseClient()
@@ -116,23 +116,11 @@ export default function ListOfNotes({ collapsed }) {
     }
 
     // If the element is collapsed, change the classlist that gets picked up by the css
-    let collapsElementButton = React.createRef();
-    let collapsElementInput = React.createRef();
 
     let dropdownSorting = React.createRef();
 
     function setDropdownSorting() {
         dropdownSorting.current.classList.toggle(`${styles.show}`)
-    }
-
-    function changCollapsed() {
-        if (collapsed) {
-            collapsElementButton.current.classList.add(`${styles.isCollapsed}`)
-            collapsElementInput.current.classList.add(`${styles.isCollapsed}`)
-        } else {
-            collapsElementButton.current.classList.remove(`${styles.isCollapsed}`)
-            collapsElementInput.current.classList.remove(`${styles.isCollapsed}`)
-        }
     }
 
     // Remove notes with id
@@ -332,12 +320,12 @@ export default function ListOfNotes({ collapsed }) {
     return (
         <div>
             <form onSubmit={createNote} className={styles.form}>
-                <input value={noteTitle} ref={collapsElementInput} type="text" placeholder="Title: " onChange={(e) => setNoteTitle(e.target.value)} className={styles.input} required />
-                <button ref={collapsElementButton} className={styles.mainButton} type="submit" >Create note</button>
+                <input value={noteTitle} type="text" placeholder="Title: " onChange={(e) => setNoteTitle(e.target.value)} className={styles.input} required />
+                <button className={styles.mainButton} type="submit" >Create note</button>
             </form>
             <form onSubmit={createFolder} className={styles.form}>
-                <input value={folderTitle} ref={collapsElementInput} type="text" placeholder="Title: " onChange={(e) => setFolderTitle(e.target.value)} className={styles.input} required />
-                <button ref={collapsElementButton} className={styles.mainButton} type="submit" >Create folder</button>
+                <input value={folderTitle} type="text" placeholder="Title: " onChange={(e) => setFolderTitle(e.target.value)} className={styles.input} required />
+                <button className={styles.mainButton} type="submit" >Create folder</button>
             </form>
             <div className={styles.addAndSortFolder}>
                 <h3>Folders</h3>
