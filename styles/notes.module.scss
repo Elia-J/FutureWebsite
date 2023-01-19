@@ -2,7 +2,8 @@
     display: block;
     padding: 10px;
     float: left;
-    height: 100vh;
+    margin-top: 20px;
+    height: calc(100vh - 20px);
     width: 20%;
 }
 
@@ -10,11 +11,16 @@
     display: none;
 }
 
+.closeText::after {
+    content: 'Close'
+}
+
 .TextEditor {   
+    margin-top: 20px;
+    height: calc(100vh - 20px);
     padding: 10px;
     float: left;
     width: 100%;
-    height: 100vh;
     background-color: var(--special-5);
     overflow-y: auto;
 }
@@ -25,6 +31,8 @@
 
 .SuperCollapsedTextEditor {
     width: 60%;
+    margin-top: 0px;
+    height: 100vh
 }
 
 .AI {
@@ -46,11 +54,29 @@
     top: 0;
 }
 
-.openSavedNotes {
+.openStyle {
+    display: block;
     position: absolute;
     z-index: 1;
     left: 10px;
 }
+
+.openHide {
+    display: none;
+}
+
+.closeStyle {
+    display: none;
+}
+
+.closeShow {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    top: 7px;
+    left: 250px;
+}
+
 
 .buttonWithoutStyle {
     background: none;

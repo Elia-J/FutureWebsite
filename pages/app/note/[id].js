@@ -182,8 +182,12 @@ export default function Notes({ notes }) {
     let collapsableElementSavedNotes = React.createRef();
     let collapsableElementNotes = React.createRef();
     let collapsableElementAI = React.createRef();
+    let openElement = React.createRef();
+    let closeElement = React.createRef();
 
     function changeSavedNotesBar() {
+        openElement.current.classList.toggle(`${styles.openHide}`)
+        closeElement.current.classList.toggle(`${styles.closeShow}`)
         if (collapsableElementAI.current.classList[1] == styles.showAIPanel) {
             collapsableElementNotes.current.classList.toggle(
                 `${styles.SuperCollapsedTextEditor}`
@@ -386,11 +390,11 @@ export default function Notes({ notes }) {
             // The settingsProvider and AppLayout add the sidebar with settings functions
                 <AppLayout>
                     <div className={styles.content}>
-                        <div
-                            className={styles.openSavedNotes}
-                            onClick={changeSavedNotesBar}
-                        >
-                            Saved Notes
+                        <div ref={openElement} onClick={changeSavedNotesBar} className={`${styles.openStyle} ${styles.openHide}`}>
+                            <strong>Open</strong>
+                            </div>
+                        <div ref={closeElement} onClick={changeSavedNotesBar} className={`${styles.closeStyle} ${styles.closeShow}`}>
+                            <strong>Close</strong>
                         </div>
                         <div
                             ref={collapsableElementSavedNotes}
@@ -543,7 +547,7 @@ export default function Notes({ notes }) {
                             className={styles.AIAssisctance}
                             onClick={changeAIPanel}
                         >
-                            AI Assistance
+                            <strong>AI Assistance</strong>
                         </div>
                     </div>
                 </AppLayout>

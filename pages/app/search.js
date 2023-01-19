@@ -99,13 +99,11 @@ export default function Search() {
 
     function getSearchElements() {
         event.preventDefault()
-        let data = []
         setMatch([])
         idMatches = []
 
         let todos = [...dataTodos]
         for (let i = 0; i < todos.length; i++) {
-            data.push(todos[i])
             if (todos[i].title.toLowerCase().includes(input.toLowerCase())) {
                 idMatches.indexOf(todos[i]) == -1 ? idMatches.push([todos[i], "todo"]) : console.log('')
             }
@@ -117,7 +115,6 @@ export default function Search() {
         let notes = dataNotes.slice()
         for (let i = 0; i < notes.length; i++) {
             // loop through notes title
-            data.push(notes[i])
             if (notes[i].title.toLowerCase().includes(input.toLowerCase())) {
                 idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : console.log('')
             }
@@ -136,7 +133,6 @@ export default function Search() {
 
         let events = [...dataEvents]
         for (let i = 0; i < events.length; i++) {
-            data.push(events[i])
             if (events[i].title.toLowerCase().includes(input.toLowerCase())) {
                 idMatches.indexOf(events[i]) == -1 ? idMatches.push([events[i], "event"]) : console.log('')
             }
@@ -147,7 +143,6 @@ export default function Search() {
 
         let folders = [...dataFolders]
         for (let i = 0; i < folders.length; i++) {
-            data.push(folders[i])
             if (folders[i].title.toLowerCase().includes(input.toLowerCase())) {
                 idMatches.indexOf(folders[i]) == -1 ? idMatches.push([folders[i], "folder"]) : console.log('')
             }
@@ -155,12 +150,11 @@ export default function Search() {
 
         let todoFolders = [...dataTodoFolders]
         for (let i = 0; i < todoFolders.length; i++) {
-            data.push(todoFolders[i])
             if (todoFolders[i].title.toLowerCase().includes(input.toLowerCase())) {
                 idMatches.indexOf(todoFolders[i]) == -1 ? idMatches.push([todoFolders[i], "todoFolder"]) : console.log('')
             }
         }
-        setMatch(checkSorting(idMatches))
+        setMatch(idMatches)
     }
 
     function sortAlphAsc(match) {
