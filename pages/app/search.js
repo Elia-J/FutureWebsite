@@ -106,73 +106,61 @@ export default function Search() {
         let todos = [...dataTodos]
         for (let i = 0; i < todos.length; i++) {
             data.push(todos[i])
-            // if (todos[i].title.toLowerCase().includes(input.toLowerCase())) {
-            //     idMatches.indexOf(todos[i]) == -1 ? idMatches.push([todos[i], "todo"]) : console.log('')
-            // }
-            // else if (todos[i].description != undefined && todos[i].description.toLowerCase().includes(input.toLowerCase())) {
-            //     idMatches.indexOf(todos[i]) == -1 ? idMatches.push([todos[i], "todo"]) : console.log('')
-            // }
+            if (todos[i].title.toLowerCase().includes(input.toLowerCase())) {
+                idMatches.indexOf(todos[i]) == -1 ? idMatches.push([todos[i], "todo"]) : console.log('')
+            }
+            else if (todos[i].description != undefined && todos[i].description.toLowerCase().includes(input.toLowerCase())) {
+                idMatches.indexOf(todos[i]) == -1 ? idMatches.push([todos[i], "todo"]) : console.log('')
+            }
         }
 
         let notes = dataNotes.slice()
         for (let i = 0; i < notes.length; i++) {
             // loop through notes title
             data.push(notes[i])
-            // if (notes[i].title.toLowerCase().includes(input.toLowerCase())) {
-            //     idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : console.log('')
-            // }
-            // else {
-            //     // loop through notes description
-            //     notes[i].description.forEach(partOfDescription => {
-            //         // console.log(omschrijving.children)
-            //         partOfDescription.children.forEach(child => {
-            //             if (child.text.toLowerCase().includes(input.toLowerCase())) {
-            //                 idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : idMatches.push()
-            //             }
-            //         })
-            //     })
-            // }
+            if (notes[i].title.toLowerCase().includes(input.toLowerCase())) {
+                idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : console.log('')
+            }
+            else {
+                // loop through notes description
+                notes[i].description.forEach(partOfDescription => {
+                    // console.log(omschrijving.children)
+                    partOfDescription.children.forEach(child => {
+                        if (child.text.toLowerCase().includes(input.toLowerCase())) {
+                            idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : idMatches.push()
+                        }
+                    })
+                })
+            }
         }
 
         let events = [...dataEvents]
         for (let i = 0; i < events.length; i++) {
             data.push(events[i])
-            // if (events[i].title.toLowerCase().includes(input.toLowerCase())) {
-            //     idMatches.indexOf(events[i]) == -1 ? idMatches.push([events[i], "event"]) : console.log('')
-            // }
-            // else if (events[i].description != null && events[i].description.toLowerCase().includes(input.toLowerCase())) {
-            //     idMatches.indexOf(events[i]) == -1 ? idMatches.push([events[i], "event"]) : console.log('')
-            // }
+            if (events[i].title.toLowerCase().includes(input.toLowerCase())) {
+                idMatches.indexOf(events[i]) == -1 ? idMatches.push([events[i], "event"]) : console.log('')
+            }
+            else if (events[i].description != null && events[i].description.toLowerCase().includes(input.toLowerCase())) {
+                idMatches.indexOf(events[i]) == -1 ? idMatches.push([events[i], "event"]) : console.log('')
+            }
         }
 
         let folders = [...dataFolders]
         for (let i = 0; i < folders.length; i++) {
             data.push(folders[i])
-            // if (folders[i].title.toLowerCase().includes(input.toLowerCase())) {
-            //     idMatches.indexOf(folders[i]) == -1 ? idMatches.push([folders[i], "folder"]) : console.log('')
-            // }
+            if (folders[i].title.toLowerCase().includes(input.toLowerCase())) {
+                idMatches.indexOf(folders[i]) == -1 ? idMatches.push([folders[i], "folder"]) : console.log('')
+            }
         }
 
         let todoFolders = [...dataTodoFolders]
         for (let i = 0; i < todoFolders.length; i++) {
             data.push(todoFolders[i])
-            // if (todoFolders[i].title.toLowerCase().includes(input.toLowerCase())) {
-            //     idMatches.indexOf(todoFolders[i]) == -1 ? idMatches.push([todoFolders[i], "todoFolder"]) : console.log('')
-            // }
+            if (todoFolders[i].title.toLowerCase().includes(input.toLowerCase())) {
+                idMatches.indexOf(todoFolders[i]) == -1 ? idMatches.push([todoFolders[i], "todoFolder"]) : console.log('')
+            }
         }
-
-        const options = {
-            keys: ['title']
-        }
-
-        const fuse = new Fuse(data, options)
-        // console.log(fuse)
-        const result = fuse.search(input.toLowerCase())
-
-        // console.log(data)
-        console.log(result)
-        // setMatch(result)
-        // setMatch(checkSorting(idMatches))
+        setMatch(checkSorting(idMatches))
     }
 
     function sortAlphAsc(match) {
