@@ -172,11 +172,14 @@ export default function Notes({ notes }) {
 
     // updateData gets a title and a description and updates them with the according note id
     async function updateData(t, d) {
+        let now = new Date()
+        let ISONow = now.toISOString()
         const { data, error } = await supabase
             .from('notesv2')
-            .update({ title: t, description: d })
+            .update({ title: t, description: d, created_at: ISONow })
             .eq('id', notes.id)
         alert('succes!')
+        location.reload()
     }
 
     let collapsableElementSavedNotes = React.createRef();
@@ -384,6 +387,11 @@ export default function Notes({ notes }) {
         );
     };
 
+    function parseISOString(s) {
+        var b = s.split(/\D+/);
+        return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
+      }
+
     if (session) {
         // Returns the html is there is a session
         return (
@@ -412,7 +420,7 @@ export default function Notes({ notes }) {
                             <div className={styles.editorDiv}>
                                 {/* Title editor */}
                                 <div className={styles.title}>
-                                    <h1>Title: </h1>
+                                    <h1>Title: </h1>    
                                     {/* The editor itself */}
                                     <Slate
                                         editor={editorTitle}
@@ -431,6 +439,7 @@ export default function Notes({ notes }) {
                                         />
                                     </Slate>
                                 </div>
+                                <strong>{parseISOString(notes.created_at).toString().slice(0,24)}</strong>
                                 {/* Returns the Toolbar with too breaks above and underneath it */}
                                 {/* The Toolbar element is defined in this file */}
                                 <hr />

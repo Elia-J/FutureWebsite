@@ -28,8 +28,6 @@ export default function Search() {
     // Da = date ascending
     // Dd = date descending
 
-    let idMatches = []
-
     async function getNotes() {
         const { data, error } = await supabase
             .from('notesv2')
@@ -97,85 +95,25 @@ export default function Search() {
         }
     }
 
-    function getSearchElements() {
-        event.preventDefault()
-        setMatch([])
-        idMatches = []
-
-        let todos = [...dataTodos]
-        for (let i = 0; i < todos.length; i++) {
-            if (todos[i].title.toLowerCase().includes(input.toLowerCase())) {
-                idMatches.indexOf(todos[i]) == -1 ? idMatches.push([todos[i], "todo"]) : console.log('')
-            }
-            else if (todos[i].description != undefined && todos[i].description.toLowerCase().includes(input.toLowerCase())) {
-                idMatches.indexOf(todos[i]) == -1 ? idMatches.push([todos[i], "todo"]) : console.log('')
-            }
-        }
-
-        let notes = dataNotes.slice()
-        for (let i = 0; i < notes.length; i++) {
-            // loop through notes title
-            if (notes[i].title.toLowerCase().includes(input.toLowerCase())) {
-                idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : console.log('')
-            }
-            else {
-                // loop through notes description
-                notes[i].description.forEach(partOfDescription => {
-                    // console.log(omschrijving.children)
-                    partOfDescription.children.forEach(child => {
-                        if (child.text.toLowerCase().includes(input.toLowerCase())) {
-                            idMatches.indexOf(notes[i]) == -1 ? idMatches.push([notes[i], "note"]) : idMatches.push()
-                        }
-                    })
-                })
-            }
-        }
-
-        let events = [...dataEvents]
-        for (let i = 0; i < events.length; i++) {
-            if (events[i].title.toLowerCase().includes(input.toLowerCase())) {
-                idMatches.indexOf(events[i]) == -1 ? idMatches.push([events[i], "event"]) : console.log('')
-            }
-            else if (events[i].description != null && events[i].description.toLowerCase().includes(input.toLowerCase())) {
-                idMatches.indexOf(events[i]) == -1 ? idMatches.push([events[i], "event"]) : console.log('')
-            }
-        }
-
-        let folders = [...dataFolders]
-        for (let i = 0; i < folders.length; i++) {
-            if (folders[i].title.toLowerCase().includes(input.toLowerCase())) {
-                idMatches.indexOf(folders[i]) == -1 ? idMatches.push([folders[i], "folder"]) : console.log('')
-            }
-        }
-
-        let todoFolders = [...dataTodoFolders]
-        for (let i = 0; i < todoFolders.length; i++) {
-            if (todoFolders[i].title.toLowerCase().includes(input.toLowerCase())) {
-                idMatches.indexOf(todoFolders[i]) == -1 ? idMatches.push([todoFolders[i], "todoFolder"]) : console.log('')
-            }
-        }
-        setMatch(idMatches)
-    }
-
     function sortAlphAsc(match) {
         match = match.sort(function(a, b) {
             // Compares the title of all the elements
-            return a[0].title.localeCompare(b[0].title, { ignorePuncuation: true })
+            return a.item.title.localeCompare(b.item.title, { ignorePuncuation: true })
         })
     }
 
     function sortAlphDesc(match) {
         match = match.sort(function(a, b) {
             // Compares the title of all the elements
-            return b[0].title.localeCompare(a[0].title, { ignorePuncuation: true })
+            return b.item.title.localeCompare(a.item.title, { ignorePuncuation: true })
         })
     }
 
     function sortDateAsc(match) {
         match = match.sort(function(a, b) {
             // Compares the title of all the elements
-            if (a[0].created_at == b[0].created_at) { return 0; }
-            else if (a[0].created_at > b[0].created_at) { return 1; }
+            if (a.item.created_at == b.item.created_at) { return 0; }
+            else if (a.item.created_at > b.item.created_at) { return 1; }
             else{ return -1; }
         })
     }
@@ -183,8 +121,8 @@ export default function Search() {
     function sortDateDesc(match) {
         match = match.sort(function(a, b) {
             // Compares the title of all the elements
-            if (a[0].created_at == b[0].created_at) { return 0; }
-            else if (a[0].created_at > b[0].created_at) { return -1; }
+            if (a.item.created_at == b.item.created_at) { return 0; }
+            else if (a.item.created_at > b.item.created_at) { return -1; }
             else{ return 1; }
         })
     }
@@ -233,12 +171,60 @@ export default function Search() {
 
     checkSorting(match, wayOfSorting)
 
+    function fuzzysearch() {
+        event.preventDefault()
+        setMatch([])
+        let data = []
+
+        let todos = [...dataTodos]
+        for (let i = 0; i < todos.length; i++) {
+            data.push(todos[i])
+        }
+
+        let notes = dataNotes.slice()
+        for (let i = 0; i < notes.length; i++) {
+            data.push(notes[i])
+        }
+
+        let events = [...dataEvents]
+        for (let i = 0; i < events.length; i++) {
+            data.push(events[i])
+        }
+
+        let folders = [...dataFolders]
+        for (let i = 0; i < folders.length; i++) {
+            data.push(folders[i])
+        }
+
+        let todoFolders = [...dataTodoFolders]
+        for (let i = 0; i < todoFolders.length; i++) {
+            data.push(todoFolders[i])
+        }
+
+        const options = {
+            includeScore: true,
+            keys: ['title', 'description', 'nameTable', ['description', 'children', 'text']]
+        }
+
+        const fuse = new Fuse(data, options)
+        const result = fuse.search(input)
+        for (let i=result.length-1; i>0; i--) {
+            console.log(result[i].score)
+            if (result[i].score > 0.5) {
+                result.splice(i, 1)
+            }
+        }
+        console.log(result)
+        setMatch(result)
+
+    }
+
     if (session) {
         return (
             <AppLayout>
                 <div className={styles.container}>
                     <h1>Search</h1>
-                    <form onSubmit={getSearchElements}>
+                    <form onSubmit={fuzzysearch}>
                         <div className={styles.form}>
                             <input placeholder="Search:" className={styles.input} type="search" onChange={(e) => { setInput(e.target.value) }}></input>
                             <button className={styles.submitButton} type="submit">submit</button>
@@ -259,13 +245,13 @@ export default function Search() {
                             </div>
                         </div>
                         <hr />
-                        {match.map((item, i) => {
+                        {match.map((match, i) => {
                             // make four cases, one for event, one for folders, one for todos and one for notes
-                            // instead of just {item.title} it should link appropriatly
+                            // instead of just {item.item.title} it should link appropriatly
                             return (
                                 <div key={i} className={styles.item}>
                                     <div className={styles.textAndIcon} onClick={() => {
-                                        switch (item[1]) {
+                                        switch (match.item.nameTable) {
                                             case 'todo':
                                                 toTodo()
                                                 break;
@@ -276,15 +262,15 @@ export default function Search() {
                                                 toFolder()
                                                 break;
                                             case 'note':
-                                                toNote(item[0].id)
+                                                toNote(match.item.id)
                                                 break;
                                             case 'todoFolder':
                                                 toTodo()
                                                 break;
                                         }
                                     }}>
-                                        <Image alt="Bold" src={`/rich-text-icons-dark/${item[1]}.svg`} width={25} height={25} />
-                                        {item[0].title}
+                                        <Image alt="Bold" src={`/rich-text-icons-dark/${match.item.nameTable}.svg`} width={25} height={25} />
+                                        {match.item.title}
                                     </div>
                                     <p className={styles.arrow}>&rarr;</p>
                                 </div>

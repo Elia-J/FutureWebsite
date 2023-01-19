@@ -11,10 +11,6 @@
     display: none;
 }
 
-.closeText::after {
-    content: 'Close'
-}
-
 .TextEditor {   
     margin-top: 20px;
     height: calc(100vh - 20px);
@@ -74,7 +70,7 @@
     position: absolute;
     z-index: 1;
     top: 7px;
-    left: 250px;
+    left: 15%;
 }
 
 

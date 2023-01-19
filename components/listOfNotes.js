@@ -221,16 +221,16 @@ export default function ListOfNotes() {
     function DateAscending(notes) {
         notes = notes.sort(function (noteX, noteY) {
             if (noteX.created_at == noteY.created_at) { return 0 }
-            else if (noteX.created_at > noteY.created_at) { return 1 }
-            else { return -1 }
+            else if (noteX.created_at > noteY.created_at) { return -1 }
+            else { return 1 }
         })
     }
 
     function DateDescending(notes) {
         notes = notes.sort(function (noteX, noteY) {
             if (noteX.created_at == noteY.created_at) { return 0 }
-            else if (noteX.created_at < noteY.created_at) { return 1 }
-            else { return -1 }
+            else if (noteX.created_at < noteY.created_at) { return -1 }
+            else { return 1 }
         })
     }
 
@@ -278,8 +278,8 @@ export default function ListOfNotes() {
                     <div ref={dropdownSorting} className={styles.dropdownContent}>
                         <button onClick={() => {setWayOfSorting('Aa'); setDropdownSorting()}} className={styles.dropdownstylebutton}>Alphabetical (a-z)</button>
                         <button onClick={() => {setWayOfSorting('Ad'); setDropdownSorting()}}className={styles.dropdownstylebutton}>Alphabetical (z-a)</button>
-                        <button onClick={() => {setWayOfSorting('Da'); setDropdownSorting()}}className={styles.dropdownstylebutton}>Created at (ascending)</button>
-                        <button onClick={() => {setWayOfSorting('Dd'); setDropdownSorting()}}className={styles.dropdownstylebutton}>Created at (descending)</button>
+                        <button onClick={() => {setWayOfSorting('Da'); setDropdownSorting()}}className={styles.dropdownstylebutton}>Last change (ascending)</button>
+                        <button onClick={() => {setWayOfSorting('Dd'); setDropdownSorting()}}className={styles.dropdownstylebutton}>Last change (descending)</button>
                     </div>
                 </div>
             </div>
