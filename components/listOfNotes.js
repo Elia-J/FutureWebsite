@@ -33,7 +33,6 @@ export default function ListOfNotes() {
         if (data) {
             //array of todos
             setData(data)
-            checkSorting(data, true)
         }
 
         if (error) {
@@ -51,7 +50,6 @@ export default function ListOfNotes() {
         if (data) {
             allIdsInFolder = []
             setFolderData(data)
-            checkSorting(data, false)
 
             for (let i=0; i<data.length; i++) {
                 for (let j=0; j<data[i].notesId.length; j++) {
@@ -187,111 +185,53 @@ export default function ListOfNotes() {
         getFolders()
     }
 
-    function sortNotesPriority(d) {
-        var sortedData = [...d]
-
-        sortedData.sort(function(a, b) {
-            if (a.isPriority == b.isPriority) { return 0 }
-            else if (a.isPriority) { return -1 }
+    function sortNotesPriority(notes) {
+        notes = notes.sort(function (noteX, noteY) {
+            if(noteX.isPriority == noteY.isPriority) { return 0 }
+            else if (noteX.isPriority) { return -1 }
             else { return 1 }
-
         })
-
-        return sortedData
     }
 
-    // A function that sets the data variable to the data which will be sorted
-    function sortNotesAlphAsc(d) {
-        // Makes a copy so that the originial data is not lost
-        var sortedData = [...d]
-
-        sortedData.sort(function(a, b) {
-            // Compares the title of all the elements
-            if (a.title < b.title) {
-                return -1;
-            }
-            if (b.title < a.title) {
-                return 1;
-            }
-            return 0;
-        })
-
-        return sortNotesPriority(sortedData)
-    }
-
-    function sortNotesAlphDesc(d) {
-        // Makes a copy so that the originial data is not lost
-        var sortedData = [...d]
-
-        sortedData.sort(function(a, b) {
-            // Compares the title of all the elements
-            if (a.title > b.title) {
-                return -1;
-            }
-            if (b.title > a.title) {
-                return 1;
-            }
-            return 0;
-        })
-        return sortNotesPriority(sortedData)
-    }
-
-    function sortNotesDateAsc(d) {
-        // Makes a copy so that the originial data is not lost
-        var sortedData = [...d]
-
-        sortedData.sort(function(a, b) {
-            // Compares the title of all the elements
-            if (a.created_at > b.created_at) {
-                return -1;
-            }
-            if (b.created_at > a.created_at) {
-                return 1;
-            }
-            return 0;
-        })
-        return sortNotesPriority(sortedData)
-    }
-    
-    function sortNotesDateDesc(d) {
-        // Makes a copy so that the originial data is not lost
-        var sortedData = [...d]
-
-        sortedData.sort(function(a, b) {
-            // Compares the title of all the elements
-            if (a.created_at < b.created_at) {
-                return -1;
-            }
-            if (b.created_at < a.created_at) {
-                return 1;
-            }
-            return 0;
-        })
-        return sortNotesPriority(sortedData)
-    }
-
-    function checkSorting(d, forNotes) {
-        if (forNotes) {
-            if (wayOfSorting == 'Aa') {
-                setData(sortNotesAlphAsc(d))
-            } else if (wayOfSorting == 'Ad') {
-                setData(sortNotesAlphDesc(d))
-            } else if (wayOfSorting == 'Da') {
-                setData(sortNotesDateAsc(d))
-            } else {
-                setData(sortNotesDateDesc(d))
-            }
-        } else {
-            if (wayOfSorting == 'Aa') {
-                setFolderData(sortNotesAlphAsc(d))
-            } else if (wayOfSorting == 'Ad') {
-                setFolderData(sortNotesAlphDesc(d))
-            } else if (wayOfSorting == 'Da') {
-                setFolderData(sortNotesDateAsc(d))
-            } else {
-                setFolderData(sortNotesDateDesc(d))
-            }
+    function Sorter(notes, wayOfSorting) {
+        if (wayOfSorting == 'Aa') {
+            AlphabeticalAscending(notes)
+        } else if (wayOfSorting == 'Ad') {
+            AlphabeticalDescending(notes)
+        } else if (wayOfSorting == 'Da') {
+            DateAscending(notes)
+        } else if (wayOfSorting == 'Dd') {
+            DateDescending(notes)
         }
+        sortNotesPriority(notes)
+    }
+
+    function AlphabeticalAscending(notes) {
+        notes = notes.sort(function (noteX, noteY) {
+            return noteX.title.localeCompare(noteY.title, { ignorePuncuation: true })
+        })
+    }
+
+    function AlphabeticalDescending(notes) {
+        notes = notes.sort(function (noteX, noteY) {
+            return noteY.title.localeCompare(noteX.title, { ignorePuncuation: true })
+        })
+    }
+
+    function DateAscending(notes) {
+        notes = notes.sort(function (noteX, noteY) {
+            if (noteX.created_at == noteY.created_at) { return 0 }
+            else if (noteX.created_at > noteY.created_at) { return 1 }
+            else { return -1 }
+        })
+    }
+
+    function DateDescending(notes) {
+        notes = notes.sort(function (noteX, noteY) {
+            if (noteX.created_at == noteY.created_at) { return 0 }
+            else if (noteX.created_at < noteY.created_at) { return 1 }
+            else { return -1 }
+        })
     }
 
     const [selected, setSelected] = useState(null)
@@ -301,14 +241,6 @@ export default function ListOfNotes() {
         }
         setSelected(i)
     }
-    // useEffect(() => {
-    //     // checkSorting(data);
-    // }, [createNote, removeNote])
-    
-    // Loop to check if you clicked the red X that collapses the sections
-    // useEffect(() => {
-        // changCollapsed();
-    // })
     
     // Everytime the user creates a new note, the list of notes will update
     
@@ -317,6 +249,8 @@ export default function ListOfNotes() {
         getFolders()
     }, [])
 
+    Sorter(data, wayOfSorting)
+    Sorter(folderData, wayOfSorting )
     return (
         <div>
             <form onSubmit={createNote} className={styles.form}>
