@@ -390,7 +390,7 @@ export default function ListOfNotes() {
                                     {folderData.map((folder, ind) => {
                                         return (
                                             <div key={ind}>
-                                                <button onClick={() => {addToFolder(folder, note)}}>
+                                                <button className={styles.folderButton} onClick={() => {addToFolder(folder, note)}}>
                                                     {folder.title}
                                                 </button>
                                             </div>

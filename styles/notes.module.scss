@@ -55,6 +55,7 @@
     position: absolute;
     z-index: 1;
     left: 10px;
+    top: 7px;
 }
 
 .openHide {
@@ -161,8 +162,38 @@
 
 
 @media (max-width: 575.98px) {
+    .showAIPanel {
+        position: fixed;
+        bottom: 70px;
+        width: 100vw;
+        height: 45vh;
+        background-color: gray;
+        overflow: auto;
+        z-index: 100;
+    }
+
     .SavedNotes {
         padding: 5px;
+        position: fixed;
+        bottom: 70px;
+        width: 100vw;
+        height: 45vh;
+        background-color: var(--L-white-D-Grey);
+        border-top: 1px solid var(--Special-darker-gray);  
+        overflow: auto;
+        z-index: 100;
+    }
+
+    .SuperCollapsedTextEditor {
+        margin-top: 20px;
+    }
+
+    .CollapsedTextEditor {
+        width: 100%;
+    }
+
+    .closeShow {
+        left: 10px;
     }
 
     .close {
