@@ -171,7 +171,7 @@ export default function Search() {
 
     checkSorting(match, wayOfSorting)
 
-    function fuzzysearch() {
+    function fuzzysearch(event) {
         event.preventDefault()
         setMatch([])
         let data = []

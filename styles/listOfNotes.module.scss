@@ -83,7 +83,7 @@
 .note {
     display: inline-flex;
     width: 100%;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
     padding: 0 10px 10px;
 }
@@ -142,16 +142,31 @@
     flex-direction: column;
     gap: 10px;
     margin-left: 60px;
+    margin-bottom: 5px;
 }
 
 .accordionNotes {
     display: flex;
     gap: 5px;
+    justify-content: space-between;
 }
 
 .addAndSortFolder {
     display: flex;
     justify-content: space-between;
+}
+
+.addFolder{
+    display: none;
+}
+
+.addFolderShow {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    background-color: var(--Special-light-gray);
+    padding: 0.5rem;
+    border-radius: 12px;
 }
 
 @media (max-width: 575.98px) {

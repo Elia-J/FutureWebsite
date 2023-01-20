@@ -17,7 +17,6 @@ export default function ListOfNotes() {
     const [folderData, setFolderData] = useState([])
     const [noteTitle, setNoteTitle] = useState("")
     const [folderTitle, setFolderTitle] = useState("")
-    const [notesInFolder, setNotesInFolder] = useState([])
     // Aa for alphabetical ascending
     // Ad for alphabetical descending
     const [wayOfSorting, setWayOfSorting] = useState("Aa")
@@ -50,17 +49,6 @@ export default function ListOfNotes() {
         if (data) {
             allIdsInFolder = []
             setFolderData(data)
-
-            for (let i=0; i<data.length; i++) {
-                for (let j=0; j<data[i].notesId.length; j++) {
-                    // if (data[i].notesId[j] == undefined) {
-                    //     return
-                    // }
-                    allIdsInFolder.push(data[i].notesId[j])
-                }
-            }
-
-            setNotesInFolder(allIdsInFolder)
         } if (error) {
             console.log('error', error) 
             return
@@ -234,12 +222,58 @@ export default function ListOfNotes() {
         })
     }
 
+    const [selectedAddfolder, setSelectedAddFolder] = useState(null)
+    function toggleAddFolder(i) {
+        if (selectedAddfolder == i) {
+            return setSelectedAddFolder(null)
+        }
+        setSelectedAddFolder(i)
+    }
+
     const [selected, setSelected] = useState(null)
     function toggle(i) {
         if (selected == i) {
             return setSelected(null)
         }
         setSelected(i)
+    }
+    
+    async function removeFromFolder(folder, note) {
+        for (let i=0; i<folder.notes.length; i++) {
+            if (folder.notes[i] == note) {
+                folder.notes.splice(i, 1)
+                i--
+            }
+        }
+
+        const { data, error } = await supabase
+            .from('folders')
+            .update({notes: folder.notes})
+            .eq('id', folder.id)
+        
+        const { dataNote, errorNote } = await supabase
+            .from('notesv2')
+            .update({inFolder: false})
+            .eq('id', note.id)
+
+        getNotes()
+        getFolders()
+    }
+
+    async function addToFolder(folder, note) {
+        folder.notes.indexOf(note) === -1 ? folder.notes.push(note) : console.log('')
+        const { dataNote, errorNote } = await supabase
+            .from('notesv2')
+            .update({inFolder: true})
+            .eq('id', note.id)
+        folder.notes[folder.notes.indexOf(note)].inFolder = true
+        const { data, error } = await supabase
+            .from('folders')
+            .update({notes: folder.notes})
+            .eq('id', folder.id)
+
+        getNotes()
+        getFolders()
     }
     
     // Everytime the user creates a new note, the list of notes will update
@@ -305,13 +339,18 @@ export default function ListOfNotes() {
                             </button>
                         </div>
                         <div className={selected == i ? `${styles.answerShow} ${styles.answer}` : styles.answer}>
-                            {folder.notesTitle.map((note, i) => {
+                            {folder.notes.map((note, i) => {
                                 return (
                                     <div key={i} className={styles.accordionNotes}>
-                                        <Image alt="Bold" src="/rich-text-icons-dark/note.svg" width={25} height={25} />
-                                        <Link href={`/app/note/${folder.notesId[i]}`}>
-                                            {note}
-                                        </Link>
+                                        <div style={{display: "flex"}}>
+                                            <Image alt="Bold" src="/rich-text-icons-dark/note.svg" width={25} height={25} />
+                                            <Link href={`/app/note/${note.id}`}>
+                                                {note.title}
+                                            </Link>
+                                        </div>  
+                                        <button className={styles.icon} onClick={() => {removeFromFolder(folder, note)}}>
+                                            <Image alt="delete folder" src="/rich-text-icons-dark/delete-folder.svg" width={25} height={25}/>
+                                        </button>
                                     </div>
                                 )
                             })}
@@ -327,29 +366,42 @@ export default function ListOfNotes() {
             {/* Sort of like foreach (element in List), but it has an index too */}
             {data.map((note, index) => {
                 var title = note.title
-                for (let i=0; i<notesInFolder.length; i++) {
-                    if (note.id == notesInFolder[i]) {
-                        console.log(note.id)
-                    }
-                }
-                return (
-                    <div key={index} className={styles.note}>
-                        {/* The use of dynamic paging makes sure if you click on the title it will go to the appropriate link */}
-                        <Link className={styles.link} href={`/app/note/${note.id}`}>
-                            <div className={styles.text}>
-                                <Image alt="Bold" src="/rich-text-icons-dark/note.svg" width={25} height={25} />
-                                <p>{title}</p>
+                if (!note.inFolder) {
+                    return (
+                        <div key={index} className={styles.note}>
+                            {/* The use of dynamic paging makes sure if you click on the title it will go to the appropriate link */}
+                            <Link className={styles.link} href={`/app/note/${note.id}`}>
+                                <div className={styles.text}>
+                                    <Image alt="Bold" src="/rich-text-icons-dark/note.svg" width={25} height={25} />
+                                    <p>{title}</p>
+                                </div>
+                            </Link>
+                            <button className={styles.icon} onClick={() => prioritize(note.id, !note.isPriority)}>
+                                <Image alt="Bold" src={`/rich-text-icons-dark/exclamation-mark-${note.isPriority}.svg`} width={25} height={25} />
+                            </button>
+                            <button className={styles.icon} onClick={() => removeNote(note.id)}>
+                                <Image alt="Bold" src="/rich-text-icons-dark/trash.svg" width={25} height={25} />
+                            </button>
+                            <div>
+                                <button className={styles.icon} onClick={() => toggleAddFolder(index)}>
+                                    <Image alt="add folder" src={"/rich-text-icons-dark/add-folder.svg"} width={25} height={25}/>
+                                </button>
+                                <div className={selectedAddfolder == index ? `${styles.addFolderShow} ${styles.addFolder}` : styles.addFolder}>
+                                    {folderData.map((folder, ind) => {
+                                        return (
+                                            <div key={ind}>
+                                                <button onClick={() => {addToFolder(folder, note)}}>
+                                                    {folder.title}
+                                                </button>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
                             </div>
-                        </Link>
-                        <button className={styles.icon} onClick={() => prioritize(note.id, !note.isPriority)}>
-                            <Image alt="Bold" src={`/rich-text-icons-dark/exclamation-mark-${note.isPriority}.svg`} width={25} height={25} />
-                        </button>
-                        <button className={styles.icon} onClick={() => removeNote(note.id)}>
-                            <Image alt="Bold" src="/rich-text-icons-dark/trash.svg" width={25} height={25} />
-                        </button>
-
-                    </div>
-                )
+    
+                        </div>
+                    )
+                }
                 
             })}
 
