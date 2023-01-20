@@ -288,11 +288,11 @@ export default function ListOfNotes() {
     return (
         <div>
             <form onSubmit={createNote} className={styles.form}>
-                <input value={noteTitle} type="text" placeholder="Title: " onChange={(e) => setNoteTitle(e.target.value)} className={styles.input} required />
+                <input value={noteTitle} type="text" placeholder="Note:" onChange={(e) => setNoteTitle(e.target.value)} className={styles.input} required />
                 <button className={styles.mainButton} type="submit" >Create note</button>
             </form>
             <form onSubmit={createFolder} className={styles.form}>
-                <input value={folderTitle} type="text" placeholder="Title: " onChange={(e) => setFolderTitle(e.target.value)} className={styles.input} required />
+                <input value={folderTitle} type="text" placeholder="Folder:" onChange={(e) => setFolderTitle(e.target.value)} className={styles.input} required />
                 <button className={styles.mainButton} type="submit" >Create folder</button>
             </form>
             <div className={styles.addAndSortFolder}>

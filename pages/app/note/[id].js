@@ -306,8 +306,8 @@ export default function Notes({ notes }) {
                     })
                 }
                 <div>
-                    <button onClick={() => {setFontSize(fontSize + 1)}}>&#129093;</button>
-                    <button onClick={() => {setFontSize(fontSize - 1)}}>&#129095;</button>
+                    <button style={{color: "#4c7987"}} onClick={() => {setFontSize(fontSize + 1)}}>&#129093;</button>
+                    <button style={{color: "#4c7987"}} onClick={() => {setFontSize(fontSize - 1)}}>&#129095;</button>
                 </div>
             </div>
         )
