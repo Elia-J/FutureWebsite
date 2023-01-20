@@ -23,6 +23,7 @@ export default function Search() {
     const [dataTodoFolders, setDataTodoFolders] = useState([])
     const [match, setMatch] = useState([])
     const [wayOfSorting, setWayOfSorting] = useState('Aa')
+    const [score, setScore] = useState(0.5)
     // Aa = alphabetical ascending
     // Ad = alphabetical descending
     // Da = date ascending
@@ -171,8 +172,7 @@ export default function Search() {
 
     checkSorting(match, wayOfSorting)
 
-    function fuzzysearch(event) {
-        event.preventDefault()
+    function fuzzysearch() {
         setMatch([])
         let data = []
 
@@ -210,12 +210,17 @@ export default function Search() {
         const result = fuse.search(input)
         for (let i=result.length-1; i>0; i--) {
             console.log(result[i].score)
-            if (result[i].score > 0.5) {
+            if (result[i].score > score) {
                 result.splice(i, 1)
             }
         }
         console.log(result)
         setMatch(result)
+    }
+
+    function fuzzysearchevent(event) {
+        event.preventDefault()
+        fuzzysearch()
 
     }
 
@@ -224,7 +229,7 @@ export default function Search() {
             <AppLayout>
                 <div className={styles.container}>
                     <h1>Search</h1>
-                    <form onSubmit={fuzzysearch}>
+                    <form onSubmit={fuzzysearchevent}>
                         <div className={styles.form}>
                             <input placeholder="Search:" className={styles.input} type="search" onChange={(e) => { setInput(e.target.value) }}></input>
                             <button className={styles.submitButton} type="submit">submit</button>
@@ -232,7 +237,11 @@ export default function Search() {
                     </form>
                     <div className={styles.items}>
                         <div style={{display: "flex", justifyContent: "flex-end"}}>
-                            <div>
+                            <div style={{width: "100%", display: "flex", justifyContent: "space-between"}}>
+                                <div>
+                                    <p>Score of search: </p>
+                                    <input type="range" min="0.00001" max="2" step="0.0001" value={score} onChange={(e) => {setScore(e.target.value); fuzzysearch()}} className={styles.scoreInput}></input>
+                                </div>
                                 <button className={styles.dropdownSort} onClick={setDropdownSorting}>
                                     <Image alt="sort" src="/sort.svg" width={25} height={25} />
                                 </button>
