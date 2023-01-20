@@ -14,8 +14,6 @@ export default function Index() {
 
     const session = useSession()
 
-    const [collapsed, setCollapsed] = useState(false)
-
     //get all notes where user_id = user.id
 
     let collapsableElementSavedNotes = React.createRef();
@@ -63,11 +61,11 @@ export default function Index() {
         }
     }
 
-    // useEffect(() => {
-    //     if (!session) {
-    //         router.push("/")
-    //     }
-    // })
+    useEffect(() => {
+        if (!session) {
+            router.push("/")
+        }
+    })
     
     if (session) {
         return (

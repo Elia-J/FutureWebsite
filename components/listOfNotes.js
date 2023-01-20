@@ -142,8 +142,6 @@ export default function ListOfNotes() {
 
         getFolders()
     }
-    
-    // zie regel 221 tasks.js omgedraaid
 
     async function prioritize(id, priority) {
         const {data, error} = await supabase

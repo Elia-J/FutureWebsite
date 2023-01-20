@@ -145,11 +145,6 @@ export default function Notes({ notes }) {
     // H2: 26
     // default: 16
 
-    useEffect(() => {
-        const html = document.querySelector('html')
-        // console.log(html.getAttribute('data-theme'))
-    }, [theme])
-
     // Checks if there is a change in the url, if so, it reloads the page
     // This is to make sure that the correct initialValue and initialTitle is loaded into the editor
     // Else the server will load the value one time and won't change it
@@ -355,7 +350,6 @@ export default function Notes({ notes }) {
     };
 
     const DefaultElement = (props) => {
-        console.log(props.element.children[0].fontSize)
         return (
             <p style={{ textAlign: globalAlign, fontSize: props.element.children[0].fontSize}} {...props.attributes}>
                 {props.children}

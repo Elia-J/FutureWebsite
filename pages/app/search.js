@@ -172,7 +172,7 @@ export default function Search() {
 
     checkSorting(match, wayOfSorting)
 
-    function fuzzysearch() {
+    function fuzzysearch(inputTest) {
         setMatch([])
         let data = []
 
@@ -207,21 +207,13 @@ export default function Search() {
         }
 
         const fuse = new Fuse(data, options)
-        const result = fuse.search(input)
+        const result = fuse.search(inputTest)
         for (let i=result.length-1; i>0; i--) {
-            console.log(result[i].score)
             if (result[i].score > score) {
                 result.splice(i, 1)
             }
         }
-        console.log(result)
         setMatch(result)
-    }
-
-    function fuzzysearchevent(event) {
-        event.preventDefault()
-        fuzzysearch()
-
     }
 
     if (session) {
@@ -229,27 +221,26 @@ export default function Search() {
             <AppLayout>
                 <div className={styles.container}>
                     <h1>Search</h1>
-                    <form onSubmit={fuzzysearchevent}>
-                        <div className={styles.form}>
-                            <input placeholder="Search:" className={styles.input} type="search" onChange={(e) => { setInput(e.target.value) }}></input>
-                            <button className={styles.submitButton} type="submit">submit</button>
-                        </div>
-                    </form>
+                    <div className={styles.form}>
+                        <input placeholder="Search:" className={styles.input} type="search" onChange={(e) => { setInput(e.target.value); fuzzysearch(e.target.value)}}></input>
+                    </div>
                     <div className={styles.items}>
                         <div style={{display: "flex", justifyContent: "flex-end"}}>
                             <div style={{width: "100%", display: "flex", justifyContent: "space-between"}}>
                                 <div>
                                     <p>Score of search: </p>
-                                    <input type="range" min="0.00001" max="2" step="0.0001" value={score} onChange={(e) => {setScore(e.target.value); fuzzysearch()}} className={styles.scoreInput}></input>
+                                    <input type="range" min="0.00001" max="2" step="0.0001" value={score} onChange={(e) => {setScore(e.target.value); fuzzysearch(input)}} className={styles.scoreInput}></input>
                                 </div>
-                                <button className={styles.dropdownSort} onClick={setDropdownSorting}>
-                                    <Image alt="sort" src="/sort.svg" width={25} height={25} />
-                                </button>
-                                <div ref={dropdownSorting} className={styles.dropdownContent}>
-                                    <button onClick={() => {setWayOfSorting('Aa')}} className={styles.dropdownstylebutton}>Alphabetical (a-z)</button>
-                                    <button onClick={() => {setWayOfSorting('Ad')}} className={styles.dropdownstylebutton}>Alphabetical (z-a)</button>
-                                    <button onClick={() => {setWayOfSorting('Da')}} className={styles.dropdownstylebutton}>Created at (ascending)</button>
-                                    <button onClick={() => {setWayOfSorting('Dd')}} className={styles.dropdownstylebutton}>Created at (descending)</button>
+                                <div>
+                                    <button className={styles.dropdownSort} onClick={setDropdownSorting}>
+                                        <Image alt="sort" src="/sort.svg" width={25} height={25} />
+                                    </button>
+                                    <div ref={dropdownSorting} className={styles.dropdownContent}>
+                                        <button onClick={() => {setWayOfSorting('Aa')}} className={styles.dropdownstylebutton}>Alphabetical (a-z)</button>
+                                        <button onClick={() => {setWayOfSorting('Ad')}} className={styles.dropdownstylebutton}>Alphabetical (z-a)</button>
+                                        <button onClick={() => {setWayOfSorting('Da')}} className={styles.dropdownstylebutton}>Created at (ascending)</button>
+                                        <button onClick={() => {setWayOfSorting('Dd')}} className={styles.dropdownstylebutton}>Created at (descending)</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
