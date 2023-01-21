@@ -6,19 +6,29 @@ import { ButtonWithShortCut, RightIconButton } from './buttons'
 import AddIcon from "/public/AddIcon.svg"
 
 import { useStateStoreEventsContext } from "/layouts/stateStoreEvents"
+
+
 import moment from 'moment';
+import { TwitterPicker } from 'react-color';
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
+import { get } from 'http';
 
 export default function Addevent() {
-
-    //global state store
-    const [eventsPanel, setEventsPanel, input, setinput] = useStateStoreEventsContext()
 
     //supabase
     const supabase = useSupabaseClient()
     const user = useUser()
     const session = useSession()
 
-    console.log('input ', input)
+    //global state store
+    const [eventsPanel, setEventsPanel, input, setinput] = useStateStoreEventsContext()
+
+
+    //variable
+    const [iconPanel, setIconPanel] = useState(false)
+    const iconpanelstyle = iconPanel ? `${styles.iconPanel} ${styles.iconPanelOpen}` : `${styles.iconPanel} ${styles.iconPanelHidden}`
+
     //error detection
     const [error, setError] = useState({
         title: false,
@@ -27,7 +37,6 @@ export default function Addevent() {
         startTime: false,
         endDate: false,
         endTime: false,
-        location: false,
         allDay: false,
     })
 
@@ -37,11 +46,12 @@ export default function Addevent() {
             id: "",
             title: "",
             description: "",
+            backgroundColor: "#4c7987",
+            icon: "",
             startDate: "",
             startTime: "",
             endDate: "",
             endTime: "",
-            location: "",
             allDay: false,
         })
     }
@@ -66,15 +76,16 @@ export default function Addevent() {
             startTime: false,
             endDate: false,
             endTime: false,
-            location: false,
             allDay: false,
         })
     }
 
 
-    // const [visible, setVisible] = useState(false)
+    //styles
     const addEventStyle = eventsPanel ? `${styles.addEvent} ${styles.addEventOpen}` : `${styles.addEvent} ${styles.addEventHidden}`
 
+
+    //ref to the hidden element
     const element = useRef(
         document.getElementById('element')
     );
@@ -92,7 +103,7 @@ export default function Addevent() {
         document.getElementById("addEvent").appendChild(element.current);
     }
 
-    // Create new events
+    // Create new events 
     async function createEvent() {
         if (input.title === "") {
             toast.error('Please add a title')
@@ -108,12 +119,15 @@ export default function Addevent() {
         const { error } = await supabase
             .from('events')
             .insert({
+                user_id: user.id,
                 title: input.title,
                 description: input.description,
+                backgroundColor: input.backgroundColor,
+                icon: input.icon,
+
                 beginDate: beginDateValue,
                 endDate: endDateValue,
                 allDay: input.allDay,
-                user_id: user.id
             })
             .eq('user_id', user.id)
 
@@ -131,19 +145,9 @@ export default function Addevent() {
                 }
             });
         }
-
     }
 
-    //convert date and time to one string using moment.js
-    function convertDateAndTime() {
-        const beginDateValue = input.allDay ? moment(input.startDate).format("YYYY-MM-DD") : moment(input.startDate + " " + input.startTime).format("YYYY-MM-DD HH:mm:ss")
-        const endDateValue = input.allDay ? null : moment(input.endDate + " " + input.endTime).format("YYYY-MM-DD HH:mm:ss")
-        return {
-            beginDateValue,
-            endDateValue
-        }
-    }
-
+    //update event based on the id
     async function updateEvent(id) {
         console.log('id', id)
         console.log('input', input)
@@ -155,6 +159,8 @@ export default function Addevent() {
                 description: input.description,
                 beginDate: moment(input.startDate + " " + input.startTime).format("YYYY-MM-DD HH:mm:ss"),
                 endDate: moment(input.endDate + " " + input.endTime).format("YYYY-MM-DD HH:mm:ss"),
+                backgroundColor: input.backgroundColor,
+                icon: input.icon,
             })
             .eq('id', id)
         if (error) {
@@ -171,10 +177,6 @@ export default function Addevent() {
                 }
             });
         }
-
-
-
-
     }
 
     //delete event based on the id
@@ -197,14 +199,25 @@ export default function Addevent() {
         }
     }
 
-
-
-
     //auto change textarea height
     function auto_grow(element) {
         element.style.height = "68px";
         element.style.height = (element.scrollHeight) + "px";
     }
+
+    //convert date and time to one string using moment.js
+    function convertDateAndTime() {
+        const beginDateValue = input.allDay ? moment(input.startDate).format("YYYY-MM-DD") : moment(input.startDate + " " + input.startTime).format("YYYY-MM-DD HH:mm:ss")
+        const endDateValue = input.allDay ? null : moment(input.endDate + " " + input.endTime).format("YYYY-MM-DD HH:mm:ss")
+        return {
+            beginDateValue,
+            endDateValue
+        }
+    }
+
+
+
+
 
     //press control + enter to save or cmad + enter to save
     //press esc to close the modal
@@ -213,6 +226,7 @@ export default function Addevent() {
         if ((e.ctrlKey || e.metaKey) && e.keyCode == 13) {
             console.log('ctrl + enter')
             createEvent()
+
         }
         if (e.keyCode == 27) {
             console.log('esc')
@@ -224,16 +238,8 @@ export default function Addevent() {
             setEventsPanel(true)
             addElement()
         }
-        // //delete event with delete key
-        // if (e.keyCode == 46 || e.keyCode == 8) {
-        //     console.log('delete')
-        //     deleteEvent(input.id)
-        //     setEventsPanel(false)
-        //     removeElement()
-        // }
 
     }
-
 
 
     //add event listener to the document
@@ -264,6 +270,7 @@ export default function Addevent() {
 
     }, [input.startDate])
 
+
     useEffect(() => {
         //check if the end date is before the start date
         if (new Date(input.startDate) > new Date(input.endDate) || input.endDate === "" && input.startDate !== "") {
@@ -277,6 +284,7 @@ export default function Addevent() {
             })
         }
     }, [input.endDate])
+
 
     useEffect(() => {
 
@@ -306,6 +314,7 @@ export default function Addevent() {
         }
     }, [input.startTime])
 
+
     useEffect(() => {
         //check if the end time is before the start time
         if (new Date(input.startDate + " " + input.startTime) > new Date(input.endDate + " " + input.endTime)) {
@@ -332,6 +341,7 @@ export default function Addevent() {
 
     // }
 
+
     return (
         <div id="addEvent">
 
@@ -354,6 +364,7 @@ export default function Addevent() {
                             }}
                             className={`${styles.eventTitleInput} ${styles.blok} ${error.title ? styles.error : styles.eventTitleInput}`} />
 
+
                         <textarea
                             name="description"
                             id="description"
@@ -371,25 +382,76 @@ export default function Addevent() {
                             }
                         >
                         </textarea>
+                        <div className={`${styles.miniSection}`} >
 
-                        {/*  check box*/}
-                        <div className={`${styles.blok} ${styles.smallGroup} ${styles.displayFlexSpecial}`}>
-                            {/* check box */}
-                            <label htmlFor="allDay" className={styles.miniTitle}>All Day Event</label>
-                            <input type="checkbox"
-                                name="allDay"
-                                id="allDay"
-                                checked={input.allDay}
-                                className={styles.checkBox}
-                                onChange={
-                                    e => {
-                                        setinput({
-                                            ...input,
-                                            allDay: e.target.checked
-                                        })
+                            {/*  check box*/}
+                            <div className={`${styles.blok} ${styles.smallGroup} ${styles.displayFlexSpecial}`}>
+                                {/* check box */}
+                                <label htmlFor="allDay" className={styles.miniTitle}>All Day Event</label>
+                                <input type="checkbox"
+                                    name="allDay"
+                                    id="allDay"
+                                    checked={input.allDay}
+                                    className={styles.checkBox}
+                                    onChange={
+                                        e => {
+                                            setinput({
+                                                ...input,
+                                                allDay: e.target.checked
+                                            })
+                                        }
                                     }
-                                }
-                            />
+                                />
+                            </div>
+
+                            <div className={`${styles.blok} ${styles.smallGroup} ${styles.displayFlexSpecial}`}>
+                                <div
+                                    className={`${styles.miniTitle} ${styles.addEmoji}`}
+                                    onClick={() => {
+                                        setIconPanel(!iconPanel)
+                                    }}
+
+                                >Add a emoji {input.icon !== "" ? input.icon : ""}</div>
+
+                                <div className={iconpanelstyle}>
+                                    <div className={styles.emojiPicker}>
+
+                                        <Picker
+                                            data={data}
+                                            onEmojiSelect={
+                                                (emoji) => {
+                                                    console.log(emoji)
+                                                    setinput({
+                                                        ...input,
+                                                        icon: emoji.native,
+                                                    })
+                                                    setIconPanel(!iconPanel)
+                                                }
+                                            }
+                                            theme="dark"
+                                            previewEmoji="none"
+                                            showSkinTones={false}
+                                            locale="en"
+                                            perLine={8}
+
+
+
+
+
+                                        />
+
+                                    </div>
+                                    <div className={styles.background}
+                                        onClick={() => {
+                                            setIconPanel(!iconPanel)
+                                        }}
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+
                         </div>
 
 
@@ -453,25 +515,141 @@ export default function Addevent() {
 
                         </div>
 
-                        {/* dropdown */}
-                        <div className={`${styles.blok} ${styles.smallGroup}`}>
-                            <label htmlFor="repeat" className={styles.miniTitle}>Repeat</label>
-                            <select name="repeat" id="repeat" className={styles.selectMenu}>
-                                <option value="none">None</option>
-                                <option value="daily">Daily</option>
-                                <option value="weekly">Weekly</option>
-                                <option value="monthly">Monthly</option>
-                                <option value="yearly">Yearly</option>
-                            </select>
+                        <div className={`${styles.miniSection}`} >
+
+                            {/* dropdown */}
+                            {/* <div className={`${styles.blok} ${styles.smallGroup}`}>
+                                <label htmlFor="repeat" className={styles.miniTitle}>Repeat</label>
+                                <select name="repeat" id="repeat" className={styles.selectMenu}>
+                                    <option value="none">None</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                            </div> */}
+
+                            <div className={`${styles.blok} ${styles.smallGroup}`}>
+
+                                {/* input checkbox for the repeat option like Mo Tu We Th Fr Sa Su */}
+                                <label htmlFor="repeat" className={styles.miniTitle}>Repeat on</label>
+                                <div className={styles.repeatOn}>
+                                    <div className={styles.repeatOnItem}>
+
+                                        <input type="checkbox" name="repeat0" id="repeat0" className={styles.checkBox}
+                                            value={[0]}
+                                            onchange={
+                                                e => {
+                                                    setinput({
+                                                        ...input,
+                                                        //add to the array
+                                                        daysOfWeek: [...input.daysOfWeek, e.target.value]
+                                                    })
+                                                }
+                                            }
+                                        />
+                                        < label htmlFor="repeat0">Mo</label>
+
+                                        <input type="checkbox" name="repeat1" id="repeat1" className={styles.checkBox}
+                                            value={[1]}
+                                        />
+                                        <label htmlFor="repeat1">Tu</label>
+
+                                        <input type="checkbox" name="repeat2" id="repeat2" className={styles.checkBox}
+                                            value={[2]}
+                                        />
+                                        <label htmlFor="repeat2">We</label>
+
+                                        <input type="checkbox" name="repeat3" id="repeat3" className={styles.checkBox}
+                                            value={[3]}
+                                        />
+                                        <label htmlFor="repeat3">Th</label>
+
+                                        <input type="checkbox" name="repeat4" id="repeat4" className={styles.checkBox}
+                                            value={[4]}
+                                        />
+                                        <label htmlFor="repeat4">Fr</label>
+
+                                        <input type="checkbox" name="repeat5" id="repeat5" className={styles.checkBox}
+                                            value={[5]}
+                                        />
+                                        <label htmlFor="repeat5">Sa</label>
+
+                                        <input type="checkbox" name="repeat6" id="repeat6" className={styles.checkBox}
+                                            value={[6]}
+                                        />
+                                        <label htmlFor="repeat6">Su</label>
+
+                                    </div>
+
+                                </div>
 
 
+                            </div>
+
+                            <div className={`${styles.blok} ${styles.smallGroup}`}>
+
+                                {/* input checkbox for the repeat option like Mo Tu We Th Fr Sa Su */}
+
+                                <label htmlFor="Color" className={styles.miniTitle}>Color</label>
+
+                                <TwitterPicker
+                                    color={input.backgroundColor}
+                                    onChangeComplete={color => {
+                                        setinput({
+                                            ...input,
+                                            backgroundColor: color.hex
+                                        })
+                                    }}
+
+                                    list of options
+                                    colors={[
+                                        "#4c7987",
+                                        "#ff6901",
+                                        "#fcb904",
+                                        "#7bddb6",
+                                        "#01d084",
+                                        "#8fd1fc",
+                                        "#0994e3",
+                                        "#abb8c3",
+                                        "#ec154d",
+                                        "#f88da7",
+
+                                    ]}
+
+
+                                    //remove the default styles
+                                    styles={{
+                                        default: {
+                                            card: {
+                                                boxShadow: "none",
+                                                border: "none",
+                                                borderRadius: "0px",
+                                                background: "none",
+                                            },
+                                            body: {
+                                                padding: "0px",
+                                                marginTop: "10px",
+                                            },
+                                            triangle: {
+                                                display: "none",
+                                            },
+                                            triangleShadow: {
+                                                display: "none",
+                                            },
+
+                                        },
+                                    }}
+                                />
+                                <div style={{ backgroundColor: input.backgroundColor }} className={styles.colorPicker}></div>
+
+
+                            </div>
                         </div>
 
 
-                        {/* <div className={styles.input}>
-                            <label htmlFor="location">Location</label>
-                            <input type="text" name="location" id="location" />
-                        </div> */}
+
+
 
                     </div>
 
@@ -488,7 +666,6 @@ export default function Addevent() {
                                     removeElement()
                                     clearInput()
                                     resetError()
-
                                 }}
                             />
 
@@ -507,7 +684,7 @@ export default function Addevent() {
 
                                 <ButtonWithShortCut
                                     text="Delete"
-                                    shortcut="⌘ + ⌫"
+                                    shortcut="🗑️"
                                     main={false}
                                     onClick={() => {
                                         deleteEvent(input.id)
@@ -515,7 +692,6 @@ export default function Addevent() {
                                         removeElement()
                                         clearInput()
                                         resetError()
-
                                     }}
                                 />
                                 <span className={styles.eventId}>ID: {input.id}</span>
@@ -532,7 +708,12 @@ export default function Addevent() {
                 <div className={styles.bgClose} onClick={(e) => { { setEventsPanel(!eventsPanel) } removeElement(), clearInput() }}></div>
 
             </div>
-            <Toaster position="bottom-right" reverseOrder={false} />
+            <Toaster
+                position="bottom-right"
+                reverseOrder={false}
+                theme="auto"
+
+            />
 
         </div >
     )
