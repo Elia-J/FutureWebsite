@@ -1,18 +1,129 @@
-We have build our application using NEXT.JS
+# FutureWebsite
 
-Because we use a database with personal info, we have decided to host our application
+![GitHub repo size](https://img.shields.io/github/repo-size/Elia-J/FutureWebsite?style=for-the-badge)
+![GitHub language count](https://img.shields.io/github/languages/count/Elia-J/FutureWebsite?style=for-the-badge)
+![GitHub forks](https://img.shields.io/github/forks/Elia-J/FutureWebsite?style=for-the-badge)
+![Bitbucket open issues](https://img.shields.io/bitbucket/issues/Elia-J/FutureWebsite?style=for-the-badge)
 
-This way, you can see our code and see the product without installing anything on your computer too
+![GitHub stars](https://img.shields.io/github/stars/Elia-J/FutureWebsite?style=social)
+![GitHub forks](https://img.shields.io/github/forks/Elia-J/FutureWebsite?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/Elia-J/FutureWebsite?style=social)
+![GitHub followers](https://img.shields.io/github/followers/Elia-J?style=social)
 
-NEXT.JS is easily hostable with vercel, but we could only make it work with github.
+![Last commit](https://img.shields.io/github/last-commit/Elia-J/FutureWebsite?style=flat-square)
+![Vercel Deployment](https://vercelbadge.vercel.app/api/Elia-J/FutureWebsite?style=flat-square)
+![GitHub issues](https://img.shields.io/github/issues/Elia-J/FutureWebsite?style=flat-square)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/Elia-J/FutureWebsite?style=flat-square)
+![GitHub license](https://img.shields.io/github/license/Elia-J/FutureWebsite?style=for-the-badge)
 
-So you can take a look in our code in the github repository, especially in the pages and components folder, because that is where the magic happens
+![FutureWebsite](https://raw.githubusercontent.com/Elia-J/FutureWebsite/ff8f72cacd8b18b05f10c44ea733decf7bdfbd05/public/future-website.svg)
+</br>
 
-The link to our website is: https://future-website.vercel.app/
+## Table of Contents
 
-<br />
+- [About](#about)
+- [Libraries and Frameworks](#libraries-and-frameworks)
+- [Handy Websites and Documents](#handy-websites-and-documents)
+- [Installation](#installing)
+- [Configuration](#configuration)
+  </br>
 
-The following section is for Nick:
-> Because we switched from Gitlab to github, you cannot see our changes. <br />
-> For that reason we ask you to take a look in our Gitlab. https://git.science.uu.nl/0866296/future<br />
-> Note that the gitlab is not the current version of the project. Elia made some changes to make it hostable.<br />
+## About
+
+This is a Next.js web application that uses a Supabase database and is hosted on Vercel. You can view the live demo at [https://future-website.vercel.app/](https://future-website.vercel.app/).
+</br></br>
+
+## Libraries and Frameworks
+
+- Frontend: Next.js
+- Backend: Supabase (PostgreSQL)
+- Hosting: Vercel
+- Styling: SCSS
+- Timezone: Moment.js
+- Weather: OpenWeatherMap API
+- Calendar: FullCalendar
+- Animations: Framer Motion
+- Text Editor: Slate.js
+- Search: Fuse.js
+- Cities Names: Country-State-City
+
+You can find a list of the libraries used in this project in the `package.json` file.
+</br></br>
+
+## Handy Websites and Documents
+
+- [Next.js Website](https://nextjs.org/)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Supabase Website](https://www.supabase.io/)
+- [Supabase Documentation](https://supabase.io/docs)
+- [OpenAI Website](https://openai.com/)
+- [OpenAI Documentation](https://beta.openai.com/docs)
+- [Vercel Website](https://vercel.com/)
+- [Node JS Website](https://nodejs.org/en/)
+- [Git Website](https://git-scm.com/)
+
+  </br></br>
+
+## Installation
+
+To install and run this project, you will need [Node.js](https://nodejs.org/) and [Git](https://git-scm.com/) installed on your computer.
+
+You can clone the code by running the following command in your terminal:
+
+    ```bash
+    git clone https://github.com/Elia-J/FutureWebsite.git
+    ```
+
+Alternatively, you can download the code using the green "Download" button on the GitHub repository, or using a Git GUI client such as [GitHub Desktop](https://desktop.github.com/) or [SourceTree](https://www.sourcetreeapp.com/).
+
+Once you have the code downloaded, navigate to the project directory and run the following command to install the dependencies:
+
+    ```bash
+    npm install
+    ```
+
+To start the development server, run:
+
+    ```bash
+    npm run dev
+    ```
+
+This will start a development server and open the app in your default browser. Any changes you make to the code will be reflected in the browser in real-time.
+
+To build the app for production, run:
+
+    ```bash
+    npm run build
+    ```
+
+This will create a production-ready build of the app in the `.next` directory.
+
+To update the dependencies, run:
+
+        ```bash
+        npm update
+        ```
+
+Please note that you need to configure the enviroment variable before running the project.
+</br></br>
+
+## Configuration
+
+To configure the project, you need to create a `.env.local` file in the root directory of the project. In this file, you need to add the following environment variables:
+
+    ```bash
+        // .env.local
+
+        NEXT_PUBLIC_SUPABASE_URL= is the URL of the Supabase database.
+        NEXT_PUBLIC_SUPABASE_ANON_KEY= is the anonymous key of the Supabase database.
+        SERVER_ROLE_SUPABASE_KEY= is the server role key of the Supabase database.
+        WEATHER_API_KEY= is the API key of the OpenWeatherMap API.
+
+    ```
+
+we will not provide the environment variables values for security reasons.
+</br></br>
+
+## Author
+
+[Elia](https://github.com/Elia-J) , [Hugo](https://github.com/hugokrul) , [Pepijn](https://github.com/PepijnU)
