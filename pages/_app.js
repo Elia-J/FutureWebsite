@@ -1,7 +1,7 @@
 import '../styles/globals.scss'
 import { ThemeProvider } from 'next-themes'
 import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs' //importing the supabase client
-import { SessionContextProvider } from '@supabase/auth-helpers-react' //Importing the session context provider from the 
+import { SessionContextProvider } from '@supabase/auth-helpers-react' //Importing the session context provider from the supabase auth helpers
 import { useState } from 'react'
 
 import "@fullcalendar/common/main.css";
