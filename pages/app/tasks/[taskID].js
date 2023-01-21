@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { supabase } from '/lib/supasbaseClient'
 
 export default function Tasks( {task} ) {
+    console.log("task: " + task)
     const session = useSession()
     const supabase = useSupabaseClient()
     const user = useUser()
@@ -219,7 +220,6 @@ export default function Tasks( {task} ) {
         return (
             <div>
                 <div className={creatingTask || editingTask ? styles.blur : null}>
-                    <SettingsProvider>
                         <AppLayout>
                                 <div className={styles.body}>
                                     <div className={openPanel ? `${styles.panel} ${styles.openFolderPanel}` : `${styles.panel} ${styles.closedFolderPanel}`}>
@@ -276,7 +276,6 @@ export default function Tasks( {task} ) {
                                     </div>
                                 </div>
                         </AppLayout>
-                    </SettingsProvider>
                 </div>
 
                 <div className={creatingTask || editingTask ? styles.taskForm : `${styles.hiddenTaskForm} ${styles.taskForm}`}>
@@ -353,14 +352,13 @@ export default function Tasks( {task} ) {
     }
 }
 
-export async function getServerSideProps(context) {
-    const{ params } = context
-    const id = params.taskID
+export async function getServerSideProps({params}) {
+    const{ id } = params
 
     const{data, error} = await supabase
         .from('todos')
         .select('*')
-        .filter('id', 'eq', id)
+        .eq('id', id)
         .single()
     return {
         props: {
