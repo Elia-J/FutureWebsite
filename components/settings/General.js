@@ -279,7 +279,6 @@ export default function General() {
                     <label htmlFor="showTimeToggle" className={styles.toggleLabel}></label>
                 </div>
             </div>
-            <Toaster position="bottom-right" reverseOrder={false} />
 
 
         </SettingsLayout >
