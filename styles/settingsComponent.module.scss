@@ -1,3 +1,5 @@
+@use "/styles/form/_inputAndLabel.scss";
+
 .panel {
   background-color: var(--special-5);
   width: 60%;
@@ -48,7 +50,7 @@
 }
 
 .closeButton {
-  display: none;
+  display: flex;
   width: 34px;
   height: 34px;
   border-radius: 10px;
@@ -71,8 +73,10 @@
   width: 100%;
   height: 50px;
 
-  position: sticky;
+  position: absolute;
   bottom: 0px;
+  left: 0px;
+  right: 0px;
 
   display: flex;
   flex-direction: row;
@@ -100,6 +104,111 @@
   background: var(--snowflake-300);
 }
 
+// ------------------ Warning Panel ------------------
+.warningPanel {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  z-index: 10;
+
+  justify-content: center;
+  align-items: center;
+}
+
+.warningPanelOpen {
+  display: flex;
+}
+.warningPanelClose {
+  display: none;
+}
+
+.warningTitle {
+  font-size: 24px;
+  font-weight: 800;
+}
+.warningText {
+  font-size: 14px;
+  margin: 30px 0 30px 0;
+  line-height: 1.2;
+}
+
+.warningBox {
+  background-color: rgb(255, 255, 255);
+
+  border-radius: 20px;
+  z-index: 11;
+
+  padding: 20px;
+
+  max-width: 30rem;
+  margin: 0px 20px;
+  position: relative;
+}
+
+.deleteButton {
+  height: 45px;
+  width: 100%;
+  border-radius: 10px;
+  padding: 6px 8px;
+
+  font-size: 16px;
+  font-weight: 800;
+
+  background: var(--anarchy-600);
+  color: #ffffff;
+}
+
+.inputArea {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.closeButton {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: var(--special-3);
+  transition: all 0.2s ease-in-out;
+  z-index: 3;
+
+  &:hover {
+    background-color: rgb(241 241 241);
+    transition: all 0.2s ease-in-out;
+  }
+}
+.closeButton svg path {
+  fill: var(--snowflake-1000);
+}
+
+.topSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bg {
+  backdrop-filter: blur(10px);
+  background-color: rgba(55, 55, 55, 0.5);
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
 @media (max-width: 1199.98px) {
   .panel {
     width: 70%;
@@ -117,12 +226,22 @@
     width: 90%;
     height: 95%;
   }
+
   .buttonContainer {
     width: 100%;
     height: 55px;
     overflow-x: auto;
     overflow-y: hidden;
+    scrollbar-width: none; /* Firefox */
   }
+  .buttonContainer::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
+
+  .buttonContainer > *:last-child {
+    margin-right: 10px;
+  }
+
   .buttonsHolder {
     flex-direction: row;
     justify-content: space-between;
@@ -133,26 +252,24 @@
   }
 
   .leftPanel {
-    height: auto;
-
     padding: 10px 0px 2px 0px;
     position: sticky;
     top: 0;
-    z-index: 2;
+    left: 0;
+    right: 0;
+
     border-bottom: 1px solid var(--dynamic-black-200);
     background-color: var(--special-5);
   }
   .rightPanel {
-    height: auto;
-    overflow-y: hidden;
+    // height: auto;
+    // overflow-y: hidden;
   }
   .scrole {
-    display: inline-block;
-
-    overflow: auto;
-  }
-  .closeButton {
-    display: flex;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr;
+    grid-auto-flow: column;
+    grid-template-areas: ". ";
   }
 }
 @media (max-width: 575.98px) {
@@ -163,5 +280,6 @@
     width: 95%;
   }
 }
+
 @media (max-width: 320px) {
 }
