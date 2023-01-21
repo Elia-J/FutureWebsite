@@ -9,7 +9,7 @@ import { useStateStoreContext } from "/layouts/stateStore"
 export default function SettingsLayout({ children, title, onSave, test }) {
 
 
-    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy] = useStateStoreContext();
+    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel] = useStateStoreContext();
 
     const [data, setData] = useState()
 
@@ -25,11 +25,6 @@ export default function SettingsLayout({ children, title, onSave, test }) {
 
             <div className={styles.title}>
                 {title}
-
-                <button className={styles.closeButton} onClick={() => { setShowSettings(false) }}>
-                    <CloseIcon />
-                </button>
-
             </div>
 
             <div className={styles.settingsLayout}>
