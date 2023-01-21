@@ -177,15 +177,60 @@ export default function Notes({ notes }) {
 
     // updateData gets a title and a description and updates them with the according note id
     async function updateData(t, d) {
+        let now = new Date()
+        let ISONow = now.toISOString()
         const { data, error } = await supabase
             .from('notesv2')
-            .update({ title: t, description: d })
+            .update({ title: t, description: d, created_at: ISONow })
             .eq('id', notes.id)
         alert('succes!')
+        location.reload()
     }
 
     let collapsableElementSavedNotes = React.createRef();
     let collapsableElementNotes = React.createRef();
+    let collapsableElementAI = React.createRef();
+    let openElement = React.createRef();
+    let closeElement = React.createRef();
+
+    function changeSavedNotesBar() {
+        openElement.current.classList.toggle(`${styles.openHide}`)
+        closeElement.current.classList.toggle(`${styles.closeShow}`)
+        if (collapsableElementAI.current.classList[1] == styles.showAIPanel) {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.SuperCollapsedTextEditor}`
+            );
+            collapsableElementSavedNotes.current.classList.toggle(
+                `${styles.hideNotesPanel}`
+            )
+        } else {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.CollapsedTextEditor}`
+            );
+            collapsableElementSavedNotes.current.classList.toggle(
+                `${styles.hideNotesPanel}`
+            )
+        }
+    }
+
+    function changeAIPanel() {
+        if (collapsableElementSavedNotes.current.classList[1] == undefined) {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.SuperCollapsedTextEditor}`
+            );
+            collapsableElementAI.current.classList.toggle(
+                `${styles.showAIPanel}`
+            )
+        }
+        else {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.CollapsedTextEditor}`
+            );
+            collapsableElementAI.current.classList.toggle(
+                `${styles.showAIPanel}`
+            )
+        }
+    }
 
 
     // Initializes the editors
@@ -195,19 +240,6 @@ export default function Notes({ notes }) {
 
     // Function to make the saved notes bar smaller and bigger by adding a class to its classlist
     // This is picked up by the css and changes it's width
-    function changeSavedNotesBar() {
-        collapsableElementSavedNotes.current.classList.toggle(
-            `${styles.collapsedSavedNote}`
-        );
-        collapsableElementNotes.current.classList.toggle(
-            `${styles.extenedNote}`
-        );
-        if (collapsed) {
-            setCollapsed(false)
-        } else {
-            setCollapsed(true)
-        }
-    }
 
     const renderElement = useCallback((props) => {
         // If the editor renders an eliment and there is an alignment prop then it sents the global align to its value
@@ -279,8 +311,8 @@ export default function Notes({ notes }) {
                     })
                 }
                 <div>
-                    <button onClick={() => { setFontSize(fontSize + 1) }}>&#129093;</button>
-                    <button onClick={() => { setFontSize(fontSize - 1) }}>&#129095;</button>
+                    <button style={{ color: "#4c7987" }} onClick={() => { setFontSize(fontSize + 1) }}>&#129093;</button>
+                    <button style={{ color: "#4c7987" }} onClick={() => { setFontSize(fontSize - 1) }}>&#129095;</button>
                 </div>
             </div>
         )
@@ -360,33 +392,35 @@ export default function Notes({ notes }) {
         );
     };
 
+    function parseISOString(s) {
+        var b = s.split(/\D+/);
+        return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
+    }
+
     if (session) {
         // Returns the html is there is a session
         return (
             // The settingsProvider and AppLayout add the sidebar with settings functions
             <AppLayout>
                 <div className={styles.content}>
+                    <div ref={openElement} onClick={changeSavedNotesBar} className={`${styles.openStyle} ${styles.openHide}`}>
+                        <strong>Open</strong>
+                    </div>
+                    <div ref={closeElement} onClick={changeSavedNotesBar} className={`${styles.closeStyle} ${styles.closeShow}`}>
+                        <strong>Close</strong>
+                    </div>
                     <div
                         ref={collapsableElementSavedNotes}
                         id="SavedNotes"
                         className={styles.SavedNotes}
                     >
-                        <p style={{ display: "inline-block" }}>Saved Notes</p>
-                        {/* The X on the saved notes section */}
-                        <p
-                            className={styles.close}
-                            style={{ display: "inline-block", float: "right" }}
-                            onClick={changeSavedNotesBar}
-                        >
-                            &times;
-                        </p>
                         {/* Returns the list of notes */}
-                        <ListOfNotes collapsed={collapsed} />
+                        <ListOfNotes />
                     </div>
                     <div
                         ref={collapsableElementNotes}
                         id="TextEditor"
-                        className={styles.TextEditor}
+                        className={`${styles.TextEditor} ${styles.CollapsedTextEditor}`}
                     >
                         <div className={styles.editorDiv}>
                             {/* Title editor */}
@@ -410,6 +444,7 @@ export default function Notes({ notes }) {
                                     />
                                 </Slate>
                             </div>
+                            <strong>{parseISOString(notes.created_at).toString().slice(0, 24)}</strong>
                             {/* Returns the Toolbar with too breaks above and underneath it */}
                             {/* The Toolbar element is defined in this file */}
                             <hr />
@@ -516,8 +551,154 @@ export default function Notes({ notes }) {
                             Save
                         </button>
                     </div>
+                    <div
+                        ref={collapsableElementAI}
+                        id="AI"
+                        className={styles.AI}
+                    >
+                    </div>
+                    <div
+                        className={styles.AIAssisctance}
+                        onClick={changeAIPanel}
+                    >
+                        <strong>AI Assistance</strong>
+                    </div>
                 </div>
-            </AppLayout>
+                <div
+                    ref={collapsableElementNotes}
+                    id="TextEditor"
+                    className={styles.TextEditor}
+                >
+                    <div className={styles.editorDiv}>
+                        {/* Title editor */}
+                        <div className={styles.title}>
+                            <h1>Title: </h1>
+                            {/* The editor itself */}
+                            <Slate
+                                editor={editorTitle}
+                                value={initialTitle}
+                                onChange={(value) => {
+                                    valueTitle = value;
+                                }}
+                            >
+                                <Editable
+                                    className={styles.noteTitle}
+                                    onKeyDown={(event) => {
+                                        if (event.key == "Enter") event.preventDefault();
+                                    }}
+                                    renderElement={renderElement}
+                                    renderLeaf={renderLeaf}
+                                />
+                            </Slate>
+                        </div>
+                        {/* Returns the Toolbar with too breaks above and underneath it */}
+                        {/* The Toolbar element is defined in this file */}
+                        <hr />
+                        {/* <Toolbar /> */}
+                        <ToolbarV2 />
+                        <hr />
+
+                        <div className={styles.description}>
+                            {/* Descriptor itself */}
+                            <Slate
+                                editor={editor}
+                                value={initialValue}
+                                /* saving the data */
+                                onChange={(value) => {
+                                    valueDescription = value;
+                                }}
+                            >
+                                <Editable
+                                    className={styles.noteDescription}
+                                    renderElement={renderElement}
+                                    renderLeaf={renderLeaf}
+                                    onKeyDown={(event) => {
+                                        // Checks for shortcut
+                                        // Only if the ctrl key is pressed
+                                        if (!event.ctrlKey) {
+                                            return;
+                                        }
+
+                                        switch (event.key) {
+                                            case ",": {
+                                                event.preventDefault();
+                                                CustomEditorV2.toggle(editor, "code", true, fontSize)
+                                                break;
+                                            }
+
+                                            case "b": {
+                                                event.preventDefault();
+                                                CustomEditorV2.toggle(editor, "bold", true, fontSize)
+                                                break;
+                                            }
+                                            case "i": {
+                                                event.preventDefault();
+                                                CustomEditorV2.toggle(editor, "italic", true, fontSize)
+                                                break;
+                                            }
+                                            case "u": {
+                                                event.preventDefault();
+                                                CustomEditorV2.toggle(editor, "underline", true, fontSize)
+                                                break;
+                                            }
+                                            case "1": {
+                                                event.preventDefault();
+                                                CustomEditorV2.toggle(editor, "type", "h1", fontSize)
+                                                break;
+                                            }
+                                            case "2": {
+                                                event.preventDefault();
+                                                CustomEditorV2.toggle(editor, "type", "h2", fontSize)
+                                                break;
+                                            }
+                                            case "q": {
+                                                event.preventDefault();
+                                                CustomEditorV2.toggle(editor, "type", "quote", fontSize)
+                                                break;
+                                            }
+                                            case "b" && "l": {
+                                                event.preventDefault();
+                                                CustomEditorV2.toggle(editor, "type", "list-bulleted", fontSize)
+                                                break;
+                                            }
+                                            case "Shift" && "R": {
+                                                event.preventDefault();
+                                                CustomEditorV2.toggle(editor, "align", "right", fontSize)
+                                                break;
+                                            }
+                                            case "Shift" && "L": {
+                                                event.preventDefault();
+                                                CustomEditorV2.toggle(editor, "align", "left", fontSize)
+                                                break;
+                                            }
+                                            case "Shift" && "E": {
+                                                event.preventDefault();
+                                                CustomEditorV2.toggle(editor, "align", "center", fontSize)
+                                                break;
+                                            }
+                                            case "Shift" && "J": {
+                                                event.preventDefault();
+                                                CustomEditorV2.toggle(editor, "align", "justify", fontSize)
+                                                break;
+                                            }
+                                        }
+                                    }}
+                                />
+                            </Slate>
+                        </div>
+                    </div>
+                    {/* Saves the data by using the updateData function */}
+                    <button
+                        className={styles.mainButton}
+                        onClick={() => {
+                            updateData(valueTitle[0].children[0].text, valueDescription)
+                        }}
+                    >
+                        Save
+                    </button>
+                </div>
+            </div>
+            </AppLayout >
         );
     } else {
         // If there is not a session, return the loadingline

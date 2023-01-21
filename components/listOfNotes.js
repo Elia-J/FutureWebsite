@@ -5,7 +5,7 @@ import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-r
 import styles from '../styles/listOfNotes.module.scss';
 import Image from 'next/image'
 
-export default function ListOfNotes({ collapsed }) {
+export default function ListOfNotes() {
 
     //supabase
     const supabase = useSupabaseClient()
@@ -17,7 +17,6 @@ export default function ListOfNotes({ collapsed }) {
     const [folderData, setFolderData] = useState([])
     const [noteTitle, setNoteTitle] = useState("")
     const [folderTitle, setFolderTitle] = useState("")
-    const [notesInFolder, setNotesInFolder] = useState([])
     // Aa for alphabetical ascending
     // Ad for alphabetical descending
     const [wayOfSorting, setWayOfSorting] = useState("Aa")
@@ -33,7 +32,6 @@ export default function ListOfNotes({ collapsed }) {
         if (data) {
             //array of todos
             setData(data)
-            checkSorting(data, true)
         }
 
         if (error) {
@@ -51,18 +49,6 @@ export default function ListOfNotes({ collapsed }) {
         if (data) {
             allIdsInFolder = []
             setFolderData(data)
-            checkSorting(data, false)
-
-            for (let i=0; i<data.length; i++) {
-                for (let j=0; j<data[i].notesId.length; j++) {
-                    // if (data[i].notesId[j] == undefined) {
-                    //     return
-                    // }
-                    allIdsInFolder.push(data[i].notesId[j])
-                }
-            }
-
-            setNotesInFolder(allIdsInFolder)
         } if (error) {
             console.log('error', error) 
             return
@@ -116,23 +102,11 @@ export default function ListOfNotes({ collapsed }) {
     }
 
     // If the element is collapsed, change the classlist that gets picked up by the css
-    let collapsElementButton = React.createRef();
-    let collapsElementInput = React.createRef();
 
     let dropdownSorting = React.createRef();
 
     function setDropdownSorting() {
         dropdownSorting.current.classList.toggle(`${styles.show}`)
-    }
-
-    function changCollapsed() {
-        if (collapsed) {
-            collapsElementButton.current.classList.add(`${styles.isCollapsed}`)
-            collapsElementInput.current.classList.add(`${styles.isCollapsed}`)
-        } else {
-            collapsElementButton.current.classList.remove(`${styles.isCollapsed}`)
-            collapsElementInput.current.classList.remove(`${styles.isCollapsed}`)
-        }
     }
 
     // Remove notes with id
@@ -199,111 +173,61 @@ export default function ListOfNotes({ collapsed }) {
         getFolders()
     }
 
-    function sortNotesPriority(d) {
-        var sortedData = [...d]
-
-        sortedData.sort(function(a, b) {
-            if (a.isPriority == b.isPriority) { return 0 }
-            else if (a.isPriority) { return -1 }
+    function sortNotesPriority(notes) {
+        notes = notes.sort(function (noteX, noteY) {
+            if(noteX.isPriority == noteY.isPriority) { return 0 }
+            else if (noteX.isPriority) { return -1 }
             else { return 1 }
-
         })
-
-        return sortedData
     }
 
-    // A function that sets the data variable to the data which will be sorted
-    function sortNotesAlphAsc(d) {
-        // Makes a copy so that the originial data is not lost
-        var sortedData = [...d]
-
-        sortedData.sort(function(a, b) {
-            // Compares the title of all the elements
-            if (a.title < b.title) {
-                return -1;
-            }
-            if (b.title < a.title) {
-                return 1;
-            }
-            return 0;
-        })
-
-        return sortNotesPriority(sortedData)
-    }
-
-    function sortNotesAlphDesc(d) {
-        // Makes a copy so that the originial data is not lost
-        var sortedData = [...d]
-
-        sortedData.sort(function(a, b) {
-            // Compares the title of all the elements
-            if (a.title > b.title) {
-                return -1;
-            }
-            if (b.title > a.title) {
-                return 1;
-            }
-            return 0;
-        })
-        return sortNotesPriority(sortedData)
-    }
-
-    function sortNotesDateAsc(d) {
-        // Makes a copy so that the originial data is not lost
-        var sortedData = [...d]
-
-        sortedData.sort(function(a, b) {
-            // Compares the title of all the elements
-            if (a.created_at > b.created_at) {
-                return -1;
-            }
-            if (b.created_at > a.created_at) {
-                return 1;
-            }
-            return 0;
-        })
-        return sortNotesPriority(sortedData)
-    }
-    
-    function sortNotesDateDesc(d) {
-        // Makes a copy so that the originial data is not lost
-        var sortedData = [...d]
-
-        sortedData.sort(function(a, b) {
-            // Compares the title of all the elements
-            if (a.created_at < b.created_at) {
-                return -1;
-            }
-            if (b.created_at < a.created_at) {
-                return 1;
-            }
-            return 0;
-        })
-        return sortNotesPriority(sortedData)
-    }
-
-    function checkSorting(d, forNotes) {
-        if (forNotes) {
-            if (wayOfSorting == 'Aa') {
-                setData(sortNotesAlphAsc(d))
-            } else if (wayOfSorting == 'Ad') {
-                setData(sortNotesAlphDesc(d))
-            } else if (wayOfSorting == 'Da') {
-                setData(sortNotesDateAsc(d))
-            } else {
-                setData(sortNotesDateDesc(d))
-            }
-        } else {
-            if (wayOfSorting == 'Aa') {
-                setFolderData(sortNotesAlphAsc(d))
-            } else if (wayOfSorting == 'Ad') {
-                setFolderData(sortNotesAlphDesc(d))
-            } else if (wayOfSorting == 'Da') {
-                setFolderData(sortNotesDateAsc(d))
-            } else {
-                setFolderData(sortNotesDateDesc(d))
-            }
+    function Sorter(notes, wayOfSorting) {
+        if (wayOfSorting == 'Aa') {
+            AlphabeticalAscending(notes)
+        } else if (wayOfSorting == 'Ad') {
+            AlphabeticalDescending(notes)
+        } else if (wayOfSorting == 'Da') {
+            DateAscending(notes)
+        } else if (wayOfSorting == 'Dd') {
+            DateDescending(notes)
         }
+        sortNotesPriority(notes)
+    }
+
+    function AlphabeticalAscending(notes) {
+        notes = notes.sort(function (noteX, noteY) {
+            return noteX.title.localeCompare(noteY.title, { ignorePuncuation: true })
+        })
+    }
+
+    function AlphabeticalDescending(notes) {
+        notes = notes.sort(function (noteX, noteY) {
+            return noteY.title.localeCompare(noteX.title, { ignorePuncuation: true })
+        })
+    }
+
+    function DateAscending(notes) {
+        notes = notes.sort(function (noteX, noteY) {
+            if (noteX.created_at == noteY.created_at) { return 0 }
+            else if (noteX.created_at > noteY.created_at) { return -1 }
+            else { return 1 }
+        })
+    }
+
+    function DateDescending(notes) {
+        notes = notes.sort(function (noteX, noteY) {
+            if (noteX.created_at == noteY.created_at) { return 0 }
+            else if (noteX.created_at < noteY.created_at) { return -1 }
+            else { return 1 }
+        })
+    }
+
+    const [selectedAddfolder, setSelectedAddFolder] = useState(null)
+    function toggleAddFolder(i) {
+        if (selectedAddfolder == i) {
+            return setSelectedAddFolder(null)
+        }
+        setSelectedAddFolder(i)
     }
 
     const [selected, setSelected] = useState(null)
@@ -313,14 +237,44 @@ export default function ListOfNotes({ collapsed }) {
         }
         setSelected(i)
     }
-    // useEffect(() => {
-    //     // checkSorting(data);
-    // }, [createNote, removeNote])
     
-    // Loop to check if you clicked the red X that collapses the sections
-    // useEffect(() => {
-        // changCollapsed();
-    // })
+    async function removeFromFolder(folder, note) {
+        for (let i=0; i<folder.notes.length; i++) {
+            if (folder.notes[i] == note) {
+                folder.notes.splice(i, 1)
+                i--
+            }
+        }
+
+        const { data, error } = await supabase
+            .from('folders')
+            .update({notes: folder.notes})
+            .eq('id', folder.id)
+        
+        const { dataNote, errorNote } = await supabase
+            .from('notesv2')
+            .update({inFolder: false})
+            .eq('id', note.id)
+
+        getNotes()
+        getFolders()
+    }
+
+    async function addToFolder(folder, note) {
+        folder.notes.indexOf(note) === -1 ? folder.notes.push(note) : console.log('')
+        const { dataNote, errorNote } = await supabase
+            .from('notesv2')
+            .update({inFolder: true})
+            .eq('id', note.id)
+        folder.notes[folder.notes.indexOf(note)].inFolder = true
+        const { data, error } = await supabase
+            .from('folders')
+            .update({notes: folder.notes})
+            .eq('id', folder.id)
+
+        getNotes()
+        getFolders()
+    }
     
     // Everytime the user creates a new note, the list of notes will update
     
@@ -329,15 +283,17 @@ export default function ListOfNotes({ collapsed }) {
         getFolders()
     }, [])
 
+    Sorter(data, wayOfSorting)
+    Sorter(folderData, wayOfSorting )
     return (
         <div>
             <form onSubmit={createNote} className={styles.form}>
-                <input value={noteTitle} ref={collapsElementInput} type="text" placeholder="Title: " onChange={(e) => setNoteTitle(e.target.value)} className={styles.input} required />
-                <button ref={collapsElementButton} className={styles.mainButton} type="submit" >Create note</button>
+                <input value={noteTitle} type="text" placeholder="Note:" onChange={(e) => setNoteTitle(e.target.value)} className={styles.input} required />
+                <button className={styles.mainButton} type="submit" >Create note</button>
             </form>
             <form onSubmit={createFolder} className={styles.form}>
-                <input value={folderTitle} ref={collapsElementInput} type="text" placeholder="Title: " onChange={(e) => setFolderTitle(e.target.value)} className={styles.input} required />
-                <button ref={collapsElementButton} className={styles.mainButton} type="submit" >Create folder</button>
+                <input value={folderTitle} type="text" placeholder="Folder:" onChange={(e) => setFolderTitle(e.target.value)} className={styles.input} required />
+                <button className={styles.mainButton} type="submit" >Create folder</button>
             </form>
             <div className={styles.addAndSortFolder}>
                 <h3>Folders</h3>
@@ -356,8 +312,8 @@ export default function ListOfNotes({ collapsed }) {
                     <div ref={dropdownSorting} className={styles.dropdownContent}>
                         <button onClick={() => {setWayOfSorting('Aa'); setDropdownSorting()}} className={styles.dropdownstylebutton}>Alphabetical (a-z)</button>
                         <button onClick={() => {setWayOfSorting('Ad'); setDropdownSorting()}}className={styles.dropdownstylebutton}>Alphabetical (z-a)</button>
-                        <button onClick={() => {setWayOfSorting('Da'); setDropdownSorting()}}className={styles.dropdownstylebutton}>Created at (ascending)</button>
-                        <button onClick={() => {setWayOfSorting('Dd'); setDropdownSorting()}}className={styles.dropdownstylebutton}>Created at (descending)</button>
+                        <button onClick={() => {setWayOfSorting('Da'); setDropdownSorting()}}className={styles.dropdownstylebutton}>Last change (ascending)</button>
+                        <button onClick={() => {setWayOfSorting('Dd'); setDropdownSorting()}}className={styles.dropdownstylebutton}>Last change (descending)</button>
                     </div>
                 </div>
             </div>
@@ -383,13 +339,18 @@ export default function ListOfNotes({ collapsed }) {
                             </button>
                         </div>
                         <div className={selected == i ? `${styles.answerShow} ${styles.answer}` : styles.answer}>
-                            {folder.notesTitle.map((note, i) => {
+                            {folder.notes.map((note, i) => {
                                 return (
                                     <div key={i} className={styles.accordionNotes}>
-                                        <Image alt="Bold" src="/rich-text-icons-dark/note.svg" width={25} height={25} />
-                                        <Link href={`/app/note/${folder.notesId[i]}`}>
-                                            {note}
-                                        </Link>
+                                        <div style={{display: "flex"}}>
+                                            <Image alt="Bold" src="/rich-text-icons-dark/note.svg" width={25} height={25} />
+                                            <Link href={`/app/note/${note.id}`}>
+                                                {note.title}
+                                            </Link>
+                                        </div>  
+                                        <button className={styles.icon} onClick={() => {removeFromFolder(folder, note)}}>
+                                            <Image alt="delete folder" src="/rich-text-icons-dark/delete-folder.svg" width={25} height={25}/>
+                                        </button>
                                     </div>
                                 )
                             })}
@@ -405,29 +366,42 @@ export default function ListOfNotes({ collapsed }) {
             {/* Sort of like foreach (element in List), but it has an index too */}
             {data.map((note, index) => {
                 var title = note.title
-                for (let i=0; i<notesInFolder.length; i++) {
-                    if (note.id == notesInFolder[i]) {
-                        console.log(note.id)
-                    }
-                }
-                return (
-                    <div key={index} className={styles.note}>
-                        {/* The use of dynamic paging makes sure if you click on the title it will go to the appropriate link */}
-                        <Link className={styles.link} href={`/app/note/${note.id}`}>
-                            <div className={styles.text}>
-                                <Image alt="Bold" src="/rich-text-icons-dark/note.svg" width={25} height={25} />
-                                <p>{title}</p>
+                if (!note.inFolder) {
+                    return (
+                        <div key={index} className={styles.note}>
+                            {/* The use of dynamic paging makes sure if you click on the title it will go to the appropriate link */}
+                            <Link className={styles.link} href={`/app/note/${note.id}`}>
+                                <div className={styles.text}>
+                                    <Image alt="Bold" src="/rich-text-icons-dark/note.svg" width={25} height={25} />
+                                    <p>{title}</p>
+                                </div>
+                            </Link>
+                            <button className={styles.icon} onClick={() => prioritize(note.id, !note.isPriority)}>
+                                <Image alt="Bold" src={`/rich-text-icons-dark/exclamation-mark-${note.isPriority}.svg`} width={25} height={25} />
+                            </button>
+                            <button className={styles.icon} onClick={() => removeNote(note.id)}>
+                                <Image alt="Bold" src="/rich-text-icons-dark/trash.svg" width={25} height={25} />
+                            </button>
+                            <div>
+                                <button className={styles.icon} onClick={() => toggleAddFolder(index)}>
+                                    <Image alt="add folder" src={"/rich-text-icons-dark/add-folder.svg"} width={25} height={25}/>
+                                </button>
+                                <div className={selectedAddfolder == index ? `${styles.addFolderShow} ${styles.addFolder}` : styles.addFolder}>
+                                    {folderData.map((folder, ind) => {
+                                        return (
+                                            <div key={ind}>
+                                                <button className={styles.folderButton} onClick={() => {addToFolder(folder, note)}}>
+                                                    {folder.title}
+                                                </button>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
                             </div>
-                        </Link>
-                        <button className={styles.icon} onClick={() => prioritize(note.id, !note.isPriority)}>
-                            <Image alt="Bold" src={`/rich-text-icons-dark/exclamation-mark-${note.isPriority}.svg`} width={25} height={25} />
-                        </button>
-                        <button className={styles.icon} onClick={() => removeNote(note.id)}>
-                            <Image alt="Bold" src="/rich-text-icons-dark/trash.svg" width={25} height={25} />
-                        </button>
-
-                    </div>
-                )
+    
+                        </div>
+                    )
+                }
                 
             })}
 

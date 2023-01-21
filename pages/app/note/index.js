@@ -20,21 +20,46 @@ export default function Index() {
 
     let collapsableElementSavedNotes = React.createRef();
     let collapsableElementNotes = React.createRef();
-
-    const [editor] = useState(() => withReact(createEditor()));
-    const [editorTitle] = useState(() => withReact(createEditor()));
+    let collapsableElementAI = React.createRef();
+    let openElement = React.createRef();
+    let closeElement = React.createRef();
 
     function changeSavedNotesBar() {
-        collapsableElementSavedNotes.current.classList.toggle(
-            `${styles.collapsedSavedNote}`
-        );
-        collapsableElementNotes.current.classList.toggle(
-            `${styles.extenedNote}`
-        );
-        if (collapsed) {
-            setCollapsed(false)
+        openElement.current.classList.toggle(`${styles.openHide}`)
+        closeElement.current.classList.toggle(`${styles.closeShow}`)
+        if (collapsableElementAI.current.classList[1] == styles.showAIPanel) {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.SuperCollapsedTextEditor}`
+            );
+            collapsableElementSavedNotes.current.classList.toggle(
+                `${styles.hideNotesPanel}`
+            )
         } else {
-            setCollapsed(true)
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.CollapsedTextEditor}`
+            );
+            collapsableElementSavedNotes.current.classList.toggle(
+                `${styles.hideNotesPanel}`
+            )
+        }
+    }
+
+    function changeAIPanel() {
+        if (collapsableElementSavedNotes.current.classList[1] == undefined) {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.SuperCollapsedTextEditor}`
+            );
+            collapsableElementAI.current.classList.toggle(
+                `${styles.showAIPanel}`
+            )
+        }
+         else {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.CollapsedTextEditor}`
+            );
+            collapsableElementAI.current.classList.toggle(
+                `${styles.showAIPanel}`
+            )
         }
     }
 
@@ -47,29 +72,38 @@ export default function Index() {
     if (session) {
         return (
             <AppLayout>
-
                 <div className={styles.content}>
+                    <div ref={openElement} onClick={changeSavedNotesBar} className={`${styles.openStyle} ${styles.openHide}`}>
+                        <strong>Open</strong>
+                    </div>
+                    <div ref={closeElement} onClick={changeSavedNotesBar} className={`${styles.closeStyle} ${styles.closeShow}`}>
+                        <strong>Close</strong>
+                    </div>
                     <div
                         ref={collapsableElementSavedNotes}
                         id="SavedNotes"
                         className={styles.SavedNotes}
                     >
-                        <p style={{ display: "inline-block" }}>Saved Notes</p>
-                        <p
-                            className={styles.close}
-                            style={{ display: "inline-block", float: "right" }}
-                            onClick={changeSavedNotesBar}
-                        >
-                            &times;
-                        </p>
-                        <ListOfNotes collapsed={collapsed} />
+                        <ListOfNotes />
                     </div>
                     <div
                         ref={collapsableElementNotes}
                         id="TextEditor"
-                        className={`${styles.TextEditor} ${styles.titleNoNotes}`}
-                    >
+                        className={`${styles.TextEditor} ${styles.CollapsedTextEditor} ${styles.titleNoNotes}`}
+                    >   
                         <h1>Select one of your notes or create a note!</h1>
+                    </div>
+                    <div
+                        ref={collapsableElementAI}
+                        id="AI"
+                        className={styles.AI}
+                    >
+                    </div>
+                    <div
+                        className={styles.AIAssisctance}
+                        onClick={changeAIPanel}
+                    >
+                        AI Assistance
                     </div>
                 </div>
 

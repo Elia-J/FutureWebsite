@@ -8,6 +8,7 @@ import AppLayout from "/layouts/appLayout"
 import LoadingLine from '/components/loadingLine'
 import { EventProvider } from "/layouts/stateStoreEvents"
 
+import ListOfTasks from "/components/listOfTasks"
 import Calendar from '/components/calendar'
 
 import Trash from "/public/trash.svg"
@@ -163,7 +164,7 @@ export default function IndexApp() {
         return (
             <EventProvider>
                 <AppLayout>
-
+                
                     <div className={styles.mainCalendar}>
                         <div className={styles.CalendarHeader}>
                             <Calendar panel={todoPanelToggle} setPanel={setTodoPanelToggle} toggleValue={todoPanelToggle} />
@@ -185,17 +186,20 @@ export default function IndexApp() {
                                 <button className={styles.buttonAdd} onClick={switchPanel} value="tasks">Task</button>
                                 <button className={styles.buttonAdd} onClick={switchPanel} value="notes">Notes</button>
 
-                                {panelData}
+                                <div className={styles.todoListHeader}>
+                                    <h3>Tasks List</h3>
+
+                                    <ListOfTasks></ListOfTasks>
+
+                                </div>
 
 
                             </div>
-
-
                         </div>
                     </div>
 
                 </AppLayout>
-            </EventProvider>
+        </EventProvider>
         )
     }
 
