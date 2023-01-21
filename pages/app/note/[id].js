@@ -20,7 +20,6 @@ import { useRouter } from "next/router";
 import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react'
 
 import { supabase } from "/lib/supasbaseClient"
-import { useTheme } from 'next-themes'
 
 const CustomEditorV2 = {
     isActive(editor, prop, format) {
@@ -133,13 +132,11 @@ export default function Notes({ notes }) {
     const session = useSession()
     const user = useUser()
 
+    // sets the initial value used by the slate editor
     const [initialValue, setInitialValue] = useState(notes.description)
-    const { theme, setTheme } = useTheme()
-
-    const [THEME, setTHEME] = useState()
-
+    
+    // sets the initial value title used by the slate editor
     const [initialTitle, setInitialTitle] = useState([{"type":"h1","children":[{"text":notes.title}]}])
-    const [collapsed, setCollapsed] = useState(false)
     const [fontSize, setFontSize] = useState(16)
     // H1: 32
     // H2: 26
@@ -161,11 +158,13 @@ export default function Notes({ notes }) {
             router.events.off('routeChangeComplete', handleRouteChange)
         }
     }, [])
-    // Variables to see if there have been changes.
+
+    // Variables to see if there have been changes made to the document.
     var valueDescription = initialValue;
     var valueTitle = initialTitle;
 
     // updateData gets a title and a description and updates them with the according note id
+    // it also updates the created_at to show when you last saved it.
     async function updateData(t, d) {
         let now = new Date()
         let ISONow = now.toISOString()
@@ -177,15 +176,18 @@ export default function Notes({ notes }) {
         location.reload()
     }
 
+    // Creates refs to make sure we can toggle different classNames.
     let collapsableElementSavedNotes = React.createRef();
     let collapsableElementNotes = React.createRef();
     let collapsableElementAI = React.createRef();
     let openElement = React.createRef();
     let closeElement = React.createRef();
 
+    // toggles the appropriate classNames for the saved notesbar
     function changeSavedNotesBar() {
         openElement.current.classList.toggle(`${styles.openHide}`)
         closeElement.current.classList.toggle(`${styles.closeShow}`)
+        // if both the savednotes panel and ai panel are toggled it toggles the superCollapsed text editor
         if (collapsableElementAI.current.classList[1] == styles.showAIPanel) {
             collapsableElementNotes.current.classList.toggle(
                 `${styles.SuperCollapsedTextEditor}`
@@ -203,6 +205,7 @@ export default function Notes({ notes }) {
         }
     }
 
+    // does the same as changeSavedNotesBar() but without the openelement and close element.
     function changeAIPanel() {
         if (collapsableElementSavedNotes.current.classList[1] == undefined) {
             collapsableElementNotes.current.classList.toggle(
@@ -227,9 +230,6 @@ export default function Notes({ notes }) {
     // We have two editors, one for the title and one for the description
     const [editor] = useState(() => withReact(createEditor()));
     const [editorTitle] = useState(() => withReact(createEditor()));
-
-    // Function to make the saved notes bar smaller and bigger by adding a class to its classlist
-    // This is picked up by the css and changes it's width
 
     const renderElement = useCallback((props) => {
         // If the editor renders an eliment and there is an alignment prop then it sents the global align to its value
@@ -272,19 +272,29 @@ export default function Notes({ notes }) {
         return <Leaf {...props} />;
     }, []);
     
+    // These are the buttons that toggle a style by the editor
     const Buttons = ["bold", "italic", "underline", "code", "h1", "h2", "quote", "list-bulleted", "align-left", "align-center", "align-right", "align-justify"]
     const ToolbarV2 = () => {
         return (
             <div className={styles.toolbar}>
+                {/* it loops through that button each getting it's own icon and onMouseDown event */}
                 {
                     Buttons.map((button, i) => {
                         return (
                             <button key={i} className={styles.buttonWithoutStyle} onMouseDown={() => {
+                                // if the button starts with 'align' it should toggle the align function together with how it should align
                                 if (button.slice(0,5) == "align") {
                                     CustomEditorV2.toggle(editor, "align", button.split('-')[1], fontSize)
-                                } else if (i<4) {
+                                } 
+                                // if the first four buttons are clicked it only needs to set a propperty of the customeditor to true
+                                else if (i<4) {
+
                                     CustomEditorV2.toggle(editor, button, true, fontSize)
-                                } else {
+                                } 
+                                // for all other case (which are "h1", "h2", "quote" and "list-bulleted")
+                                // it toggles the type propertie together with the button name
+                                // for h1 and h2 it sets the fontsize to 32 or 26
+                                else {
                                     if (button=="h1") {
                                         CustomEditorV2.toggle(editor, "type", button, 32)
                                     } else if (button=="h2") {
@@ -381,10 +391,18 @@ export default function Notes({ notes }) {
         );
     };
 
+    // parses the ISO string saved in the database to a date to show on the page
     function parseISOString(s) {
         var b = s.split(/\D+/);
         return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
-      }
+    }
+
+    // if there isn't a session it should pop back to the landing page so you can sign in again
+    useEffect(() => {
+        if (!session) {
+            router.push("/")
+        }
+    })
 
     if (session) {
         // Returns the html is there is a session
@@ -433,11 +451,12 @@ export default function Notes({ notes }) {
                                         />
                                     </Slate>
                                 </div>
+                                {/* the date it was last edited */}
                                 <strong>{parseISOString(notes.created_at).toString().slice(0,24)}</strong>
                                 {/* Returns the Toolbar with too breaks above and underneath it */}
                                 {/* The Toolbar element is defined in this file */}
                                 <hr />
-                                {/* <Toolbar /> */}
+                                {/* returns the toolbar */}
                                 <ToolbarV2 />
                                 <hr />
 
@@ -534,6 +553,7 @@ export default function Notes({ notes }) {
                             <button
                                 className={styles.mainButton}
                                 onClick={() => {
+                                    // it uses valueTitle[0].children[0].text to save it as the regular text instead of the JSON object slate needs to render it
                                     updateData(valueTitle[0].children[0].text, valueDescription)
                                 }}
                             >
@@ -563,6 +583,8 @@ export default function Notes({ notes }) {
     }
 }
 
+
+// this gets the ID from the query and sets the notes propperty to the note corresponding with the id
 export async function getServerSideProps({ params }) {
     const { id } = params
 

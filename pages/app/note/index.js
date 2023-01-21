@@ -1,8 +1,5 @@
 import styles from "../../../styles/notes.module.scss";
 import React, { useState, useEffect } from "react";
-import { useRouter } from 'next/router'
-import { createEditor } from "slate";
-import { withReact } from "slate-react";
 import ListOfNotes from '../../../components/listOfNotes'
 import LoadingLine from '/components/loadingLine'
 
@@ -14,17 +11,18 @@ export default function Index() {
 
     const session = useSession()
 
-    //get all notes where user_id = user.id
-
+    // create refs for all element which needs its classname to be edited
     let collapsableElementSavedNotes = React.createRef();
     let collapsableElementNotes = React.createRef();
     let collapsableElementAI = React.createRef();
     let openElement = React.createRef();
     let closeElement = React.createRef();
 
+    // toggles the appropriate classNames for the saved notesbar
     function changeSavedNotesBar() {
         openElement.current.classList.toggle(`${styles.openHide}`)
         closeElement.current.classList.toggle(`${styles.closeShow}`)
+        // if both the savednotes panel and ai panel are toggled it toggles the superCollapsed text editor
         if (collapsableElementAI.current.classList[1] == styles.showAIPanel) {
             collapsableElementNotes.current.classList.toggle(
                 `${styles.SuperCollapsedTextEditor}`
@@ -42,6 +40,7 @@ export default function Index() {
         }
     }
 
+    // does the same as changeSavedNotesBar() but without the openelement and close element.
     function changeAIPanel() {
         if (collapsableElementSavedNotes.current.classList[1] == undefined) {
             collapsableElementNotes.current.classList.toggle(
@@ -61,6 +60,7 @@ export default function Index() {
         }
     }
 
+    // if there isn't a session it should pop back to the landing page so you can sign in again
     useEffect(() => {
         if (!session) {
             router.push("/")
