@@ -164,7 +164,7 @@ export default function IndexApp() {
         return (
             <EventProvider>
                 <AppLayout>
-
+                
                     <div className={styles.mainCalendar}>
                         <div className={styles.CalendarHeader}>
                             <Calendar panel={todoPanelToggle} setPanel={setTodoPanelToggle} toggleValue={todoPanelToggle} />
@@ -191,14 +191,15 @@ export default function IndexApp() {
 
                                     <ListOfTasks></ListOfTasks>
 
+                                </div>
+
+
                             </div>
-
-
                         </div>
                     </div>
 
                 </AppLayout>
-            </EventProvider>
+        </EventProvider>
         )
     }
 
