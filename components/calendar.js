@@ -321,6 +321,27 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     //Add 4 days to today date
     const today3 = momentTimezone.tz(settings.time_zone).add(4, 'days').format('DD-MM-YYYY');
 
+    function checkWeather(weatherTemp) {
+        if (settings.weather) {
+            return (
+                <div className={styles.weather}>
+                    <div className={styles.temperature}>{Math.round(parseInt(weatherTemp?.main.temp))} °C</div>
+                    <div className={styles.weatherIconClase}>
+                        <Image
+                            src={`https://openweathermap.org/img/wn/${weatherTemp?.weather[0].icon}@2x.png`}
+                            alt="weather icon"
+                            fill
+                        />
+                    </div>
+                </div>
+            )
+        }
+        else {
+            return ""
+        }
+
+    }
+
     function dayHeaderContent(arg) {
 
         const date = moment(arg.date).format('DD-MM-YYYY');
@@ -347,21 +368,15 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                             monthViewWeeknumber ?
 
                                 null
+
                                 :
+
                                 <>
                                     <div className={styles.daydate}>
                                         {arg.date.getDate()}
                                     </div>
-                                    <div className={styles.weather}>
-                                        <div className={styles.temperature}>{Math.round(parseInt(weatherTemp?.main.temp))}  °C</div>
-                                        <div className={styles.weatherIconClase}>
-                                            <Image
-                                                src={`https://openweathermap.org/img/wn/${weatherTemp?.weather[0].icon}@2x.png`}
-                                                alt="weather icon"
-                                                fill
-                                            />
-                                        </div>
-                                    </div>
+                                    {checkWeather(weatherTemp)}
+
                                 </>
                         }
                     </div>
