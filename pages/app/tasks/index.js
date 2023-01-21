@@ -24,11 +24,27 @@ export default function Tasks() {
         }
     }
 
+    // Get all the tasks associated with a certain folder
+    async function GetFolderTasksSupabase(folder) {
+        const {data, error} = await supabase
+            .from('todos')
+            .select('*')
+            .eq('folder_id', folder.id)
+        if (data) {
+            return data
+        }
+        if (error) {
+            console.log('error', error)
+            return
+        }
+    }
+
     // Create a new folder in supabase
     async function CreateFolderSupabase() {
         const { data, error } = await supabase
                 .from('todosFolders')
                 .insert({ user_id: user.id, title: folderTitle})
+        GetFoldersSupabase()
     }
 
     // Edits a folder in supabase
@@ -37,6 +53,17 @@ export default function Tasks() {
                 .from('todosFolders')
                 .update({title: folderTitle})
                 .eq('id', 3)
+        GetFoldersSupabase()
+    }
+
+    // Discards a folder in supabase
+    async function DiscardFolderSupabase(folder_id) {
+        const { data, error } = await supabase
+            .from('todosFolders')
+            .delete()
+            .eq('id', folder_id)
+
+        GetFoldersSupabase()
     }
 
     // Create a new task in supabase
@@ -158,7 +185,7 @@ export default function Tasks() {
     const [taskPriority, setTaskPriority] = useState(0)
     const [folderID, setFolderID] = useState(null)
 
-    const [folderTitle, setFolderTitle] = useState("Folder Title")
+    const [folderTitle, setFolderTitle] = useState("")
 
     const [openPanel, setOpenPanel] = useState(false)
     const [AIPanel, setAIPanel] = useState(false)
@@ -175,41 +202,66 @@ export default function Tasks() {
                 <div className={creatingTask || editingTask ? styles.blur : null}>
                     <SettingsProvider>
                         <AppLayout>
-                            <div className={styles.flexContainer}>
-                                <div>
-                                    <div>
-                                        <button className={styles.mainButton} onClick={CreateTask}>
+                                <div className={styles.body}>
+                                    <div className={openPanel ? `${styles.panel} ${styles.openFolderPanel}` : `${styles.panel} ${styles.closedFolderPanel}`}>
+                                        <div className={`${styles.nav} ${styles.navMargin}`}>
+                                            <button className={styles.mainButton} onClick={CreateTask}>
                                             <span className={styles.create}>Create </span>
                                             <span>+</span>
-                                        </button>
-                                        <div className={openPanel ? `${styles.panel} ${styles.openFolderPanel}` : `${styles.panel} ${styles.closedFolderPanel}`}>
-                                            <button className={styles.button} onClick={() => setOpenPanel(!openPanel)}>
-                                            {openPanel ? "Close" : "Open"}
+                                            </button>  
+                                            <button className={openPanel ? `${styles.button} ${styles.openButton}` : styles.button} onClick={() => setOpenPanel(!openPanel)}>
+                                                {openPanel ? "Close" : "Open"}
                                             </button>
-                                            <div>
-                                            {folders.map((folder, i) => (
-                                                <h1 className={styles.h1}>{folder.title}</h1>
-                                            ))}
+                                        </div>
+                                        <div className={styles.foldersContainer}>
+                                            <hr className={styles.hr}></hr>
+                                            <div style={{ margin: "15px" }}>
+                                                <input className={`${styles.input} ${styles.folderInput}`}
+                                                    id="title"
+                                                    type="text"
+                                                    name="folderTitle"
+                                                    placeholder="Folder Title"
+                                                    value={folderTitle}
+                                                    required
+                                                    onChange={(event) => setFolderTitle(event.target.value)}
+                                                ></input>
+                                                <button className={`${styles.mainButton} ${styles.createFolderMainButton}`} onClick={() => CreateFolderSupabase()}>Create Folder!</button>
                                             </div>
+                                            <hr className={styles.hr}></hr>
+                                            {folders.map((folder, i) => (
+                                                <div>
+                                                    <div>
+                                                        <span>{folder.title}</span>
+                                                        <button onClick={() => DiscardFolderSupabase(folder.id)}>x</button>
+                                                    </div>
+                                                    <div>
+
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
-                                </div>
-                                <div>
+                                                                    
+                                <div className={styles.main}>
                                     <h1 className={styles.h1}>Tasks</h1>
                                     <ListOfTasks reload={reload}></ListOfTasks>
                                 </div>
                                 <div className={AIPanel ? `${styles.panel} ${styles.openAIPanel}` : `${styles.panel} ${styles.closedAIPanel}`}>
-                                        <button className={`${styles.AIButton} ${styles.button}`} onClick={() => setAIPanel(!AIPanel)}>
-                                        {AIPanel ? "Close" : "AI Assistance"}
-                                        </button>
+                                        <div className={styles.navAI}>
+                                            <button className={AIPanel ? `${styles.button} ${styles.AIButton} ${styles.openAIButton}` : `${styles.button} ${styles.AIButton}`} onClick={() => setAIPanel(!AIPanel)}>
+                                                {AIPanel ? "Close" : "AI Assistance"}
+                                            </button>
+                                        </div>
+                                        <div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
                         </AppLayout>
                     </SettingsProvider>
                 </div>
 
                 <div className={creatingTask || editingTask ? styles.taskForm : `${styles.hiddenTaskForm} ${styles.taskForm}`}>
-                    <button className={styles.cancelButton} onClick={CancelTask}>x</button>
+                    <button className={styles.cancelButton} onClick={(CancelTask)}>x</button>
                     <div className={styles.titleHeader}>
                         <div className={`${styles.titleInputContainer} ${styles.inputContainer}`}>
                             <label className={styles.label}>Task title:</label>
@@ -232,8 +284,10 @@ export default function Tasks() {
                             <option value="3">3</option>
                         </select>
                         <select className={styles.select} onChange={(event) => setFolderID(event.target.value)}>
-                            <option value="Null">None</option>
-                            <option value="1">Folder 1</option>
+                            <option value={null}>None</option>
+                            {folders.map((folder, i) => (
+                                <option value={folder.id}>{folder.title}</option>
+                            ))}
                         </select>
                         <div className={styles.inputContainer}>
                             <label className={styles.label}>Date:</label>
