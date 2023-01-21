@@ -14,7 +14,6 @@ import ListOfNotes from '../../../components/listOfNotes'
 
 import AppLayout from "/layouts/appLayout"
 import LoadingLine from '/components/loadingLine'
-import { StateProvider } from "/layouts/stateStore"
 
 import { useRouter } from "next/router";
 import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react'
@@ -24,7 +23,7 @@ import { useTheme } from 'next-themes'
 
 const CustomEditorV2 = {
     isActive(editor, prop, format) {
-        switch(prop) {
+        switch (prop) {
             case "underline":
                 const [match1] = Editor.nodes(editor, {
                     match: (n) => n.underline === true,
@@ -70,8 +69,9 @@ const CustomEditorV2 = {
             case "underline":
                 Transforms.setNodes(
                     editor,
-                    {   underline: isActive ? null : true,
-                        fontSize: fontSize   
+                    {
+                        underline: isActive ? null : true,
+                        fontSize: fontSize
                     },
                     { match: (n) => Text.isText(n), split: true }
                 );
@@ -79,7 +79,8 @@ const CustomEditorV2 = {
             case "bold":
                 Transforms.setNodes(
                     editor,
-                    {   bold: isActive ? null : true,
+                    {
+                        bold: isActive ? null : true,
                         fontSize: fontSize
                     },
                     { match: (n) => Text.isText(n), split: true }
@@ -88,8 +89,9 @@ const CustomEditorV2 = {
             case "italic":
                 Transforms.setNodes(
                     editor,
-                    {   italic: isActive ? null : true,
-                        fontSize: fontSize 
+                    {
+                        italic: isActive ? null : true,
+                        fontSize: fontSize
                     },
                     { match: (n) => Text.isText(n), split: true }
                 );
@@ -97,8 +99,9 @@ const CustomEditorV2 = {
             case "code":
                 Transforms.setNodes(
                     editor,
-                    {   code: isActive ? null : true,
-                        fontSize: fontSize 
+                    {
+                        code: isActive ? null : true,
+                        fontSize: fontSize
                     },
                     { match: (n) => Text.isText(n), split: true }
                 );
@@ -106,8 +109,9 @@ const CustomEditorV2 = {
             case "type":
                 Transforms.setNodes(
                     editor,
-                    {   type: isActive ? null : format,
-                        fontSize: fontSize 
+                    {
+                        type: isActive ? null : format,
+                        fontSize: fontSize
                     },
                     { match: (n) => Editor.isBlock(editor, n) }
                 );
@@ -115,13 +119,14 @@ const CustomEditorV2 = {
             case "align":
                 Transforms.setNodes(
                     editor,
-                    {   align: isActive ? null : format,
+                    {
+                        align: isActive ? null : format,
                         fontSize: fontSize
                     },
                     { match: (n) => Editor.isBlock(editor, n) }
                 );
         }
-    }   
+    }
 }
 
 let globalAlign = "left";
@@ -138,7 +143,7 @@ export default function Notes({ notes }) {
 
     const [THEME, setTHEME] = useState()
 
-    const [initialTitle, setInitialTitle] = useState([{"type":"h1","children":[{"text":notes.title}]}])
+    const [initialTitle, setInitialTitle] = useState([{ "type": "h1", "children": [{ "text": notes.title }] }])
     const [collapsed, setCollapsed] = useState(false)
     const [fontSize, setFontSize] = useState(16)
     // H1: 32
@@ -244,7 +249,7 @@ export default function Notes({ notes }) {
     const renderLeaf = useCallback((props) => {
         return <Leaf {...props} />;
     }, []);
-    
+
     const Buttons = ["bold", "italic", "underline", "code", "h1", "h2", "quote", "list-bulleted", "align-left", "align-center", "align-right", "align-justify"]
     const ToolbarV2 = () => {
         return (
@@ -253,20 +258,20 @@ export default function Notes({ notes }) {
                     Buttons.map((button, i) => {
                         return (
                             <button key={i} className={styles.buttonWithoutStyle} onMouseDown={() => {
-                                if (button.slice(0,5) == "align") {
+                                if (button.slice(0, 5) == "align") {
                                     CustomEditorV2.toggle(editor, "align", button.split('-')[1], fontSize)
-                                } else if (i<4) {
+                                } else if (i < 4) {
                                     CustomEditorV2.toggle(editor, button, true, fontSize)
                                 } else {
-                                    if (button=="h1") {
+                                    if (button == "h1") {
                                         CustomEditorV2.toggle(editor, "type", button, 32)
-                                    } else if (button=="h2") {
+                                    } else if (button == "h2") {
                                         CustomEditorV2.toggle(editor, "type", button, 26)
                                     } else {
                                         CustomEditorV2.toggle(editor, "type", button, fontSize)
                                     }
                                 }
-                                
+
                             }}>
                                 <Image alt={button} className={styles.icon} src={`/rich-text-icons-dark/editor-${button}.svg`} width={25} height={25} />
                             </button>
@@ -274,8 +279,8 @@ export default function Notes({ notes }) {
                     })
                 }
                 <div>
-                    <button onClick={() => {setFontSize(fontSize + 1)}}>&#129093;</button>
-                    <button onClick={() => {setFontSize(fontSize - 1)}}>&#129095;</button>
+                    <button onClick={() => { setFontSize(fontSize + 1) }}>&#129093;</button>
+                    <button onClick={() => { setFontSize(fontSize - 1) }}>&#129095;</button>
                 </div>
             </div>
         )
@@ -325,7 +330,7 @@ export default function Notes({ notes }) {
     const DefaultElement = (props) => {
         console.log(props.element.children[0].fontSize)
         return (
-            <p style={{ textAlign: globalAlign, fontSize: props.element.children[0].fontSize}} {...props.attributes}>
+            <p style={{ textAlign: globalAlign, fontSize: props.element.children[0].fontSize }} {...props.attributes}>
                 {props.children}
             </p>
         );
@@ -359,160 +364,160 @@ export default function Notes({ notes }) {
         // Returns the html is there is a session
         return (
             // The settingsProvider and AppLayout add the sidebar with settings functions
-                <AppLayout>
-                    <div className={styles.content}>
-                        <div
-                            ref={collapsableElementSavedNotes}
-                            id="SavedNotes"
-                            className={styles.SavedNotes}
+            <AppLayout>
+                <div className={styles.content}>
+                    <div
+                        ref={collapsableElementSavedNotes}
+                        id="SavedNotes"
+                        className={styles.SavedNotes}
+                    >
+                        <p style={{ display: "inline-block" }}>Saved Notes</p>
+                        {/* The X on the saved notes section */}
+                        <p
+                            className={styles.close}
+                            style={{ display: "inline-block", float: "right" }}
+                            onClick={changeSavedNotesBar}
                         >
-                            <p style={{ display: "inline-block" }}>Saved Notes</p>
-                            {/* The X on the saved notes section */}
-                            <p
-                                className={styles.close}
-                                style={{ display: "inline-block", float: "right" }}
-                                onClick={changeSavedNotesBar}
-                            >
-                                &times;
-                            </p>
-                            {/* Returns the list of notes */}
-                            <ListOfNotes collapsed={collapsed} />
-                        </div>
-                        <div
-                            ref={collapsableElementNotes}
-                            id="TextEditor"
-                            className={styles.TextEditor}
-                        >
-                            <div className={styles.editorDiv}>
-                                {/* Title editor */}
-                                <div className={styles.title}>
-                                    <h1>Title: </h1>
-                                    {/* The editor itself */}
-                                    <Slate
-                                        editor={editorTitle}
-                                        value={initialTitle}
-                                        onChange={(value) => {
-                                            valueTitle = value;
-                                        }}
-                                    >
-                                        <Editable
-                                            className={styles.noteTitle}
-                                            onKeyDown={(event) => {
-                                                if (event.key == "Enter") event.preventDefault();
-                                            }}
-                                            renderElement={renderElement}
-                                            renderLeaf={renderLeaf}
-                                        />
-                                    </Slate>
-                                </div>
-                                {/* Returns the Toolbar with too breaks above and underneath it */}
-                                {/* The Toolbar element is defined in this file */}
-                                <hr />
-                                {/* <Toolbar /> */}
-                                <ToolbarV2 />
-                                <hr />
-
-                                 <div className={styles.description}>
-                                     {/* Descriptor itself */}
-                                     <Slate
-                                        editor={editor}
-                                        value={initialValue}
-                                        /* saving the data */
-                                        onChange={(value) => {
-                                            valueDescription = value;
-                                        }}
-                                    >
-                                        <Editable
-                                            className={styles.noteDescription}
-                                            renderElement={renderElement}
-                                            renderLeaf={renderLeaf}
-                                            onKeyDown={(event) => {
-                                                // Checks for shortcut
-                                                // Only if the ctrl key is pressed
-                                                if (!event.ctrlKey) {
-                                                    return;
-                                                }
-
-                                                switch (event.key) {
-                                                    case ",": {
-                                                        event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "code", true, fontSize)
-                                                        break;
-                                                    }
-
-                                                    case "b": {
-                                                        event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "bold", true, fontSize)
-                                                        break;
-                                                    }
-                                                    case "i": {
-                                                        event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "italic", true, fontSize)
-                                                        break;
-                                                    }
-                                                    case "u": {
-                                                        event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "underline", true, fontSize)
-                                                        break;
-                                                    }
-                                                    case "1": {
-                                                        event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "type", "h1", fontSize)
-                                                        break;
-                                                    }
-                                                    case "2": {
-                                                        event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "type", "h2", fontSize)
-                                                        break;
-                                                    }
-                                                    case "q": {
-                                                        event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "type", "quote", fontSize)
-                                                        break;
-                                                    }
-                                                    case "b" && "l": {
-                                                        event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "type", "list-bulleted", fontSize)
-                                                        break;
-                                                    }
-                                                    case "Shift" && "R": {
-                                                        event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "align", "right", fontSize)
-                                                        break;
-                                                    }
-                                                    case "Shift" && "L": {
-                                                        event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "align", "left", fontSize)
-                                                        break;
-                                                    }
-                                                    case "Shift" && "E": {
-                                                        event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "align", "center", fontSize)
-                                                        break;
-                                                    }
-                                                    case "Shift" && "J": {
-                                                        event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "align", "justify", fontSize)
-                                                        break;
-                                                    }
-                                                }
-                                            }}
-                                        />
-                                    </Slate>
-                                </div>
-                            </div>
-                            {/* Saves the data by using the updateData function */}
-                            <button
-                                className={styles.mainButton}
-                                onClick={() => {
-                                    updateData(valueTitle[0].children[0].text, valueDescription)
-                                }}
-                            >
-                                Save
-                            </button>
-                        </div>
+                            &times;
+                        </p>
+                        {/* Returns the list of notes */}
+                        <ListOfNotes collapsed={collapsed} />
                     </div>
-                </AppLayout>
+                    <div
+                        ref={collapsableElementNotes}
+                        id="TextEditor"
+                        className={styles.TextEditor}
+                    >
+                        <div className={styles.editorDiv}>
+                            {/* Title editor */}
+                            <div className={styles.title}>
+                                <h1>Title: </h1>
+                                {/* The editor itself */}
+                                <Slate
+                                    editor={editorTitle}
+                                    value={initialTitle}
+                                    onChange={(value) => {
+                                        valueTitle = value;
+                                    }}
+                                >
+                                    <Editable
+                                        className={styles.noteTitle}
+                                        onKeyDown={(event) => {
+                                            if (event.key == "Enter") event.preventDefault();
+                                        }}
+                                        renderElement={renderElement}
+                                        renderLeaf={renderLeaf}
+                                    />
+                                </Slate>
+                            </div>
+                            {/* Returns the Toolbar with too breaks above and underneath it */}
+                            {/* The Toolbar element is defined in this file */}
+                            <hr />
+                            {/* <Toolbar /> */}
+                            <ToolbarV2 />
+                            <hr />
+
+                            <div className={styles.description}>
+                                {/* Descriptor itself */}
+                                <Slate
+                                    editor={editor}
+                                    value={initialValue}
+                                    /* saving the data */
+                                    onChange={(value) => {
+                                        valueDescription = value;
+                                    }}
+                                >
+                                    <Editable
+                                        className={styles.noteDescription}
+                                        renderElement={renderElement}
+                                        renderLeaf={renderLeaf}
+                                        onKeyDown={(event) => {
+                                            // Checks for shortcut
+                                            // Only if the ctrl key is pressed
+                                            if (!event.ctrlKey) {
+                                                return;
+                                            }
+
+                                            switch (event.key) {
+                                                case ",": {
+                                                    event.preventDefault();
+                                                    CustomEditorV2.toggle(editor, "code", true, fontSize)
+                                                    break;
+                                                }
+
+                                                case "b": {
+                                                    event.preventDefault();
+                                                    CustomEditorV2.toggle(editor, "bold", true, fontSize)
+                                                    break;
+                                                }
+                                                case "i": {
+                                                    event.preventDefault();
+                                                    CustomEditorV2.toggle(editor, "italic", true, fontSize)
+                                                    break;
+                                                }
+                                                case "u": {
+                                                    event.preventDefault();
+                                                    CustomEditorV2.toggle(editor, "underline", true, fontSize)
+                                                    break;
+                                                }
+                                                case "1": {
+                                                    event.preventDefault();
+                                                    CustomEditorV2.toggle(editor, "type", "h1", fontSize)
+                                                    break;
+                                                }
+                                                case "2": {
+                                                    event.preventDefault();
+                                                    CustomEditorV2.toggle(editor, "type", "h2", fontSize)
+                                                    break;
+                                                }
+                                                case "q": {
+                                                    event.preventDefault();
+                                                    CustomEditorV2.toggle(editor, "type", "quote", fontSize)
+                                                    break;
+                                                }
+                                                case "b" && "l": {
+                                                    event.preventDefault();
+                                                    CustomEditorV2.toggle(editor, "type", "list-bulleted", fontSize)
+                                                    break;
+                                                }
+                                                case "Shift" && "R": {
+                                                    event.preventDefault();
+                                                    CustomEditorV2.toggle(editor, "align", "right", fontSize)
+                                                    break;
+                                                }
+                                                case "Shift" && "L": {
+                                                    event.preventDefault();
+                                                    CustomEditorV2.toggle(editor, "align", "left", fontSize)
+                                                    break;
+                                                }
+                                                case "Shift" && "E": {
+                                                    event.preventDefault();
+                                                    CustomEditorV2.toggle(editor, "align", "center", fontSize)
+                                                    break;
+                                                }
+                                                case "Shift" && "J": {
+                                                    event.preventDefault();
+                                                    CustomEditorV2.toggle(editor, "align", "justify", fontSize)
+                                                    break;
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </Slate>
+                            </div>
+                        </div>
+                        {/* Saves the data by using the updateData function */}
+                        <button
+                            className={styles.mainButton}
+                            onClick={() => {
+                                updateData(valueTitle[0].children[0].text, valueDescription)
+                            }}
+                        >
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </AppLayout>
         );
     } else {
         // If there is not a session, return the loadingline
