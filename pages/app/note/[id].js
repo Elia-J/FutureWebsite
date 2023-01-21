@@ -697,8 +697,7 @@ export default function Notes({ notes }) {
                         Save
                     </button>
                 </div>
-            </div>
-            </AppLayout >
+            </AppLayout>
         );
     } else {
         // If there is not a session, return the loadingline
