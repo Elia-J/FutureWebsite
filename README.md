@@ -3,21 +3,19 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/Elia-J/FutureWebsite?style=for-the-badge)
 ![GitHub language count](https://img.shields.io/github/languages/count/Elia-J/FutureWebsite?style=for-the-badge)
 ![GitHub forks](https://img.shields.io/github/forks/Elia-J/FutureWebsite?style=for-the-badge)
-![Bitbucket open issues](https://img.shields.io/bitbucket/issues/Elia-J/FutureWebsite?style=for-the-badge)
 
-![GitHub stars](https://img.shields.io/github/stars/Elia-J/FutureWebsite?style=social)
-![GitHub forks](https://img.shields.io/github/forks/Elia-J/FutureWebsite?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/Elia-J/FutureWebsite?style=social)
-![GitHub followers](https://img.shields.io/github/followers/Elia-J?style=social)
+![GitHub stars](https://img.shields.io/github/stars/Elia-J/FutureWebsite?style=for-the-badge)
+![GitHub watchers](https://img.shields.io/github/watchers/Elia-J/FutureWebsite?style=for-the-badge)
+![GitHub followers](https://img.shields.io/github/followers/Elia-J?style=for-the-badge)
 
-![Last commit](https://img.shields.io/github/last-commit/Elia-J/FutureWebsite?style=flat-square)
-![Vercel Deployment](https://vercelbadge.vercel.app/api/Elia-J/FutureWebsite?style=flat-square)
-![GitHub issues](https://img.shields.io/github/issues/Elia-J/FutureWebsite?style=flat-square)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/Elia-J/FutureWebsite?style=flat-square)
-![GitHub license](https://img.shields.io/github/license/Elia-J/FutureWebsite?style=for-the-badge)
+![Last commit](https://img.shields.io/github/last-commit/Elia-J/FutureWebsite?style=for-the-badge)
+![Vercel Deployment](https://vercelbadge.vercel.app/api/Elia-J/FutureWebsite?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues/Elia-J/FutureWebsite?style=for-the-badge)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/Elia-J/FutureWebsite?style=for-the-badge)
+</br></br>
 
 ![FutureWebsite](https://raw.githubusercontent.com/Elia-J/FutureWebsite/ff8f72cacd8b18b05f10c44ea733decf7bdfbd05/public/future-website.svg)
-</br>
+</br></br>
 
 ## Table of Contents
 
