@@ -1,15 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import SettingsLayout from '../../layouts/settingsLayout'
 import styles from '/styles/general.module.scss'
 import { useStateStoreContext } from "/layouts/stateStore"
 
 export default function CalendarSetting() {
 
+    //array of days
     const dayOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
-    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy] = useStateStoreContext();
+
+    //global state/variables
+    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel] = useStateStoreContext();
     console.log("show weekends " + settings.ShowWeekends)
 
+
+    //variables
+    const [beginTime, setBeginTime] = useState(settings.BeginTimeDay)
+    const [endTime, setEndTime] = useState(settings.EndTimeDay)
+
+    function handleBeginTimeAndEndTime() {
+        //convert timet to time with timeZone UTC
+
+    }
 
     return (
 
@@ -51,7 +63,7 @@ export default function CalendarSetting() {
                 </div>
 
                 <div className={styles.timeLimit}>
-                    <label htmlFor="beginTimeDay">Min</label>
+                    {/* <label htmlFor="beginTimeDay">Begin</label> */}
                     <input type="time" name="beginTimeDay" id="beginTimeDay" className={styles.timeInput}
                         onChange={(e) => {
                             setSettings({ ...settings, BeginTimeDay: e.target.value })
@@ -59,7 +71,7 @@ export default function CalendarSetting() {
                         value={settings.BeginTimeDay}
 
                     />
-                    <label htmlFor="endTimeDay">Max</label>
+                    {/* <label htmlFor="endTimeDay">End</label> */}
                     <input type="time" name="endTimeDay" id="endTimeDay" className={styles.timeInput}
                         onChange={(e) => {
                             setSettings({ ...settings, EndTimeDay: e.target.value })
@@ -67,8 +79,15 @@ export default function CalendarSetting() {
                         value={settings.EndTimeDay}
                     />
 
+
                 </div>
 
+                <div className={styles.state}>
+                    <p className={styles.stateText}>
+                        Posible values
+                    </p>
+                    <span className={`${styles.circle} ${styles.circlePrimeColor}`}></span>
+                </div>
             </div>
 
 
