@@ -31,7 +31,7 @@ export default function DropdownApp({ settingsState }) {
     const [collapse, setCollapse] = useState(true);
     const dropdownIteam = collapse ? `${styles.dropdownListClose} ${styles.dropdownList}` : `${styles.dropdownListOpen} ${styles.dropdownList}`;
 
-    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy] = useStateStoreContext();
+    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel] = useStateStoreContext();
 
     //sign out function
     async function handleSignOut() {
@@ -69,7 +69,6 @@ export default function DropdownApp({ settingsState }) {
 
     //function handle theme
     function handleTheme() {
-
         switch (count) {
             case 1:
                 setTheme('light')
@@ -88,7 +87,6 @@ export default function DropdownApp({ settingsState }) {
     }
 
 
-
     return (
         <div className={styles.dropdown} id="dropdownHolder">
 
@@ -97,10 +95,11 @@ export default function DropdownApp({ settingsState }) {
                     setCollapse(!collapse)
                     // collapse ? addDropdownList() : removeDropdownList()
                 }
+
             }
             >
                 <Image
-                    src={settings.avatar_url.includes("http") ? settings.avatar_url : settings.profileImageUrl}
+                    src={settings.avatar_url}
                     alt="Profile Image"
                     fill
                     className={styles.image}
