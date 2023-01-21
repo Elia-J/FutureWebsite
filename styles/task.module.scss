@@ -29,9 +29,9 @@
 }
 
 .mainButton {
-  float: right;
+  float: left;
   margin-top: 10px;
-  margin-right: 20px;
+  margin-left: 20px;
   width: auto;
   min-width: 45px;
   height: 45px;
@@ -50,6 +50,37 @@
 .mainButton:hover {
   background-color: #3b5760;
   transition: background-color 0.3s ease-in-out;
+}
+
+.createFolderMainButton {
+  float: none;
+  margin-top: 0;
+  width: 40%;
+}
+
+.button {
+  background: var(--special-3);
+  border: 1px solid var(--snowflake-100);
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 14px;
+  margin-top: 15px;
+  margin-left: 5px;
+  height: 30px;
+  align-items: center;
+}
+
+.AIButton {
+  margin-right: 20px;
+  padding-right: 16px;
+}
+
+.openButton {
+  margin-left: 240px;
+}
+
+.openAIButton {
+  margin-right: 340px;
 }
 
 .saveButton {
@@ -118,7 +149,7 @@
 }
 
 .taskForm {
-  position: fixed;
+  position: absolute;
   display: -ms-inline-grid;
   top: 45%;
   left: 50%;
@@ -165,6 +196,13 @@
   margin-top: 0;
   width: 50%;
   min-width: 250px;
+}
+
+.folderInput {
+  margin-left: 20px;
+  min-width: 150px;
+  width: 40%;
+  background-color: var(--white);
 }
 
 .mainContainer {
@@ -229,11 +267,32 @@
   transition: 0.8s;
   transition-timing-function: line-height;
 }
-.leftTaskpart {
+
+.taskExtended {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.taskExtension {
+  margin-top: 0px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  transition: all 0.5s cubic-bezier(0, 0, 0, 0); 
+}
+
+.taskCollapsed {
+  opacity: 0;
+  height: 0px;
+  transition: opacity height 0.5s;
+  transition-timing-function: ease-in;
+}
+
+.taskPart {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
+
 .taskChecked {
   opacity: 30%;
   transition: 0.9s;
@@ -257,6 +316,18 @@
 
   transition: 0.7s;
   transition-timing-function: line-height;
+}
+
+.taskCheckBox1 {
+  border-color: var(--anarchy-600) 
+}
+
+.taskCheckBox2 {
+  border-color: var(--heat-wave-600) 
+}
+
+.taskCheckBox3 {
+  border-color: var(--blue-sparkle-600)
 }
 
 .taskCheckBoxChecked {
@@ -296,14 +367,31 @@
 }
 
 .lineChecked {
-  width: 90%;
+  width: 98%;
 }
 
 .taskDate {
-  float: right;
+  margin-top: 5px;
+  margin-right: 5px;
   color: var(--black);
   font-size: x-small;
   text-align: right;
+}
+
+.taskExtendedDate {
+  margin-right: 17px;
+}
+
+.taskDescription {
+  width: 85%;
+}
+
+.operatorSign {
+  color: var(--black);
+  font-size: x-large;
+  font-weight: bolder;
+  text-align: right;
+  cursor: pointer;
 }
 
 .plus {
@@ -315,4 +403,67 @@
   margin-right: 10px;
   margin-top: 14px;
   cursor: pointer;
+}
+
+.panel {
+    background: var(--special-3);
+    flex-basis: 420px;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.openFolderPanel {
+  margin-left: 0px;
+  transition: all 0.2s ease-in-out;
+}
+
+.closedFolderPanel {
+  margin-left: -420px;
+  transition: all 0.2s ease-in-out;
+}
+
+.openAIPanel {
+  margin-right: 0px;
+  transition: all 0.2s ease-in-out;
+}
+
+.closedAIPanel {
+  margin-right: -420px;
+  transition: all 0.2s ease-in-out;
+}
+
+.body {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.nav {
+  position: absolute;
+  display: flex;
+  left:0;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@media screen and (min-width: 576px) {
+  .navMargin {
+    margin-left: 50px;
+  }
+}
+
+.navAI {
+  position: absolute;
+  display: flex;
+  right: 0;
+  margin-top: 5px;
+  justify-content: flex-start;
+}
+
+.main {
+  width: 100%;
+}
+
+.foldersContainer {
+  margin-top: 70px;
 }
