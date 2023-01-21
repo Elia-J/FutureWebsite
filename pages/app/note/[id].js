@@ -9,237 +9,146 @@ import styles from "../../../styles/notes.module.scss";
 import React, { useState, useCallback, useEffect } from "react";
 import { createEditor, Editor, Text, Transforms } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
-import Image from 'next/image'
+import Image from 'next/image';
 import ListOfNotes from '../../../components/listOfNotes'
 
 import AppLayout from "/layouts/appLayout"
 import LoadingLine from '/components/loadingLine'
-import { SettingsProvider } from "/layouts/stateStore"
+import { StateProvider } from "/layouts/stateStore"
 
 import { useRouter } from "next/router";
-import { useSession } from "@supabase/auth-helpers-react";
+import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react'
 
 import { supabase } from "/lib/supasbaseClient"
+import { useTheme } from 'next-themes'
 
-// Function to toggle and select all the different styles for the editor
-const CustomEditor = {
-    isUnderlineMarkActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.underline === true,
-            universal: true,
-        });
-
-        return !!match;
+const CustomEditorV2 = {
+    isActive(editor, prop, format) {
+        switch(prop) {
+            case "underline":
+                const [match1] = Editor.nodes(editor, {
+                    match: (n) => n.underline === true,
+                    universal: true,
+                });
+                return !!match1;
+            case "bold":
+                const [match2] = Editor.nodes(editor, {
+                    match: (n) => n.bold === true,
+                    universal: true,
+                });
+                return !!match2;
+            case "italic":
+                const [match3] = Editor.nodes(editor, {
+                    match: (n) => n.italic === true,
+                    universal: true,
+                })
+                return !!match3;
+            case "code":
+                const [match4] = Editor.nodes(editor, {
+                    match: (n) => n.code === true,
+                    universal: true,
+                })
+                return !!match4;
+            case "type":
+                const [match5] = Editor.nodes(editor, {
+                    match: (n) => n.type === format,
+                    // universal: true,
+                })
+                return !!match5;
+            case "align":
+                const [match6] = Editor.nodes(editor, {
+                    match: (n) => n.align === format,
+                    universal: true,
+                })
+                return !!match6;
+        }
     },
 
-    isBoldMarkActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.bold === true,
-            universal: true,
-        });
-
-        return !!match;
-    },
-
-    isItalicMarkActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.italic === true,
-            universal: true,
-        })
-
-        return !!match;
-    },
-
-    isCodeBlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.code === true,
-            universal: true,
-        });
-
-        return !!match;
-    },
-
-    isH1BlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.type === "h1",
-            universal: true,
-        });
-
-        return !!match;
-    },
-
-    isH2BlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.type === "h2",
-        });
-
-        return !!match;
-    },
-
-    isQuoteBlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.type === "quote",
-        });
-
-        return !!match;
-    },
-
-    isBulletListBlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.type === "bullet",
-        });
-
-        return !!match;
-    },
-
-    isRightAlignBlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.align === "right",
-        });
-
-        return !!match;
-    },
-
-    isLeftAlignBlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.align === "left",
-        });
-
-        return !!match;
-    },
-
-    isCenterAlignBlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.align === "center",
-        });
-
-        return !!match;
-    },
-
-    isJustifyAlignBlockActive(editor) {
-        const [match] = Editor.nodes(editor, {
-            match: (n) => n.align === "justify",
-        });
-
-        return !!match;
-    },
-
-    toggleBoldMark(editor) {
-        const isActive = CustomEditor.isBoldMarkActive(editor);
-        Transforms.setNodes(
-            editor,
-            { bold: isActive ? null : true },
-            { match: (n) => Text.isText(n), split: true }
-        );
-    },
-
-    toggleItalicMark(editor) {
-        const isActive = CustomEditor.isItalicMarkActive(editor);
-        Transforms.setNodes(
-            editor,
-            { italic: isActive ? null : true },
-            { match: (n) => Text.isText(n), split: true }
-        )
-    },
-
-    toggleUnderlineMark(editor) {
-        const isActive = CustomEditor.isUnderlineMarkActive(editor);
-        Transforms.setNodes(
-            editor,
-            { underline: isActive ? null : true },
-            { match: (n) => Text.isText(n), split: true }
-        );
-    },
-
-    toggleCodeBlock(editor) {
-        const isActive = CustomEditor.isCodeBlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { code: isActive ? null : true },
-            { match: (n) => Text.isText(n), split: true }
-        );
-    },
-
-    toggleH1Block(editor) {
-        const isActive = CustomEditor.isH1BlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { type: isActive ? null : "h1" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-
-    toggleH2Block(editor) {
-        const isActive = CustomEditor.isH2BlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { type: isActive ? null : "h2" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-
-    toggleQuoteBlock(editor) {
-        const isActive = CustomEditor.isQuoteBlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { type: isActive ? null : "quote" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-
-    toggleBulletListBlock(editor) {
-        const isActive = CustomEditor.isBulletListBlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { type: isActive ? null : "bullet" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-
-    toggleRightAlignBlock(editor) {
-        const isActive = CustomEditor.isRightAlignBlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { align: isActive ? null : "right" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-    toggleCenterAlignBlock(editor) {
-        const isActive = CustomEditor.isCenterAlignBlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { align: isActive ? null : "center" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-    toggleLeftAlignBlock(editor) {
-        const isActive = CustomEditor.isLeftAlignBlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { align: isActive ? null : "left" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-    toggleJustifyAlignBlock(editor) {
-        const isActive = CustomEditor.isJustifyAlignBlockActive(editor);
-        Transforms.setNodes(
-            editor,
-            { align: isActive ? null : "justify" },
-            { match: (n) => Editor.isBlock(editor, n) }
-        );
-    },
-};
+    toggle(editor, prop, format, fontSize) {
+        const isActive = CustomEditorV2.isActive(editor, prop, format)
+        switch (prop) {
+            case "underline":
+                Transforms.setNodes(
+                    editor,
+                    {   underline: isActive ? null : true,
+                        fontSize: fontSize   
+                    },
+                    { match: (n) => Text.isText(n), split: true }
+                );
+                break;
+            case "bold":
+                Transforms.setNodes(
+                    editor,
+                    {   bold: isActive ? null : true,
+                        fontSize: fontSize
+                    },
+                    { match: (n) => Text.isText(n), split: true }
+                );
+                break;
+            case "italic":
+                Transforms.setNodes(
+                    editor,
+                    {   italic: isActive ? null : true,
+                        fontSize: fontSize 
+                    },
+                    { match: (n) => Text.isText(n), split: true }
+                );
+                break;
+            case "code":
+                Transforms.setNodes(
+                    editor,
+                    {   code: isActive ? null : true,
+                        fontSize: fontSize 
+                    },
+                    { match: (n) => Text.isText(n), split: true }
+                );
+                break;
+            case "type":
+                Transforms.setNodes(
+                    editor,
+                    {   type: isActive ? null : format,
+                        fontSize: fontSize 
+                    },
+                    { match: (n) => Editor.isBlock(editor, n) }
+                );
+                break;
+            case "align":
+                Transforms.setNodes(
+                    editor,
+                    {   align: isActive ? null : format,
+                        fontSize: fontSize
+                    },
+                    { match: (n) => Editor.isBlock(editor, n) }
+                );
+        }
+    }   
+}
 
 let globalAlign = "left";
 
 export default function Notes({ notes }) {
-    const session = useSession();
     const router = useRouter();
+    //supabase
+    const supabase = useSupabaseClient()
+    const session = useSession()
+    const user = useUser()
 
     const [initialValue, setInitialValue] = useState(notes.description)
-    const [initialTitle, setInitialTitle] = useState(JSON.parse(notes.title))
+    const { theme, setTheme } = useTheme()
+
+    const [THEME, setTHEME] = useState()
+
+    const [initialTitle, setInitialTitle] = useState([{"type":"h1","children":[{"text":notes.title}]}])
     const [collapsed, setCollapsed] = useState(false)
-    const [fontSize, setFontSize] = useState(8)
+    const [fontSize, setFontSize] = useState(16)
+    // H1: 32
+    // H2: 26
+    // default: 16
+
+    useEffect(() => {
+        const html = document.querySelector('html')
+        // console.log(html.getAttribute('data-theme'))
+    }, [theme])
 
     // Checks if there is a change in the url, if so, it reloads the page
     // This is to make sure that the correct initialValue and initialTitle is loaded into the editor
@@ -257,22 +166,66 @@ export default function Notes({ notes }) {
             router.events.off('routeChangeComplete', handleRouteChange)
         }
     }, [])
-
     // Variables to see if there have been changes.
     var valueDescription = initialValue;
     var valueTitle = initialTitle;
 
     // updateData gets a title and a description and updates them with the according note id
     async function updateData(t, d) {
+        let now = new Date()
+        let ISONow = now.toISOString()
         const { data, error } = await supabase
             .from('notesv2')
-            .update({ title: t, description: d })
+            .update({ title: t, description: d, created_at: ISONow })
             .eq('id', notes.id)
         alert('succes!')
+        location.reload()
     }
 
     let collapsableElementSavedNotes = React.createRef();
     let collapsableElementNotes = React.createRef();
+    let collapsableElementAI = React.createRef();
+    let openElement = React.createRef();
+    let closeElement = React.createRef();
+
+    function changeSavedNotesBar() {
+        openElement.current.classList.toggle(`${styles.openHide}`)
+        closeElement.current.classList.toggle(`${styles.closeShow}`)
+        if (collapsableElementAI.current.classList[1] == styles.showAIPanel) {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.SuperCollapsedTextEditor}`
+            );
+            collapsableElementSavedNotes.current.classList.toggle(
+                `${styles.hideNotesPanel}`
+            )
+        } else {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.CollapsedTextEditor}`
+            );
+            collapsableElementSavedNotes.current.classList.toggle(
+                `${styles.hideNotesPanel}`
+            )
+        }
+    }
+
+    function changeAIPanel() {
+        if (collapsableElementSavedNotes.current.classList[1] == undefined) {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.SuperCollapsedTextEditor}`
+            );
+            collapsableElementAI.current.classList.toggle(
+                `${styles.showAIPanel}`
+            )
+        }
+         else {
+            collapsableElementNotes.current.classList.toggle(
+                `${styles.CollapsedTextEditor}`
+            );
+            collapsableElementAI.current.classList.toggle(
+                `${styles.showAIPanel}`
+            )
+        }
+    }
 
 
     // Initializes the editors
@@ -282,19 +235,6 @@ export default function Notes({ notes }) {
 
     // Function to make the saved notes bar smaller and bigger by adding a class to its classlist
     // This is picked up by the css and changes it's width
-    function changeSavedNotesBar() {
-        collapsableElementSavedNotes.current.classList.toggle(
-            `${styles.collapsedSavedNote}`
-        );
-        collapsableElementNotes.current.classList.toggle(
-            `${styles.extenedNote}`
-        );
-        if (collapsed) {
-            setCollapsed(false)
-        } else {
-            setCollapsed(true)
-        }
-    }
 
     const renderElement = useCallback((props) => {
         // If the editor renders an eliment and there is an alignment prop then it sents the global align to its value
@@ -324,7 +264,7 @@ export default function Notes({ notes }) {
                 return <H2Element {...props} />;
             case "quote":
                 return <QuoteElement {...props} />;
-            case "bullet":
+            case "list-bulleted":
                 return <BulletElement {...props} />;
             default:
                 return <DefaultElement {...props} />;
@@ -336,100 +276,39 @@ export default function Notes({ notes }) {
     const renderLeaf = useCallback((props) => {
         return <Leaf {...props} />;
     }, []);
-
-    // This function returns a Toolbar with buttons which add styling to the text
-    const Toolbar = () => {
+    
+    const Buttons = ["bold", "italic", "underline", "code", "h1", "h2", "quote", "list-bulleted", "align-left", "align-center", "align-right", "align-justify"]
+    const ToolbarV2 = () => {
         return (
             <div className={styles.toolbar}>
-                <button className={styles.buttonWithoutStyle}
-                    // If you click on the button it will toggle the appropriate function to add the style
-                    onMouseDown={() => {
-                        CustomEditor.toggleBoldMark(editor);
-                    }}
-                >
-                    <Image alt="Bold" className={styles.icon} src="/rich-text-icons/editor-bold.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleItalicMark(editor);
-                    }}
-                >
-                    <Image alt="Italic" className={styles.icon} src="/rich-text-icons/editor-italic.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleUnderlineMark(editor);
-                    }}
-                >
-                    <Image alt="Underline" className={styles.icon} src="/rich-text-icons/editor-underline.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleCodeBlock(editor);
-                    }}
-                >
-                    <Image alt="Code" className={styles.icon} src="/rich-text-icons/editor-code.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleH1Block(editor);
-                    }}
-                >
-                    <Image alt="H1" className={styles.icon} src="/rich-text-icons/editor-h1.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleH2Block(editor);
-                    }}
-                >
-                    <Image alt="H2" className={styles.icon} src="/rich-text-icons/editor-h2.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleQuoteBlock(editor);
-                    }}
-                >
-                    <Image alt="Quote" className={styles.icon} src="/rich-text-icons/editor-quote.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleBulletListBlock(editor);
-                    }}
-                >
-                    <Image alt="List Bullet" className={styles.icon} src="/rich-text-icons/editor-list-bulleted.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleLeftAlignBlock(editor);
-                    }}
-                >
-                    <Image alt="Left align" className={styles.icon} src="/rich-text-icons/editor-align-left.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleCenterAlignBlock(editor);
-                    }}
-                >
-                    <Image alt="Center align" className={styles.icon} src="/rich-text-icons/editor-align-center.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleRightAlignBlock(editor);
-                    }}
-                >
-                    <Image alt="Right Align" className={styles.icon} src="/rich-text-icons/editor-align-right.svg" width={25} height={25} />
-                </button>
-                <button className={styles.buttonWithoutStyle}
-                    onMouseDown={() => {
-                        CustomEditor.toggleJustifyAlignBlock(editor);
-                    }}
-                >
-                    <Image alt="justivy Align" className={styles.icon} src="/rich-text-icons/editor-align-justify.svg" width={25} height={25} />
-                </button>
-                {/* event.preventdefault prevents the site from reloading when you submit the form */}
-                {/* <form onSubmit={(event) => {event.preventDefault()}}>
-                    <input type="number" min="8" max="28" value={fontSize} onChange={(e) => {setFontSize(e.target.value)}}></input>
-                </form> */}
+                {
+                    Buttons.map((button, i) => {
+                        return (
+                            <button key={i} className={styles.buttonWithoutStyle} onMouseDown={() => {
+                                if (button.slice(0,5) == "align") {
+                                    CustomEditorV2.toggle(editor, "align", button.split('-')[1], fontSize)
+                                } else if (i<4) {
+                                    CustomEditorV2.toggle(editor, button, true, fontSize)
+                                } else {
+                                    if (button=="h1") {
+                                        CustomEditorV2.toggle(editor, "type", button, 32)
+                                    } else if (button=="h2") {
+                                        CustomEditorV2.toggle(editor, "type", button, 26)
+                                    } else {
+                                        CustomEditorV2.toggle(editor, "type", button, fontSize)
+                                    }
+                                }
+                                
+                            }}>
+                                <Image alt={button} className={styles.icon} src={`/rich-text-icons-dark/editor-${button}.svg`} width={25} height={25} />
+                            </button>
+                        )
+                    })
+                }
+                <div>
+                    <button style={{color: "#4c7987"}} onClick={() => {setFontSize(fontSize + 1)}}>&#129093;</button>
+                    <button style={{color: "#4c7987"}} onClick={() => {setFontSize(fontSize - 1)}}>&#129095;</button>
+                </div>
             </div>
         )
     }
@@ -476,8 +355,9 @@ export default function Notes({ notes }) {
     };
 
     const DefaultElement = (props) => {
+        console.log(props.element.children[0].fontSize)
         return (
-            <p style={{ textAlign: globalAlign }} {...props.attributes}>
+            <p style={{ textAlign: globalAlign, fontSize: props.element.children[0].fontSize}} {...props.attributes}>
                 {props.children}
             </p>
         );
@@ -507,39 +387,40 @@ export default function Notes({ notes }) {
         );
     };
 
+    function parseISOString(s) {
+        var b = s.split(/\D+/);
+        return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
+      }
+
     if (session) {
         // Returns the html is there is a session
         return (
             // The settingsProvider and AppLayout add the sidebar with settings functions
-            <SettingsProvider>
                 <AppLayout>
                     <div className={styles.content}>
+                        <div ref={openElement} onClick={changeSavedNotesBar} className={`${styles.openStyle} ${styles.openHide}`}>
+                            <strong>Open</strong>
+                            </div>
+                        <div ref={closeElement} onClick={changeSavedNotesBar} className={`${styles.closeStyle} ${styles.closeShow}`}>
+                            <strong>Close</strong>
+                        </div>
                         <div
                             ref={collapsableElementSavedNotes}
                             id="SavedNotes"
                             className={styles.SavedNotes}
                         >
-                            <p style={{ display: "inline-block" }}>Saved Notes</p>
-                            {/* The X on the saved notes section */}
-                            <p
-                                className={styles.close}
-                                style={{ display: "inline-block", float: "right" }}
-                                onClick={changeSavedNotesBar}
-                            >
-                                &times;
-                            </p>
                             {/* Returns the list of notes */}
-                            <ListOfNotes collapsed={collapsed} />
+                            <ListOfNotes />
                         </div>
                         <div
                             ref={collapsableElementNotes}
                             id="TextEditor"
-                            className={styles.TextEditor}
+                            className={`${styles.TextEditor} ${styles.CollapsedTextEditor}`}
                         >
                             <div className={styles.editorDiv}>
                                 {/* Title editor */}
                                 <div className={styles.title}>
-                                    <h1>Title: </h1>
+                                    <h1>Title: </h1>    
                                     {/* The editor itself */}
                                     <Slate
                                         editor={editorTitle}
@@ -558,15 +439,17 @@ export default function Notes({ notes }) {
                                         />
                                     </Slate>
                                 </div>
+                                <strong>{parseISOString(notes.created_at).toString().slice(0,24)}</strong>
                                 {/* Returns the Toolbar with too breaks above and underneath it */}
                                 {/* The Toolbar element is defined in this file */}
                                 <hr />
-                                <Toolbar />
+                                {/* <Toolbar /> */}
+                                <ToolbarV2 />
                                 <hr />
 
-                                <div className={styles.description}>
-                                    {/* Descriptor itself */}
-                                    <Slate
+                                 <div className={styles.description}>
+                                     {/* Descriptor itself */}
+                                     <Slate
                                         editor={editor}
                                         value={initialValue}
                                         /* saving the data */
@@ -588,63 +471,63 @@ export default function Notes({ notes }) {
                                                 switch (event.key) {
                                                     case ",": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleCodeBlock(editor);
+                                                        CustomEditorV2.toggle(editor, "code", true, fontSize)
                                                         break;
                                                     }
 
                                                     case "b": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleBoldMark(editor);
+                                                        CustomEditorV2.toggle(editor, "bold", true, fontSize)
                                                         break;
                                                     }
                                                     case "i": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleItalicMark(editor);
+                                                        CustomEditorV2.toggle(editor, "italic", true, fontSize)
                                                         break;
                                                     }
                                                     case "u": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleUnderlineMark(editor);
+                                                        CustomEditorV2.toggle(editor, "underline", true, fontSize)
                                                         break;
                                                     }
                                                     case "1": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleH1Block(editor);
+                                                        CustomEditorV2.toggle(editor, "type", "h1", fontSize)
                                                         break;
                                                     }
                                                     case "2": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleH2Block(editor);
+                                                        CustomEditorV2.toggle(editor, "type", "h2", fontSize)
                                                         break;
                                                     }
                                                     case "q": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleQuoteBlock(editor);
+                                                        CustomEditorV2.toggle(editor, "type", "quote", fontSize)
                                                         break;
                                                     }
                                                     case "b" && "l": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleBulletListBlock(editor);
+                                                        CustomEditorV2.toggle(editor, "type", "list-bulleted", fontSize)
                                                         break;
                                                     }
                                                     case "Shift" && "R": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleRightAlignBlock(editor);
+                                                        CustomEditorV2.toggle(editor, "align", "right", fontSize)
                                                         break;
                                                     }
                                                     case "Shift" && "L": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleLeftAlignBlock(editor);
+                                                        CustomEditorV2.toggle(editor, "align", "left", fontSize)
                                                         break;
                                                     }
                                                     case "Shift" && "E": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleCenterAlignBlock(editor);
+                                                        CustomEditorV2.toggle(editor, "align", "center", fontSize)
                                                         break;
                                                     }
                                                     case "Shift" && "J": {
                                                         event.preventDefault();
-                                                        CustomEditor.toggleJustifyAlignBlock(editor);
+                                                        CustomEditorV2.toggle(editor, "align", "justify", fontSize)
                                                         break;
                                                     }
                                                 }
@@ -657,15 +540,26 @@ export default function Notes({ notes }) {
                             <button
                                 className={styles.mainButton}
                                 onClick={() => {
-                                    updateData(JSON.stringify(valueTitle), valueDescription)
+                                    updateData(valueTitle[0].children[0].text, valueDescription)
                                 }}
                             >
                                 Save
                             </button>
                         </div>
+                        <div
+                            ref={collapsableElementAI}
+                            id="AI"
+                            className={styles.AI}
+                        >
+                        </div>
+                        <div
+                            className={styles.AIAssisctance}
+                            onClick={changeAIPanel}
+                        >
+                            <strong>AI Assistance</strong>
+                        </div>
                     </div>
                 </AppLayout>
-            </SettingsProvider>
         );
     } else {
         // If there is not a session, return the loadingline
@@ -674,16 +568,6 @@ export default function Notes({ notes }) {
         )
     }
 }
-
-// export async function getStaticPaths() {
-//     const { data, error } = await supabase
-//         .from('notesv2')
-//         .select('id')
-//     const paths = data.map((note) => ({
-//         params: { id: JSON.stringify(note.id) },
-//     }))
-//     return { paths, fallback: false }
-// }
 
 export async function getServerSideProps({ params }) {
     const { id } = params

@@ -1,3 +1,26 @@
+.text {
+    display: flex;
+    gap: 5px;
+}
+
+.folder {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px 10px;
+}
+
+.folderText{
+    display: flex;
+    gap: 5px;
+}
+
+.folderText:hover {
+    background-color: var(--Special-dark-gray);
+    cursor: pointer;
+}
+
 .input {
     border: none;
     height: 30px;
@@ -24,7 +47,7 @@
 }
 
 .mainButton {
-    width: 25%;
+    width: 120px;
     height: 30px;
     background-color: var(--primary);
     border-radius: 12px;
@@ -60,7 +83,7 @@
 .note {
     display: inline-flex;
     width: 100%;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
     padding: 0 10px 10px;
 }
@@ -78,7 +101,99 @@
     background-color: var(--Special-dark-gray);
 }
 
+.dropdownSort{
+    background-color: var(--L-white-D-Grey);
+}
+
+.dropdownContent {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 10;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: var(--Special-light-gray);
+}
+
+.dropdownstylebutton {
+    padding: 5px 15px;
+    border-radius: 10px;
+}
+
+.dropdownstylebutton:hover {
+    background-color: var(--Special-dark-gray);
+}
+
+.show {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;    
+}
+
+.answer {
+    display: none;
+}
+
+.answerShow {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: 60px;
+    margin-bottom: 5px;
+}
+
+.accordionNotes {
+    display: flex;
+    gap: 5px;
+    justify-content: space-between;
+}
+
+.addAndSortFolder {
+    display: flex;
+    justify-content: space-between;
+}
+
+.addFolder{
+    display: none;
+}
+
+.addFolderShow {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    background-color: var(--Special-light-gray);
+    padding: 0.5rem;
+    border-radius: 10px;
+    width: 150px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.folderButton {
+    text-align: left;
+    min-width: 130px;
+    border-radius: 10px;
+}
+
+.folderButton:hover {
+    background-color: var(--Special-dark-gray);
+}
+
 @media (max-width: 575.98px) {
+    .dropdownContent {
+        margin-left: -215px;
+    }
+
+    .addFolderShow {
+        margin-left: -140px;
+    }
+    
     .input {
         width: 100%;
     }

@@ -13,6 +13,7 @@ import { Inter } from '@next/font/google'
 const inter = Inter({
   subsets: ['latin'],
 })
+import { StateProvider } from "/layouts/stateStore"
 
 
 function MyApp({ Component, pageProps }) {
@@ -20,16 +21,19 @@ function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout || ((page) => page)
 
   return getLayout(
+    <StateProvider>
 
-    <SessionContextProvider supabaseClient={supabase} initialSession={pageProps.initialSession} >
-      <ThemeProvider forcedTheme={Component.theme || null} defaultTheme="light">
+      <SessionContextProvider supabaseClient={supabase} initialSession={pageProps.initialSession} >
+        <ThemeProvider forcedTheme={Component.theme || null} defaultTheme="light">
 
-        <main className={inter.className}>
-          <Component {...pageProps} />
-        </main>
+          <main className={inter.className}>
+            <Component {...pageProps} />
+          </main>
 
-      </ThemeProvider>
-    </SessionContextProvider>
+        </ThemeProvider>
+      </SessionContextProvider>
+
+    </StateProvider>
   )
 }
 

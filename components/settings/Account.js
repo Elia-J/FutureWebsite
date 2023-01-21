@@ -5,6 +5,11 @@ import styles from "/styles/account.module.scss"
 import SettingsLayout from '../../layouts/settingsLayout'
 import ChangePictureIcon from "/public/changePictureIcon.svg"
 import { TextOnly } from '/components/buttons';
+import { createClient } from '@supabase/supabase-js'
+import { useRouter } from 'next/router'
+//global variables 
+import { useStateStoreContext } from "/layouts/stateStore"
+
 
 export default function Account() {
 
@@ -13,84 +18,17 @@ export default function Account() {
     const session = useSession()
     const user = useUser()
 
+    const router = useRouter();
     //data variables
-    const [url, setUrl] = useState(process.env.NEXT_PUBLIC_IMAGE_URL)
-
-    const [full_name, setFullName] = useState('')
-    const [full_name_copy, setFullNameCopy] = useState('')
-
-    const [username, setUsername] = useState('')
-    const [username_copy, setUsernameCopy] = useState('')
-
-    const [website, setWebsite] = useState('')
-    const [website_copy, setWebsiteCopy] = useState('')
-
-    const [password, setPassword] = useState('')
-    const [loading, setLoading] = useState(true)
-    const [showSaveButton, setShowSaveButton] = useState(false)
+    // const [url, setUrl] = useState(process.env.NEXT_PUBLIC_IMAGE_URL)
 
 
-    //Get profile data from supabase
-    async function getProfile() {
 
-        try {
-            //Request the profile data from the database
-            let { data, error, status } = await supabase
-                .from('profiles')
-                .select(`username, full_name, website, avatar_url`)
-                .eq('id', user.id)
-                .single()
-
-            //if there is an error and the status is not 406 (not found)
-            if (error && status !== 406) {
-                throw error
-            }
-
-            if (data) {
-                setUsername(data.username)
-                setUsernameCopy(data.username)
-
-                setWebsite(data.website)
-                setWebsiteCopy(data.website)
-
-                setFullName(data.full_name)
-                setFullNameCopy(data.full_name)
-
-                //only if there is a avatar_url
-                if (data.avatar_url) {
-                    downloadTheAvatar(data.avatar_url)
-                }
-            }
-
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy] = useStateStoreContext();
 
 
-    //#################################### Image Upload and Download ####################################
-    //Handle avatar download
-    async function downloadTheAvatar(avatarUrl) {
 
-        try {
-            const { data, error } = await supabase.storage
-                .from('avatars')
-                .download(avatarUrl)
-
-            if (error) {
-                throw error
-            }
-
-            // create a url for the file object to display in the browser
-            const url2 = URL.createObjectURL(data)
-            setUrl(url2)
-
-        } catch (error) {
-            // alert('Error downloading avatar')
-            console.log(error)
-        }
-    }
-
+    //#################################### Image Upload and Download begin ####################################
 
     //handle delete old avatar or delete avatar 
     async function deleteOldImage() {
@@ -101,14 +39,31 @@ export default function Account() {
             .remove([`${user.id}.jpg`, `${user.id}.png`, `${user.id}.jpeg`, `${user.id}.gif`, `${user.id}.webp`, `${user.id}.svg`, `${user.id}.jfif`, `${user.id}.bmp`, `${user.id}.tiff`, `${user.id}.ico`, `${user.id}.webp`])
 
         //update the user profile with null avatar_url
-        const { error2, data2 } = await supabase
-            .from('profiles')
-            .update({ avatar_url: null })
-            .eq('id', user.id)
+        // const { error2, data2 } = await supabase
+        //     .from('profiles')
+        //     .update(
+        //         {
+        //             avatar_url: null
+        //         }
+        //     )
+        //     .eq('id', user.id)
 
-        setUrl(process.env.NEXT_PUBLIC_IMAGE_URL)
+
+        setSettings(
+            {
+                ...settings,
+                avatar_url: "",
+                profileImageUrl: "/pro.png"
+            }
+        )
+        setSettingsCopy(
+            {
+                ...settingsCopy,
+                avatar_url: "",
+                profileImageUrl: "/pro.png"
+            }
+        )
     }
-
 
     //Handle file upload to supabase storage
     async function fileUpload(event) {
@@ -134,157 +89,75 @@ export default function Account() {
             }
 
             const url2 = URL.createObjectURL(file)
-            setUrl(url2)
+            setSettings(
+                {
+                    ...settings,
+                    profileImageUrl: url2,
+                    filepath: filePath
+                }
+            )
+            setSettingsCopy(
+                {
+                    ...settingsCopy,
+                    avatar_url: "",
+                    profileImageUrl: url2,
+                }
+            )
 
-            updateProfileTable(filePath)
+
+
+            // updateProfileTable(filePath)
 
         } catch (error) {
             console.log(error)
         }
     }
 
+    // //Handle profile avatar update
+    // async function updateProfileTable(urlPthe) {
 
-    //Handle profile avatar update
-    async function updateProfileTable(urlPthe) {
-
-        try {
-            const { error, data } = await supabase
-                .from('profiles')
-                .update({ avatar_url: urlPthe })
-                .eq('id', user.id)
-
-            if (error) {
-                throw error
-            }
-
-        } catch (error) {
-            // alert('Error updating profile')
-            console.log(error)
-        }
-    }
-
-    const different = (a, b) => {
-        if (a === b) {
-            return false
-        }
-        return true
-    }
-
-    const changesDetected = () => {
-        if (different(full_name_copy, full_name) === true || different(username_copy, username) === true || different(website_copy, website) === true) {
-
-            setShowSaveButton(true)
-
-        }
-        else if (different(full_name_copy, full_name) === false && different(username_copy, username) === false && different(website_copy, website) === false) {
-
-            setShowSaveButton(false)
-        }
-        else {
-            setShowSaveButton(false)
-        }
-    }
-
-
-    //reset old values function
-    const resetOldValues = () => {
-        setFullName(full_name_copy)
-        setUsername(username_copy)
-        setWebsite(website_copy)
-    }
-
-
-    //update profile function, not done yet
-    async function updateProfile({ username, full_name, website }) {
-        try {
-            setLoading(true)
-            const updates = {
-                id: user.id,
-                username,
-                full_name,
-                website,
-                updated_at: new Date().toISOString(),
-            }
-            // //success
-            // if (data.success) {
-            //     setShowSaveButton(false)
-            // }
-            let { error } = await supabase.from('profiles').upsert(updates)
-            if (error) {
-                throw error
-            }
-        } catch (error) {
-            console.log(error)
-        } finally {
-            setLoading(false)
-        }
-    }
-
-
-    //handle password check
-    // const [checkPasswordText, setCheckPasswordText] = useState("")
-    // //Check if the password is correct
-    // async function checkPassword(password) {
     //     try {
-    //         setLoading(true)
-    //         let { data, error } = await supabase.auth.api.updateUser(user.id, { password })
+    //         const { error, data } = await supabase
+    //             .from('profiles')
+    //             .update({ avatar_url: urlPthe })
+    //             .eq('id', user.id)
+
     //         if (error) {
     //             throw error
     //         }
-    //         if (data) {
-    //             setCheckPasswordText("Password is correct")
 
-    //         }
     //     } catch (error) {
     //         // alert('Error updating profile')
-    //         setCheckPasswordText("Password is incorrect")
     //         console.log(error)
-    //         return false
-    //     } finally {
-    //         setLoading(false)
     //     }
     // }
+    //#################################### Image Upload and Download end ####################################
 
 
-    //Handle delete account
+
+    // const supabase2 = supabaseAdmin()
+    //handleDeleteAccount
     async function handleDeleteAccount() {
-        try {
-            setLoading(true)
-            let { error } = await supabase.auth.admin
-                .deleteUser(user.id)
-            if (error) {
-                throw error
-            }
-        } catch (error) {
-            // alert('Error updating profile')
+
+        const { data, error } = await supabase
+            // .from('profiles')
+            // .delete()
+            // .eq('id', user.id)
+            .rpc('delete_user', { user_id: user.id })
+
+        if (error) {
             console.log(error)
-        } finally {
-            setLoading(false)
         }
+        else {
+            console.log("deleted")
+        }
+
     }
 
 
-    useEffect(() => {
-
-        changesDetected()
-
-    }, [full_name, username, website])
-
-
-    useEffect(() => {
-
-        getProfile()
-
-    }, [])
-
 
     return (
-        <SettingsLayout
-            title="Account"
-            test={() => resetOldValues()}
-            showSaveButton={showSaveButton}
-            onSave={() => updateProfile({ username, full_name, website })}
-        >
+        <SettingsLayout title="Account"  >
 
             <div className={styles.imageAndName}>
 
@@ -296,25 +169,38 @@ export default function Account() {
                         id="upload"
                         type="file"
                         accept="image/*"
-                        onChange={(e) => { fileUpload(e), changesDetected() }}
+                        onChange={(e) => { fileUpload(e) }}
                         className={styles.uploadInput}
                     />
                     <Image
-                        src={url}
+                        src={settings.avatar_url.includes("http") ? settings.avatar_url : settings.profileImageUrl}
                         alt="avatar"
                         fill
                         className={styles.avatar}
                     />
                 </div>
 
+
                 <div className={styles.data}>
-                    <div className={styles.name}>{full_name}</div>
-                    <div className={styles.username}>@{username} &#8226;{website}</div>
+                    <div className={styles.name}>{settings.FullName}</div>
+
+                    {settings.UserName && settings.Website ? <div className={styles.username}>@{settings.UserName} &#8226;{settings.Website}</div> : null}
+
                 </div>
 
             </div>
 
-            <TextOnly text="Delete your profile picture" onClick={deleteOldImage} />
+            <div className={styles.helppButtons}>
+                <TextOnly text="Delete your profile picture" onClick={deleteOldImage} />
+                <TextOnly text="Reset your password" onClick={
+                    () => {
+                        router.push("/forgot-password")
+                        supabase.auth.signOut()
+                    }
+                } />
+            </div>
+
+
 
             <div className={styles.inputHolder}>
 
@@ -335,13 +221,15 @@ export default function Account() {
                     <input
                         id="FullName"
                         type="text"
-                        value={full_name}
-                        onChange={(e) => { setFullName(e.target.value), changesDetected() }}
+                        value={settings.FullName}
+                        onChange={(e) => {
+                            setSettings({ ...settings, FullName: e.target.value })
+                        }}
                         className={styles.input}
-                        required
                         autoComplete="off"
                     />
                 </div>
+
 
 
                 <div className={styles.group}>
@@ -349,10 +237,11 @@ export default function Account() {
                     <input
                         id="UserName"
                         type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={settings.UserName}
+                        onChange={(e) => {
+                            setSettings({ ...settings, UserName: e.target.value })
+                        }}
                         className={styles.input}
-                        required
                         autoComplete="off"
                     />
                 </div>
@@ -362,16 +251,17 @@ export default function Account() {
                     <input
                         id="Website"
                         type="text"
-                        value={website}
-                        onChange={(e) => setWebsite(e.target.value)}
+                        value={settings.Website}
+                        onChange={(e) => {
+                            setSettings({ ...settings, Website: e.target.value })
+                        }}
                         className={styles.input}
-                        required
                         autoComplete="off"
                     />
                 </div>
 
             </div>
-
+            {/* 
             <div className={styles.dnagerZoneArea}>
 
                 <div className={styles.dnagerZone}>Danger Zone</div>
@@ -390,12 +280,22 @@ export default function Account() {
                     <button className={styles.checkPasswordButton} onClick={handleDeleteAccount}>Check Password</button>
                 </div>
 
+
                 <div className={styles.group}>
                     <label htmlFor="text" className={styles.label} >Delete Account</label>
                     <button className={styles.deleteButton} onClick={handleDeleteAccount}>Delete Account</button>
                 </div>
 
-            </div>
+            </div> */}
+
+            {/* delete account */}
+            <button onClick={handleDeleteAccount}>Delete Account</button>
+
+            <br />
+            <button>fsef</button>
+            <br />
+
+            <button>fsef</button>
 
 
         </SettingsLayout >

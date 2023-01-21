@@ -12,9 +12,11 @@
     "@babel/preset-react": "^7.18.6",
     "@floating-ui/react-dom-interactions": "^0.12.0",
     "@fullcalendar/common": "^5.11.3",
-    "@fullcalendar/core": "^5.11.3",
+    "@fullcalendar/core": "^6.0.1",
     "@fullcalendar/daygrid": "^5.11.3",
     "@fullcalendar/interaction": "^5.11.3",
+    "@fullcalendar/list": "^6.0.1",
+    "@fullcalendar/moment-timezone": "^6.0.3",
     "@fullcalendar/react": "^5.11.3",
     "@fullcalendar/resource-timeline": "^5.11.3",
     "@fullcalendar/timegrid": "^5.11.3",
@@ -30,6 +32,7 @@
     "eslint-config-next": "13.0.4",
     "framer-motion": "^7.6.12",
     "fullcalendar": "^5.11.3",
+    "fuse.js": "^6.6.2",
     "moment": "^2.29.4",
     "next": "13.0.4",
     "next-themes": "^0.2.1",
@@ -46,6 +49,8 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^6.5.1",
-    "sass": "^1.56.1"
+    "@types/node": "18.11.18",
+    "sass": "^1.56.1",
+    "typescript": "4.9.4"
   }
 }

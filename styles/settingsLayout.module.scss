@@ -12,44 +12,9 @@
 .settingsLayout {
   padding: 15px 20px;
 }
-
-.savaAndCancelButtons {
-  width: 100%;
-  height: 50px;
-
-  position: sticky;
-  bottom: 0px;
-
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  gap: 10px;
-  //gradient
-  background: linear-gradient(
-    180deg,
-    rgb(34 22 6 / 0%) 0%,
-    var(--special-5) 100%
-  );
-
-  padding-right: 6px;
-  padding-bottom: 6px;
-  align-items: flex-end;
+.settingsLayoutContainer {
 }
 
-.buttong {
-  width: 64px;
-  height: 32px;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 14px;
-}
-.saveButton {
-  color: white;
-  background: #4c7987;
-}
-.cancelButton {
-  background: var(--snowflake-300);
-}
 .closeButton {
   width: 34px;
   height: 34px;

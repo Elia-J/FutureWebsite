@@ -37,7 +37,6 @@
 }
 
 .uploadLabel {
-  display: block;
   width: 100%;
   height: 100%;
   z-index: 2;
@@ -108,6 +107,12 @@
   margin-bottom: 10px;
 }
 
+.helppButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
 @media (max-width: 1199.98px) {
 }
 @media (max-width: 991.98px) {
@@ -123,6 +128,9 @@
 @media (max-width: 767.98px) {
 }
 @media (max-width: 575.98px) {
+  .helppButtons {
+    flex-direction: column;
+  }
 }
 @media (max-width: 320px) {
 }
