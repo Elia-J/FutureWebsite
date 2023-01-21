@@ -19,6 +19,7 @@ import Shortcut from "/public/shortcut.svg"
 import { useTheme } from 'next-themes'
 
 
+
 export default function DropdownApp({ settingsState }) {
 
     //supabase
@@ -46,44 +47,60 @@ export default function DropdownApp({ settingsState }) {
         }
     }
 
-
-
-
-
-    //theme change, click counter until 3
-    const { theme, setTheme } = useTheme()
-    const [count, setcount] = useState(1)
-
-    function counter() {
-
-        if (count < 3) {
-            setcount(count + 1)
-            handleTheme()
-        }
-        else {
-            setcount(1)
-            handleTheme()
+    async function updateThemeIndatabase(theme1) {
+        const { error } = await supabase
+            .from('profiles')
+            .update({ mode: theme1 })
+            .eq('id', user.id)
+        if (error) {
+            console.log(error)
         }
 
     }
 
+    //theme change, click counter until 3
+    const { theme, setTheme } = useTheme()
+    let count
+
+    function themeToNumber() {
+        if (theme == "light") {
+            count = 1
+        }
+        else if (theme == "dark") {
+            count = 2
+        }
+        else if (theme == "system") {
+            count = 3
+        }
+    }
+
+    themeToNumber()
+
+    function counter() {
+        if (count < 3) {
+            count++
+            handleTheme()
+        }
+        else {
+            count = 1
+            handleTheme()
+        }
+    }
+
     //function handle theme
     function handleTheme() {
-        switch (count) {
-            case 1:
-                setTheme('light')
-                break;
-            case 2:
-                setTheme('dark')
-                break;
-            case 3:
-                setTheme('system')
-                break;
-            default:
-                setTheme('light')
-                break;
+        if (count == 1) {
+            setTheme("light")
+            updateThemeIndatabase("light")
         }
-
+        else if (count == 2) {
+            setTheme("dark")
+            updateThemeIndatabase("dark")
+        }
+        else if (count == 3) {
+            setTheme("system")
+            updateThemeIndatabase("system")
+        }
     }
 
 
@@ -95,7 +112,6 @@ export default function DropdownApp({ settingsState }) {
                     setCollapse(!collapse)
                     // collapse ? addDropdownList() : removeDropdownList()
                 }
-
             }
             >
                 <Image
