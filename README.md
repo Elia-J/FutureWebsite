@@ -109,15 +109,15 @@ Please note that you need to configure the enviroment variable before running th
 
 To configure the project, you need to create a `.env.local` file in the root directory of the project. In this file, you need to add the following environment variables:
 
-    ```bash
-        // .env.local
+```bash
+    // .env.local
 
-        NEXT_PUBLIC_SUPABASE_URL= is the URL of the Supabase database.
-        NEXT_PUBLIC_SUPABASE_ANON_KEY= is the anonymous key of the Supabase database.
-        SERVER_ROLE_SUPABASE_KEY= is the server role key of the Supabase database.
-        WEATHER_API_KEY= is the API key of the OpenWeatherMap API.
+    NEXT_PUBLIC_SUPABASE_URL= is the URL of the Supabase database.
+    NEXT_PUBLIC_SUPABASE_ANON_KEY= is the anonymous key of the Supabase database.
+    SERVER_ROLE_SUPABASE_KEY= is the server role key of the Supabase database.
+    WEATHER_API_KEY= is the API key of the OpenWeatherMap API.
 
-    ```
+```
 
 we will not provide the environment variables values for security reasons.
 </br></br>
