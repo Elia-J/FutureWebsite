@@ -68,39 +68,39 @@ To install and run this project, you will need [Node.js](https://nodejs.org/) an
 
 You can clone the code by running the following command in your terminal:
 
-    ```bash
-    git clone https://github.com/Elia-J/FutureWebsite.git
-    ```
+```bash
+git clone https://github.com/Elia-J/FutureWebsite.git
+```
 
 Alternatively, you can download the code using the green "Download" button on the GitHub repository, or using a Git GUI client such as [GitHub Desktop](https://desktop.github.com/) or [SourceTree](https://www.sourcetreeapp.com/).
 
 Once you have the code downloaded, navigate to the project directory and run the following command to install the dependencies:
 
-    ```bash
-    npm install
-    ```
+```bash
+npm install
+```
 
 To start the development server, run:
 
-    ```bash
-    npm run dev
-    ```
+```bash
+npm run dev
+```
 
 This will start a development server and open the app in your default browser. Any changes you make to the code will be reflected in the browser in real-time.
 
 To build the app for production, run:
 
-    ```bash
-    npm run build
-    ```
+```bash
+npm run build
+```
 
 This will create a production-ready build of the app in the `.next` directory.
 
 To update the dependencies, run:
 
-        ```bash
-        npm update
-        ```
+```bash
+npm update
+```
 
 Please note that you need to configure the enviroment variable before running the project.
 </br></br>
