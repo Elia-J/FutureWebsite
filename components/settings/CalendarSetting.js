@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SettingsLayout from '../../layouts/settingsLayout'
 import styles from '/styles/general.module.scss'
 import { useStateStoreContext } from "/layouts/stateStore"
@@ -11,17 +11,52 @@ export default function CalendarSetting() {
 
     //global state/variables
     const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel] = useStateStoreContext();
-    console.log("show weekends " + settings.ShowWeekends)
 
 
-    //variables
-    const [beginTime, setBeginTime] = useState(settings.BeginTimeDay)
-    const [endTime, setEndTime] = useState(settings.EndTimeDay)
+    const [indicator, setIndicator] = useState(false)
 
-    function handleBeginTimeAndEndTime() {
-        //convert timet to time with timeZone UTC
 
+    function checkTime(time1, time2) {
+        // split time strings into hour and minute
+        const time1Arr = time1.split(':');
+        const time2Arr = time2.split(':');
+
+        if (time1Arr[1].includes("pm")) {
+            time1Arr[0] = parseInt(time1Arr[0]) + 12
+        }
+        if (time2Arr[1].includes("pm")) {
+            time2Arr[0] = parseInt(time2Arr[0]) + 12
+        }
+
+        console.log(time1Arr[0] + " " + time1Arr[1]) // 13 00
+        console.log(time2Arr[0] + " " + time2Arr[1]) // 23 00
+
+        // check if time1Arr is not greater than time2Arr
+        console.log(time1Arr[0] < time2Arr[0])
+        if (time1Arr[0] < time2Arr[0]) {
+
+            console.log(time2Arr[0] - time1Arr[0] >= 6)
+            // check if time difference is 6 hours
+            if (time2Arr[0] - time1Arr[0] >= 6) {
+
+                setIndicator(true)
+
+            }
+            else {
+                setIndicator(false)
+            }
+        }
+
+        else {
+            setIndicator(false)
+        }
     }
+
+    const indicatorStyle = indicator ? styles.circlePrimeColor : styles.circleSecondaryColor
+
+    useEffect(() => {
+        checkTime(settings.BeginTimeDay, settings.EndTimeDay)
+    }, [settings.BeginTimeDay, settings.EndTimeDay])
 
     return (
 
@@ -86,7 +121,7 @@ export default function CalendarSetting() {
                     <p className={styles.stateText}>
                         Posible values
                     </p>
-                    <span className={`${styles.circle} ${styles.circlePrimeColor}`}></span>
+                    <span className={`${styles.circle} ${indicatorStyle}`}></span>
                 </div>
             </div>
 
