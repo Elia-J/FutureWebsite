@@ -5,7 +5,7 @@ import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-r
 import styles from '../styles/listOfNotes.module.scss';
 import Image from 'next/image'
 
-export default function ListOfNotes() {
+export default function ListOfNotes({ inApp }) {
 
     //supabase
     const supabase = useSupabaseClient()
@@ -125,8 +125,11 @@ export default function ListOfNotes() {
 
         // Resets the data
         getNotes()
-        // If you delete a note while youre editing it, you shouldn't be able to edit it still.
-        router.push('/app/note')
+        if (!inApp) {
+            // Only if you're not viewing the list of notes from the callendar
+            // If you delete a note while youre editing it, you shouldn't be able to edit it still.
+            router.push('/app/note')
+        }
     }
     
     // Same function as removeNote() but without the router.push because you can't edit the folder.

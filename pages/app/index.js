@@ -137,7 +137,7 @@ export default function IndexApp() {
             setPanelData(
                 <div className={styles.todoList}>
                     <h2>Notes</h2>
-                    <ListOfNotes></ListOfNotes>
+                    <ListOfNotes inApp={true}></ListOfNotes>
                 </div>
             )
         }

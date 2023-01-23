@@ -77,7 +77,7 @@ export default function Index() {
                         id="SavedNotes"
                         className={styles.SavedNotes}
                     >
-                        <ListOfNotes />
+                        <ListOfNotes inApp={false}/>
                     </div>
                     <div
                         ref={collapsableElementNotes}

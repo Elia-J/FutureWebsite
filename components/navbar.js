@@ -3,7 +3,8 @@ import styles from "/styles/navbar.module.scss"
 import LogoAndName from "/components/logoAndName.js";
 import Link from 'next/link'
 
-export default function navbar({ about }) {
+export default function navbar({ about, back }) {
+    console.log(back)
     // So that we can check if you are on the about page and only have to return two different <li> instead of the whole <ul>
     return (
         <ul className={styles.nav}>
@@ -18,7 +19,9 @@ export default function navbar({ about }) {
                         About
                     </Link>
                 </li>
-
+                {
+                    back ? <li><Link className={styles.listNav} href="/app/note">Back</Link></li> : console.log('')
+                }
             </div>
 
             <div className={`${styles.right}`}>

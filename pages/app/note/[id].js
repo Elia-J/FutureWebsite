@@ -413,7 +413,7 @@ export default function Notes({ notes }) {
 
     }, [valueTitle, valueDescription])
 
-    if (session) {
+    if (session && (user?.id == notes.user_id)) {
         // Returns the html is there is a session
         return (
             // The settingsProvider and AppLayout add the sidebar with settings functions
@@ -431,7 +431,7 @@ export default function Notes({ notes }) {
                             className={styles.SavedNotes}
                         >
                             {/* Returns the list of notes */}
-                            <ListOfNotes />
+                            <ListOfNotes inApp={false}/>
                         </div>
                         <div
                             ref={collapsableElementNotes}
@@ -578,7 +578,7 @@ export default function Notes({ notes }) {
     } else {
         // If there is not a session, return the loadingline
         return (
-            <LoadingLine />
+            <LoadingLine notYourNote={user?.id != notes.id ? true : false} />
         )
     }
 }
