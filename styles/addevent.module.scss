@@ -237,6 +237,25 @@ $buttonsHeight: 60px;
   padding: 5px;
   background-color: var(--special-3);
 }
+.repeatOnItem {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.repeatDay {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+  flex-direction: column;
+
+  background-color: var(--special-3);
+  border-radius: 8px;
+  padding: 5px;
+}
 @media (max-width: 1199.98px) {
   .addeventPanel {
     width: 75%;
