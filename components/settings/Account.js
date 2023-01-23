@@ -96,24 +96,6 @@ export default function Account() {
         }
     }
 
-    // //Handle profile avatar update
-    // async function updateProfileTable(urlPthe) {
-
-    //     try {
-    //         const { error, data } = await supabase
-    //             .from('profiles')
-    //             .update({ avatar_url: urlPthe })
-    //             .eq('id', user.id)
-
-    //         if (error) {
-    //             throw error
-    //         }
-
-    //     } catch (error) {
-    //         // alert('Error updating profile')
-    //         console.log(error)
-    //     }
-    // }
     //#################################### Image Upload and Download end ####################################
 
 
