@@ -77,9 +77,9 @@ export default function Setting() {
         if (data) {
             setIsLoading(false)
 
-            let imageUrl = ""
+            let imageUrl = "/pro.png"
 
-            if (data[0].avatar_url == "/pro.png" || data[0].avatar_url == null) {
+            if (data[0].avatar_url == "/pro.png" || data[0].avatar_url == null || data[0].avatar_url == "") {
                 imageUrl = "/pro.png"
             }
             else if (data[0].avatar_url.substring(0, 4) == "http") {
@@ -110,6 +110,7 @@ export default function Setting() {
                 EndTimeDay: data[0].EndTimeDay,
                 ShowWeekends: data[0].ShowWeekends,
                 avatar_url: imageUrl,
+                filepath: data[0].avatar_url,
 
                 //weather
                 weather: data[0].weather,
