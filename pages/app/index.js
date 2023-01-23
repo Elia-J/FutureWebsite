@@ -162,16 +162,16 @@ export default function IndexApp() {
                             <Calendar panel={todoPanelToggle} setPanel={setTodoPanelToggle} toggleValue={todoPanelToggle} />
                         </div>
 
-                        <div className={todoPanelStyle}>
-                            <div className={styles.topNav}>
-                                <button className={styles.buttonTodo}
-                                    onClick={
-                                        (e) => { setTodoPanelToggle(!todoPanelToggle) }
-                                    }>
+                        <div className={styles.topNav}>
+                            <button className={styles.buttonTodo}
+                                onClick={
+                                    (e) => { setTodoPanelToggle(!todoPanelToggle) }
+                                }>
 
-                                    {todoPanelToggle ? "Close" : "Tasks & Notes"}
-                                </button>
-                            </div>
+                                {todoPanelToggle ? "Close" : "Tasks & Notes"}
+                            </button>
+                        </div>
+                        <div className={todoPanelStyle}>
 
 
                             <div className={styles.todoListHeader}>
