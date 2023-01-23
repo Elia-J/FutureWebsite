@@ -159,20 +159,24 @@ export default function Notes({ notes }) {
     }, [])
 
     // Variables to see if there have been changes made to the document.
-    var valueDescription = initialValue;
-    var valueTitle = initialTitle;
+    // var valueDescription = initialValue;
+    const [valueDescription, setValueDescription] = useState(initialValue)
+    // var valueTitle = initialTitle;
+    const [valueTitle, setValueTitle] = useState(initialTitle)
 
     // updateData gets a title and a description and updates them with the according note id
     // it also updates the created_at to show when you last saved it.
-    async function updateData(t, d) {
+    async function updateData(t, d, reload) {
         let now = new Date()
         let ISONow = now.toISOString()
         const { data, error } = await supabase
             .from('notesv2')
             .update({ title: t, description: d, created_at: ISONow })
             .eq('id', notes.id)
-        alert('succes!')
-        location.reload()
+        if (reload) {
+            alert('succes!')
+            location.reload()
+        }
     }
 
     // Creates refs to make sure we can toggle different classNames.
@@ -398,6 +402,17 @@ export default function Notes({ notes }) {
         return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
     }
 
+    useEffect(() => {
+        //search only afther the user is done with typing
+        //wait 500ms after the user stops typing to search for the input value in the database 
+        const timer = setTimeout(() => {
+            updateData(valueTitle[0].children[0].text, valueDescription, false)
+        }, 1000);
+
+        return () => clearTimeout(timer); //clear the timer if the user is still typing 
+
+    }, [valueTitle, valueDescription])
+
     if (session) {
         // Returns the html is there is a session
         return (
@@ -432,7 +447,8 @@ export default function Notes({ notes }) {
                                         editor={editorTitle}
                                         value={initialTitle}
                                         onChange={(value) => {
-                                            valueTitle = value;
+                                            // valueTitle = value;
+                                            setValueTitle(value)
                                         }}
                                     >
                                         <Editable
@@ -461,7 +477,7 @@ export default function Notes({ notes }) {
                                         value={initialValue}
                                         /* saving the data */
                                         onChange={(value) => {
-                                            valueDescription = value;
+                                            setValueDescription(value)
                                         }}
                                     >
                                         <Editable
@@ -543,16 +559,6 @@ export default function Notes({ notes }) {
                                     </Slate>
                                 </div>
                             </div>
-                            {/* Saves the data by using the updateData function */}
-                            <button
-                                className={styles.mainButton}
-                                onClick={() => {
-                                    // it uses valueTitle[0].children[0].text to save it as the regular text instead of the JSON object slate needs to render it
-                                    updateData(valueTitle[0].children[0].text, valueDescription)
-                                }}
-                            >
-                                Save
-                            </button>
                         </div>
                         <div
                             ref={collapsableElementAI}

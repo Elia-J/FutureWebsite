@@ -132,27 +132,6 @@
     margin-bottom: 10px;
 }
 
-.mainButton {
-    position: fixed;
-    margin: 20px 30px;
-    right: 0;
-    bottom: 0;
-    width: 100px;
-    height: 30px;
-    background-color: var(--primary);
-    border-radius: 12px;
-
-    color: white;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.mainButton:hover {
-    cursor: pointer;
-    background-color: #3b5760;
-}
-
 .content {
     position: relative;
     overflow: auto;
