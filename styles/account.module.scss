@@ -96,31 +96,18 @@
 .imputHolder > div:nth-child(1) > .input {
   cursor: not-allowed;
 }
-.dnagerZoneArea {
-  border: dashed 2px var(--anarchy-500);
-  padding: 10px;
-  border-radius: 10px;
-}
-.dnagerZone {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
 
 .helppButtons {
   display: flex;
   flex-direction: row;
   gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
 }
 
 @media (max-width: 1199.98px) {
 }
 @media (max-width: 991.98px) {
-  // .imageAndName {
-  //   flex-direction: column;
-  //   align-items: flex-start;
-  //   gap: 15px;
-  // }
   .inputHolder {
     max-width: 100%;
   }
@@ -128,8 +115,10 @@
 @media (max-width: 767.98px) {
 }
 @media (max-width: 575.98px) {
-  .helppButtons {
+  .imageAndName {
     flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
   }
 }
 @media (max-width: 320px) {

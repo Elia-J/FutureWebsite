@@ -22,7 +22,7 @@ import { supabase } from "/lib/supasbaseClient"
 
 const CustomEditorV2 = {
     isActive(editor, prop, format) {
-        switch(prop) {
+        switch (prop) {
             case "underline":
                 const [match1] = Editor.nodes(editor, {
                     match: (n) => n.underline === true,
@@ -68,8 +68,9 @@ const CustomEditorV2 = {
             case "underline":
                 Transforms.setNodes(
                     editor,
-                    {   underline: isActive ? null : true,
-                        fontSize: fontSize   
+                    {
+                        underline: isActive ? null : true,
+                        fontSize: fontSize
                     },
                     { match: (n) => Text.isText(n), split: true }
                 );
@@ -77,7 +78,8 @@ const CustomEditorV2 = {
             case "bold":
                 Transforms.setNodes(
                     editor,
-                    {   bold: isActive ? null : true,
+                    {
+                        bold: isActive ? null : true,
                         fontSize: fontSize
                     },
                     { match: (n) => Text.isText(n), split: true }
@@ -86,8 +88,9 @@ const CustomEditorV2 = {
             case "italic":
                 Transforms.setNodes(
                     editor,
-                    {   italic: isActive ? null : true,
-                        fontSize: fontSize 
+                    {
+                        italic: isActive ? null : true,
+                        fontSize: fontSize
                     },
                     { match: (n) => Text.isText(n), split: true }
                 );
@@ -95,8 +98,9 @@ const CustomEditorV2 = {
             case "code":
                 Transforms.setNodes(
                     editor,
-                    {   code: isActive ? null : true,
-                        fontSize: fontSize 
+                    {
+                        code: isActive ? null : true,
+                        fontSize: fontSize
                     },
                     { match: (n) => Text.isText(n), split: true }
                 );
@@ -104,8 +108,9 @@ const CustomEditorV2 = {
             case "type":
                 Transforms.setNodes(
                     editor,
-                    {   type: isActive ? null : format,
-                        fontSize: fontSize 
+                    {
+                        type: isActive ? null : format,
+                        fontSize: fontSize
                     },
                     { match: (n) => Editor.isBlock(editor, n) }
                 );
@@ -113,13 +118,14 @@ const CustomEditorV2 = {
             case "align":
                 Transforms.setNodes(
                     editor,
-                    {   align: isActive ? null : format,
+                    {
+                        align: isActive ? null : format,
                         fontSize: fontSize
                     },
                     { match: (n) => Editor.isBlock(editor, n) }
                 );
         }
-    }   
+    }
 }
 
 let globalAlign = "left";
@@ -218,7 +224,7 @@ export default function Notes({ notes }) {
                 `${styles.showAIPanel}`
             )
         }
-         else {
+        else {
             collapsableElementNotes.current.classList.toggle(
                 `${styles.CollapsedTextEditor}`
             );
@@ -300,13 +306,13 @@ export default function Notes({ notes }) {
                                 else {
                                     if (button=="h1") {
                                         CustomEditorV2.toggle(editor, "type", button, 32)
-                                    } else if (button=="h2") {
+                                    } else if (button == "h2") {
                                         CustomEditorV2.toggle(editor, "type", button, 26)
                                     } else {
                                         CustomEditorV2.toggle(editor, "type", button, fontSize)
                                     }
                                 }
-                                
+
                             }}>
                                 <Image alt={button} className={styles.icon} src={`/rich-text-icons-dark/editor-${button}.svg`} width={25} height={25} />
                             </button>
@@ -366,7 +372,7 @@ export default function Notes({ notes }) {
 
     const DefaultElement = (props) => {
         return (
-            <p style={{ textAlign: globalAlign, fontSize: props.element.children[0].fontSize}} {...props.attributes}>
+            <p style={{ textAlign: globalAlign, fontSize: props.element.children[0].fontSize }} {...props.attributes}>
                 {props.children}
             </p>
         );
@@ -400,6 +406,7 @@ export default function Notes({ notes }) {
     function parseISOString(s) {
         var b = s.split(/\D+/);
         return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
+    }
     }
 
     useEffect(() => {
@@ -491,12 +498,12 @@ export default function Notes({ notes }) {
                                                     return;
                                                 }
 
-                                                switch (event.key) {
-                                                    case ",": {
-                                                        event.preventDefault();
-                                                        CustomEditorV2.toggle(editor, "code", true, fontSize)
-                                                        break;
-                                                    }
+                                            switch (event.key) {
+                                                case ",": {
+                                                    event.preventDefault();
+                                                    CustomEditorV2.toggle(editor, "code", true, fontSize)
+                                                    break;
+                                                }
 
                                                     case "b": {
                                                         event.preventDefault();

@@ -26,7 +26,7 @@
 .addeventPanel {
   width: 60%;
   height: 90%;
-  background-color: white;
+  background-color: var(--special-5);
   position: relative;
   z-index: 2000;
   overflow: hidden;
@@ -90,11 +90,12 @@ $buttonsHeight: 60px;
   padding: 10px;
   border-radius: 10px;
   transition: background-color 0.2s ease-in-out;
+  background: transparent;
 }
 
 .blok:focus-within {
   outline: none;
-  background-color: var(--special-3);
+  background-color: var(--lightGrey);
   transition: background-color 0.2s ease-in-out;
 }
 
@@ -118,8 +119,10 @@ $buttonsHeight: 60px;
 
 .miniSection {
   display: flex;
-  gap: 70px;
+  flex-direction: row;
+  justify-content: space-around;
   margin: 5px 0px 30px 0px;
+  flex-wrap: wrap;
 }
 
 .miniTitle {
@@ -185,7 +188,74 @@ $buttonsHeight: 60px;
 .error {
   box-shadow: 0 0 0px 2px var(--anarchy-400);
 }
+.colorPicker {
+  width: 90%;
+  height: 6px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
 
+.iconPanel {
+  backdrop-filter: blur(10px);
+  background-color: rgba(55, 55, 55, 0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 100;
+}
+.iconPanelOpen {
+  display: flex;
+}
+.iconPanelHidden {
+  display: none;
+}
+.background {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.addEmoji {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 5px;
+  background-color: var(--special-3);
+}
+.repeatOnItem {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.repeatDay {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+  flex-direction: column;
+
+  background-color: var(--special-3);
+  border-radius: 8px;
+  padding: 5px;
+}
 @media (max-width: 1199.98px) {
   .addeventPanel {
     width: 75%;
@@ -202,6 +272,11 @@ $buttonsHeight: 60px;
     flex-direction: column;
     gap: 20px;
     margin: 10px 0px 30px 0px;
+  }
+}
+@media (max-width: 856px) {
+  .smallGroup {
+    width: 100%;
   }
 }
 @media (max-width: 767.98px) {

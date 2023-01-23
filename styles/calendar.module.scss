@@ -57,7 +57,78 @@
   font-weight: 900;
   font-size: 22px;
 }
+.dayHeaderClassNames {
+  height: fit-content;
+  padding: 10px 0px 10px 0px !important;
+  border: none !important;
+  border-bottom: #ddd 1px solid !important;
+}
 
-.calendar2 {
-  background-color: aqua;
+.dayName {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 15px;
+  color: #868686;
+}
+.red {
+  color: red;
+}
+.daydate {
+  font-weight: 700;
+  font-size: 40px;
+}
+.weatherIconClase {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+
+.weather {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+@media (max-width: 1199.98px) {
+  .bigDate {
+    text-align: left;
+    min-width: 280px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .dayName {
+    font-size: 10px;
+  }
+  .daydate {
+    font-size: 30px;
+  }
+  .temperature {
+    display: none;
+  }
+
+  .buttonTools {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    justify-items: start;
+    margin-right: 0px;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 767.98px) {
+}
+
+@media (max-width: 575.98px) {
+  .daydate {
+    font-size: 20px;
+  }
+  .buttonTools {
+    padding: 0px 10px;
+  }
+}
+
+@media (max-width: 320px) {
 }

@@ -1,34 +1,47 @@
 import React, { useEffect, useState } from 'react'
 import SettingsLayout from '../../layouts/settingsLayout'
 import styles from '/styles/general.module.scss'
-import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react'
-import toast, { Toaster } from 'react-hot-toast';
 
 //global variable
 import { useStateStoreContext } from "/layouts/stateStore"
 
 //theme
 import { useTheme } from 'next-themes'
+import { request } from 'http'
 
 export default function General() {
-    const supabase = useSupabaseClient()
-    const session = useSession()
-    const user = useUser()
 
-    const timeZones = Intl.supportedValuesOf('timeZone')
+
+    //moment-timezone
+    const moment = require('moment-timezone');
+
+    //variables
+    const [dataAndTime, setDataAndTime] = useState()
+
+    //generate a list of time zones using moment-timezone only names
+    const timeZonesFromMoment = moment.tz.names();
 
     const { theme, setTheme } = useTheme()
+
     const [checkboxThemeSync, setCheckboxThemeSync] = useState(false)
     const [removeCheckedTasks, setRemoveCheckedTasks] = useState()
     const [showTimeForTasks, setShowTimeForTasks] = useState()
     const [timeZone, setTimeZone] = useState('')
     const [firstDayOfWeek, setFirstDayOfWeek] = useState('')
 
-    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy] = useStateStoreContext();
+
+    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel] = useStateStoreContext();
 
     //change theme by clicking on dropdown menu in settings
     function changeTheme(e) {
         setTheme(e.target.value)
+    }
+
+
+    //using moment-timezone to get the current time and date
+    function getDataAndTime() {
+        const date = moment().tz(`${settings.time_zone}`).format('MMMM Do YYYY, h:mm:ss a');
+        setDataAndTime(date)
     }
 
 
@@ -153,8 +166,16 @@ export default function General() {
     // }, [theme, changeTheme, checkboxThemeSync])
 
     useEffect(() => {
-        GetData()
-    }, [])
+        getDataAndTime()
+
+        const interval = setInterval(() => {
+            getDataAndTime()
+        }
+            , 1000);
+        return () => clearInterval(interval);
+
+    }, [settings.time_zone])
+
 
     return (
         <SettingsLayout title="General">
@@ -170,20 +191,19 @@ export default function General() {
                 </div>
 
                 <select name="timeZone" id="timeZone" className={styles.select}
-                    onChange={(e) => { setSettings({ ...settings, TimeZone: e.target.value }) }}
+                    onChange={(e) => { setSettings({ ...settings, time_zone: e.target.value }) }}
                 >
-
-                    <option value="Local" selected={"Local" === `${settings.TimeZone}` ? "selected" : null}>Local</option>
-                    {timeZones.map((zone) => (
+                    {timeZonesFromMoment.map((zone) => (
                         <option key={zone}
                             value={zone}
-                            selected={zone === `${settings.TimeZone}` ? "selected" : null}
+                            selected={zone === `${settings.time_zone}` ? "selected" : null}
                         >
                             {zone}
                         </option>
                     ))}
 
                 </select>
+                <p className={styles.dateAndTime}>{dataAndTime} </p>
 
             </div>
 
@@ -233,6 +253,7 @@ export default function General() {
 
             </div>
 
+
             <div className={styles.optionsHorizontal}>
                 <div className={styles.details}>
                     <div className={styles.minititle}>Automatically removing checked tasks</div>
@@ -258,7 +279,6 @@ export default function General() {
                     <label htmlFor="showTimeToggle" className={styles.toggleLabel}></label>
                 </div>
             </div>
-            <Toaster position="bottom-right" reverseOrder={false} />
 
 
         </SettingsLayout >

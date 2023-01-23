@@ -10,6 +10,12 @@ export function StateProvider({ children }) {
 
     const [showSettings, setShowSettings] = useState(false);
     const [saveButton, setSaveButton] = useState(false);
+    const [warningPanel, setWarningPanel] = useState(
+        {
+            show: false,
+            sentenceCheck: "",
+        }
+    );
     const [settingsCopy, setSettingsCopy] = useState();
     const [settings, setSettings] = useState({
         FullName: "",
@@ -18,18 +24,25 @@ export function StateProvider({ children }) {
         Theme: "light",
         syncTheme: false,
         FirstDayOfTheWeek: "Monday",
-        TimeZone: "Local",
+        time_zone: "Local",
         BeginTimeDay: "07:00:00",
         EndTimeDay: "22:00:00",
         ShowWeekends: true,
         avatar_url: "",
-        profileImageUrl: "/pro.png",
+        // profileImageUrl: "/pro.png",
         filepath: "",
+
+        weather: false,
+        country_name: "",
+        iso_ode: "",
+        city_name: "",
+        latitude: "",
+        longitude: ""
     })
 
     return (
         <Context.Provider value={[
-            showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy
+            showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel, warningPanel, setWarningPanel
         ]}>
             {children}
         </Context.Provider>

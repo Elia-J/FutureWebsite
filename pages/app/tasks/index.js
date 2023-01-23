@@ -3,7 +3,7 @@ import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-r
 import styles from "/styles/task.module.scss"
 import AppLayout from "/layouts/appLayout"
 import ListOfTasks from "/components/listOfTasks"
-import { SettingsProvider } from "/layouts/stateStore"
+import { useStateStoreContext } from "/layouts/stateStore"
 
 export default function Tasks() {
     const session = useSession()
@@ -200,7 +200,6 @@ export default function Tasks() {
         return (
             <div>
                 <div className={creatingTask || editingTask ? styles.blur : null}>
-                    <SettingsProvider>
                         <AppLayout>
                                 <div className={styles.body}>
                                     <div className={openPanel ? `${styles.panel} ${styles.openFolderPanel}` : `${styles.panel} ${styles.closedFolderPanel}`}>
@@ -229,7 +228,7 @@ export default function Tasks() {
                                             </div>
                                             <hr className={styles.hr}></hr>
                                             {folders.map((folder, i) => (
-                                                <div>
+                                                <div key={i}>
                                                     <div>
                                                         <span>{folder.title}</span>
                                                         <button onClick={() => DiscardFolderSupabase(folder.id)}>x</button>
@@ -257,7 +256,6 @@ export default function Tasks() {
                                     </div>
                                 </div>
                         </AppLayout>
-                    </SettingsProvider>
                 </div>
 
                 <div className={creatingTask || editingTask ? styles.taskForm : `${styles.hiddenTaskForm} ${styles.taskForm}`}>
@@ -286,7 +284,7 @@ export default function Tasks() {
                         <select className={styles.select} onChange={(event) => setFolderID(event.target.value)}>
                             <option value={null}>None</option>
                             {folders.map((folder, i) => (
-                                <option value={folder.id}>{folder.title}</option>
+                                <option key={i} value={folder.id}>{folder.title}</option>
                             ))}
                         </select>
                         <div className={styles.inputContainer}>

@@ -35,7 +35,7 @@ export default function IndexApp() {
 
 
 
-    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy] = useStateStoreContext();
+    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel] = useStateStoreContext();
 
 
 
@@ -120,15 +120,6 @@ export default function IndexApp() {
             setPanelData(
                 <div className={styles.todoList}>
                     <h2>Tasks</h2>
-                    {tasksData.map((item) => {
-                        return (
-                            <div className={styles.todoItem} key={item.id}>
-                                <h4>{item.title}</h4>
-                                <p>{item.description}</p>
-                            </div>
-                        )
-                    }
-                    )}
                     <ListOfTasks></ListOfTasks>
                 </div>
             )
@@ -149,14 +140,13 @@ export default function IndexApp() {
         return (
             <EventProvider>
                 <AppLayout>
-                
+
                     <div className={styles.mainCalendar}>
                         <div className={styles.CalendarHeader}>
                             <Calendar panel={todoPanelToggle} setPanel={setTodoPanelToggle} toggleValue={todoPanelToggle} />
                         </div>
 
                         <div className={todoPanelStyle}>
-
                             <div className={styles.topNav}>
                                 <button className={styles.buttonTodo}
                                     onClick={
@@ -166,6 +156,7 @@ export default function IndexApp() {
                                     {todoPanelToggle ? "Close" : "Tasks & Notes"}
                                 </button>
                             </div>
+
 
                             <div className={styles.todoListHeader}>
                                 <button className={styles.buttonAdd} onClick={switchPanel} value="tasks">Task</button>
@@ -181,7 +172,7 @@ export default function IndexApp() {
                     </div>
 
                 </AppLayout>
-        </EventProvider>
+            </EventProvider>
         )
     }
 

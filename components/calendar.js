@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styles from "/styles/calendar.module.scss"
 import moment from 'moment';
+import Image from 'next/image';
 
 //supabase
 import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react'
@@ -22,48 +23,42 @@ import FullCalendar from "@fullcalendar/react";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { Calendar } from '@fullcalendar/core';
-import momentTimezonePlugin from '@fullcalendar/moment-timezone'
-import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
-// import listPlugin from '@fullcalendar/list';
+import dayGridPlugin from '@fullcalendar/daygrid'
 
+//global variable
 import { useStateStoreEventsContext } from "/layouts/stateStoreEvents"
-import { useTime } from 'framer-motion';
-
 import { useStateStoreContext } from "/layouts/stateStore"
 
-
 export default function Calendar1({ panel, setPanel, toggleValue }) {
-
-    const [eventsPanel, setEventsPanel, input, setinput] = useStateStoreEventsContext()
-
-    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy] = useStateStoreContext();
-
 
     //supabase
     const session = useSession()
     const supabase = useSupabaseClient()
     const user = useUser()
 
+    //moment
+    const momentTimezone = require('moment-timezone');
+    const momentWithoutTimezone = require('moment');
 
-    const marginLeftStyle = panel ? styles.WithoutMargin : styles.WithMargin;
+    //global state
+    const [eventsPanel, setEventsPanel, input, setinput] = useStateStoreEventsContext()
+    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel] = useStateStoreContext();
+
+    //variable
     const [weeknumber, setWeeknumber] = useState(0);
     const [title, setTitle] = useState("");
     const [view, setView] = useState("timeGridWeek");
     const [monthViewWeeknumber, setMonthViewWeeknumber] = useState(false)
+    const [events, setEvents] = useState([]);
 
-    const [addEvent, setAddEvent] = useState(false);
+    //styles
+    const marginLeftStyle = panel ? styles.WithoutMargin : styles.WithMargin;
 
     //calendar reference
     const calendarComponentRef = React.createRef();
 
     //lieciesnse key for fullcalendar
     FullCalendar.licenseKey = "GPL-My-Project-Is-Open-Source";
-
-
-
-
-    const [events, setEvents] = useState([]);
-    const [unique, setUnique] = useState([]);
 
     //get the list of events from supabase
     async function getEvents() {
@@ -73,7 +68,6 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
             .order('title', { ascending: true })
             .eq('user_id', user.id)
 
-
         if (error) {
             console.log(error)
         }
@@ -82,45 +76,19 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
             setEvents([])
             data.map((item) => {
                 setEvents((event) => [...event, {
-                    title: item.title,
                     id: item.id,
+                    title: `${item.icon !== "" ? item.icon : null}` + " " + item.title,
                     start: item.beginDate,
                     end: item.endDate,
+                    backgroundColor: item.backgroundColor,
+                    icon: item.icon,
+                    daysOfWeek: item.daysOfWeek,
+
                 }])
             }
             )
-
-            console.log(events)
         }
     }
-
-
-
-    function getUniqueValues(array1, array2) {
-        const values = array1.concat(array2)
-        return values.filter((value, index, self) => self.findIndex((v) => v.id === value.id) === index)
-    }
-
-
-    //after loading the page, get the events from supabase
-    useEffect(() => {
-        getEvents()
-    }, [])
-
-    useEffect(() => {
-        if (eventsPanel === false) {
-            setTimeout(() => {
-                getEvents()
-            }, 100)
-        }
-    }, [eventsPanel])
-
-
-
-
-
-
-
 
 
     function convertFullDataToDataAndTime(date) {
@@ -141,28 +109,18 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
             endTime: convertFullDataToDataAndTime(event.endStr).time,
         })
 
-        // setUnique([...unique, eventInfo])
-
-        // const { data, error } = await supabase
-        //     .from('events')
-        //     .insert([
-        //         eventInfo
-        //     ])
-
-        // if (error) console.log('error', error)
-        // else {
-        //     addEventsToTheCalendar()
-
-        // }
-
     }
 
+    //add event to the database
     async function eventClick(event) {
+
+        console.log("test  " + event.event.recurringDef?.[2].daysOfWeek)
 
         convertFullDataToDataAndTime(event.event.startStr)
         convertFullDataToDataAndTime(event.event.endStr)
 
         setEventsPanel(true)
+        console.log(event.event)
         setinput({
             ...input,
             id: event.event.id,
@@ -171,12 +129,15 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
             startTime: convertFullDataToDataAndTime(event.event.startStr).time,
             endDate: convertFullDataToDataAndTime(event.event.endStr).dateWithouthTime,
             endTime: convertFullDataToDataAndTime(event.event.endStr).time,
+            backgroundColor: event.event.backgroundColor,
+            icon: event.event.extendedProps.icon,
+
+
         })
-
-
 
     }
 
+    //event handlers for the calendar change
     async function eventChange(event) {
         const { data, error } = await supabase
             .from('events')
@@ -192,11 +153,9 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
 
         if (error) console.log('error', error)
         else {
-            // addEventsToTheCalendar()
             getEvents()
         }
     }
-
 
     //next week function
     function nextWeek() {
@@ -317,69 +276,6 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
         }, 210);
     }
 
-    //weather and icons
-    async function getWeatherForDate(date) {
-        const apiKey = process.env.WEATHER_API_KEY
-        const lat = "53.3498"
-        const lon = "-6.2603"
-        const time = Math.round(date.getTime() / 1000)
-
-        const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=metric&exclude=minutely,hourly,current&appid=${apiKey}&dt=${time}`
-
-        const response = await fetch(url)
-        return response.json()
-    }
-
-    function getWeatherIcon(weather) {
-        const iconId = weather.daily[0].weather[0].icon
-        const iconUrl = `https://openweathermap.org/img/wn/${iconId}@2x.png`
-
-        return <img src={iconUrl} alt="Weather icon" />
-    }
-
-    const dayHeaderContent = (arg) => {
-
-        const date = arg.date
-        const weather = getWeatherForDate(date) // get the weather data for the current date
-        const weatherIcon = getWeatherIcon(weather) // get the appropriate weather icon for the current weather
-
-        return (
-            <>
-                <span>{date.toLocaleString()}</span>
-                {weatherIcon}
-            </>
-        )
-    }
-
-
-    //add event function
-    // function addEvent() {
-    //     const calendarApi = calendarComponentRef.current.getApi();
-
-    //     calendarApi.addEvent({
-    //         title: "New Event",
-    //         start: new Date(),
-    //         allDay: true
-    //     });
-    // }
-
-    //get the date as a string
-    function getDate() {
-        const calendarApi = calendarComponentRef.current.getApi();
-    }
-
-    //change fullcalendar design
-    const handleDateClick = (arg) => {
-        if (confirm("Would you like to add an event to " + arg.dateStr + " ?")) {
-            calendarComponentRef.current.getApi().addEvent({
-                title: "New Event",
-                start: arg.date,
-                allDay: arg.allDay
-            });
-        }
-    };
-
-
     //function to handle the first day of the week,  monday = 1 , thursday = 2 , sunday = 3 , ...
     function firstDayOfWeek() {
         switch (settings.FirstDayOfTheWeek) {
@@ -401,12 +297,169 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     }
 
 
+    const [weatherData, setWeatherData] = useState()
+
+    //Api call to get the weather data
+    async function getWeather() {
+
+        const lat1 = settings.latitude.toString().substring(0, 5)
+        const lon1 = settings.longitude.toString().substring(0, 5)
+
+        const response = await fetch('api/weather',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    lat: lat1,
+                    lon: lon1
+                })
+            })
+        const data = await response.json()
+        setWeatherData(data)
+
+    }
+
+    //Today date
+    const today2 = momentTimezone.tz(settings.time_zone).format('DD-MM-YYYY');
+
+    //Add 4 days to today date
+    const today3 = momentTimezone.tz(settings.time_zone).add(4, 'days').format('DD-MM-YYYY');
+
+    const [active, setActive] = useState(true)
+    function checkWeather(weatherTemp) {
+        if (settings.weather) {
+            return (
+                <div className={styles.weather}>
+                    {
+                        active ?
+                            <>
+                                <div className={styles.temperature}>{Math.round(parseInt(weatherTemp?.main.temp))} °C</div>
+                                <div className={styles.weatherIconClase}>
+                                    <Image
+                                        src={`https://openweathermap.org/img/wn/${weatherTemp?.weather[0].icon}@2x.png`}
+                                        alt="weather icon"
+                                        fill
+                                        //handle error
+                                        onError={(e) => {
+                                            setActive(false)
+                                        }
+                                        }
+                                    />
+                                </div>
+                            </>
+
+                            : null
+
+                    }
+                </div>
+            )
+        }
+        else {
+            return ""
+        }
+
+    }
+
+    function dayHeaderContent(arg) {
+
+        const date = moment(arg.date).format('DD-MM-YYYY');
+
+        if (date >= today2 && date <= today3) {
+
+            const weatherTemp = weatherData?.list?.find(
+                (item) => item.dt_txt.includes(moment(arg.date).format('YYYY-MM-DD'))
+            )
+            return (
+
+                <div className={styles.dayHeader}>
+                    <div className={styles.dayHeaderSundayText}>
+
+                        {arg.date.getDay() === 0 ? <div className={`${styles.dayName} ${styles.red}`}>SUN</div> : null}
+                        {arg.date.getDay() === 1 ? <div className={styles.dayName}>MON</div> : null}
+                        {arg.date.getDay() === 2 ? <div className={styles.dayName}>TUE</div> : null}
+                        {arg.date.getDay() === 3 ? <div className={styles.dayName}>WED</div> : null}
+                        {arg.date.getDay() === 4 ? <div className={styles.dayName}>THU</div> : null}
+                        {arg.date.getDay() === 5 ? <div className={styles.dayName}>FRI</div> : null}
+                        {arg.date.getDay() === 6 ? <div className={styles.dayName}>SAT</div> : null}
+
+                        {
+                            monthViewWeeknumber ?
+
+                                null
+
+                                :
+
+                                <>
+                                    <div className={styles.daydate}>
+                                        {arg.date.getDate()}
+                                    </div>
+                                    {checkWeather(weatherTemp)}
+
+                                </>
+                        }
+                    </div>
+                </div >
+            )
+        }
+        else {
+            return (
+                <div className={styles.dayHeader}>
+                    <div className={styles.dayHeaderSundayText}>
+                        {arg.date.getDay() === 0 ? <div className={styles.dayName}>SUN</div> : null}
+                        {arg.date.getDay() === 1 ? <div className={styles.dayName}>MON</div> : null}
+                        {arg.date.getDay() === 2 ? <div className={styles.dayName}>TUE</div> : null}
+                        {arg.date.getDay() === 3 ? <div className={styles.dayName}>WED</div> : null}
+                        {arg.date.getDay() === 4 ? <div className={styles.dayName}>THU</div> : null}
+                        {arg.date.getDay() === 5 ? <div className={styles.dayName}>FRI</div> : null}
+                        {arg.date.getDay() === 6 ? <div className={styles.dayName}>SAT</div> : null}
+
+                        {
+                            monthViewWeeknumber ?
+
+                                null
+                                :
+                                <div className={styles.daydate}>
+                                    {arg.date.getDate()}
+                                </div>
+                        }
+
+                    </div>
+                </div >
+            )
+        }
+    }
+
+
+
+
     useEffect(() => {
+
         resizeCalendar()
+
     }, [toggleValue])
 
+
     useEffect(() => {
 
+        getWeather()
+
+    }, [settings.latitude, settings.longitude])
+
+
+    useEffect(() => {
+        if (eventsPanel === false) {
+            setTimeout(() => {
+                getEvents()
+            }, 100)
+        }
+    }, [eventsPanel])
+
+
+    useEffect(() => {
+
+        getEvents()
         getWeekNumber();
         titleFullCalendar();
 
@@ -435,11 +488,11 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                     {/* <option value="listWeek">List Week</option> */}
                 </select>
 
-
                 <div className={styles.bigDate}>{title}</div>
 
                 <div className={styles.weekNumber}>Week {weeknumber} {monthViewWeeknumber ?
                     weeknumberFirstweek() : ``}</div>
+
                 {/* navigation buttons  */}
                 <div className={styles.toolbarNavigationButton}>
 
@@ -452,80 +505,108 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                 </div>
 
             </div>
+            {/* <p>
+                {weatherData?.list?.[0].main.temp} °C
+            </p>
+            <p>{weatherData?.list?.[0].weather[0].description}</p>
+            <Image
+                src={`https://openweathermap.org/img/wn/${weatherData?.list?.[0].weather[0].icon}@2x.png`}
+                alt="weather icon"
+                width={50}
+                height={50}
+            /> */}
+
 
             <FullCalendar
-                ref={calendarComponentRef}
-                plugins={[timeGridPlugin, interactionPlugin, dayGridPlugin]}
-                className='calendar2'
-                initialView={view}
+                plugins={[
+                    timeGridPlugin,
+                    interactionPlugin,
+                    dayGridPlugin
+                ]}
+                defaultView="timeGridWeek"
+                height="85%"
+                eventBackgroundColor="#4c7987"
+                eventBorderColor="#ffffff00"
                 headerToolbar={false}
                 weekNumbers={false}
-                height="85%"
-                timeZone='local'
                 editable={true}
                 selectable={true}
                 selectMirror={true}
                 dayMaxEvents={true}
                 nowIndicator={true}
-                eventBackgroundColor="#4c7987"
-                eventBorderColor="#4c7987"
                 handleWindowResize={true}
-                dayHeaderFormat={{
-                    weekday: 'short', month: 'short', day: 'numeric'
-                }}
-                slotLabelFormat={{
-                    hour: 'numeric',
-                    // minute: '2-digit',
-                    meridiem: 'short'
-                }}
-
+                initialView={view}
+                ref={calendarComponentRef}
+                weekends={settings.ShowWeekends}
+                firstDay={firstDayOfWeek()}
+                longPressDelay={1000}
                 slotMinTime={settings.BeginTimeDay}
                 slotMaxTime={settings.EndTimeDay}
-                weekends={settings.ShowWeekends}
 
-                //first day of the week monday
-                firstDay={firstDayOfWeek()}
+                select={
+                    function (arg) {
+                        select(arg);
+                    }
+                }
+
+                eventClick={
+                    function (arg) {
+                        eventClick(arg)
+                    }
+                }
+
+                eventChange={
+                    function (arg) {
+                        eventChange(arg)
+                    }
+                }
+
+
+                // timeZone="America/Buenos_Aires"
+                // dayHeaderFormat={{
+                //     weekday: 'short', month: 'short', day: 'numeric'
+                // }}
+                // slotLabelFormat={{
+                //     hour: 'numeric',
+                //     meridiem: 'short'
+                // }}
 
 
 
+                dayHeaderClassNames={`${styles.dayHeaderClassNames}`}
+                //add class to the presentation of the day
 
-
-
-
-
-
-
-                longPressDelay={1000}
-                // dayHeaderContent={dayHeaderContent}
+                dayHeaderContent={
+                    function (arg) {
+                        return dayHeaderContent(arg)
+                    }
+                }
 
 
                 events={
                     events
+                    // [
+                    //     {
+                    //         title: '😀 event 1',
+                    //         start: '2023-01-20 10:00:00',
+                    //         end: '2023-01-20 11:00:00',
+                    //         allDay: false,
+                    //         backgroundColor: '#000000',
+                    //         //add icon to the event title
+
+
+                    //         daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                    //         startTime: '10:00',
+                    //         endTime: '11:00',
+
+
+
+
+
+                    //     },
+                    // ]
                 }
 
-
-
-
-                select={
-                    function (arg) {
-                        select(arg);                    // addEventsToTheCalendar();
-                    }
-                }
-
-                eventClick={function (arg) {
-                    eventClick(arg)
-                    // console.log(arg.event.title)
-                    // console.log(arg.event.start)
-                    // console.log(arg.event.end)
-                }}
-
-                eventChange={function (arg) {
-                    eventChange(arg)
-                }}
-
-            // eventRemove={function (arg) {
-            //     alert('removed ' + arg.event.title)
-            // }}
 
 
             />

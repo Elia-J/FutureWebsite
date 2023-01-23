@@ -81,3 +81,88 @@
 .toggleContainer input:checked + label:before {
   transform: translateX(22px);
 }
+.timeLimit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.timeInput {
+  border: none;
+  border-radius: 8px;
+  padding: 5px;
+  background-color: var(--special-3);
+  transition: background-color, box-shadow 0.2s ease-in-out;
+}
+
+.timeInput:focus {
+  outline: none;
+  box-shadow: 0 0 0px 2px var(--night-train-600);
+  background-color: var(--special-3);
+  transition: background-color, box-shadow 0.2s ease-in-out;
+}
+
+.state {
+  display: flex;
+  gap: 8px;
+  flex-direction: row;
+  align-items: center;
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 20px;
+  margin-top: 20px;
+
+  background-color: var(--special-3);
+}
+
+.stateText {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.circle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.circlePrimeColor {
+  background-color: var(--night-train-600);
+}
+.circleSecondaryColor {
+  background-color: var(--anarchy-600);
+}
+
+.dateAndTime {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgb(97, 97, 97);
+  margin-top: 10px;
+}
+
+.unlock {
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+}
+.locked {
+  display: flex;
+  flex-direction: column;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.label {
+  margin-bottom: 5px;
+  margin-top: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.latitude {
+  margin-top: 30px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.longitude {
+  font-size: 12px;
+  font-weight: 500;
+}

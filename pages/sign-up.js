@@ -12,10 +12,18 @@ export default function Signup() {
     //supabase 
     const supabase = useSupabaseClient()
 
+    //variables
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
+
+
+    function getLocalTimeZone() {
+        const moment = require('moment-timezone');
+        const localTimeZone = moment.tz.guess();
+        return localTimeZone
+    }
 
     const handleSignUp = async (e) => {
 
@@ -32,6 +40,7 @@ export default function Signup() {
             options: {
                 data: {
                     full_name: firstName + " " + lastName,
+                    time_zone: getLocalTimeZone()
                 }
             }
         })
@@ -56,6 +65,7 @@ export default function Signup() {
                 {
                     id: notify,
                 })
+            console.log(error)
         }
     }
 
@@ -67,12 +77,12 @@ export default function Signup() {
 
                     <div className={styles.group}>
                         <label htmlFor="firstName" className={styles.label} >First Name</label>
-                        <input id="firstName" type="text" placeholder="first Name" onChange={(e) => setFirstName(e.target.value)} value={firstName} className={styles.input} required />
+                        <input id="firstName" type="text" onChange={(e) => setFirstName(e.target.value)} value={firstName} className={styles.input} required />
                     </div>
 
                     <div className={styles.group}>
                         <label htmlFor="lastName" className={styles.label} >Last Name</label>
-                        <input id="lastName" type="text" placeholder="last Name" onChange={(e) => setLastName(e.target.value)} value={lastName} className={styles.input} required />
+                        <input id="lastName" type="text" onChange={(e) => setLastName(e.target.value)} value={lastName} className={styles.input} required />
                     </div>
 
                 </div>
@@ -80,12 +90,12 @@ export default function Signup() {
                 <div className={styles.group}>
                     <label htmlFor="email" className={styles.label} pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
                     >Email</label>
-                    <input id='email' type="email" placeholder="email" onChange={(e) => setEmail(e.target.value)} value={email} className={styles.input} required />
+                    <input id='email' type="email" onChange={(e) => setEmail(e.target.value)} value={email} className={styles.input} required />
                 </div>
 
                 <div className={styles.group} >
                     <label htmlFor="password" className={styles.label} >Password</label>
-                    <input id="password" type="password" placeholder="password" onChange={(e) => setPassword(e.target.value)} value={password} className={styles.input} required />
+                    <input id="password" type="password" onChange={(e) => setPassword(e.target.value)} value={password} className={styles.input} required />
                 </div>
 
                 <button type="submit" className={styles.mainButton} >Sign Up</button>
@@ -96,6 +106,10 @@ export default function Signup() {
                 <SimpleLink text="Forgot your password?" LinkTo="/forgot-password" />
                 <SimpleLink text="About Us" LinkTo="/about" />
             </div>
+            <p className={styles.location}>
+                Time Zone:&nbsp;
+                {getLocalTimeZone()}
+            </p>
 
             <Toaster
                 position="bottom-right"

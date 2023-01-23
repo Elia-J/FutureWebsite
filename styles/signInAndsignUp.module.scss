@@ -90,3 +90,18 @@
 .iconColor path {
   fill: var(--black);
 }
+
+.location {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  width: fit-content;
+  margin-top: 20px;
+  border-radius: 20px;
+
+  background-color: var(--lightGrey);
+  font-weight: 600;
+  font-size: 12px;
+  padding: 5px 10px;
+}
