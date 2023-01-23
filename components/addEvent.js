@@ -53,6 +53,7 @@ export default function Addevent() {
             endDate: "",
             endTime: "",
             allDay: false,
+            daysOfWeek: [],
         })
     }
 
@@ -128,6 +129,8 @@ export default function Addevent() {
                 beginDate: beginDateValue,
                 endDate: endDateValue,
                 allDay: input.allDay,
+
+                daysOfWeek: input.daysOfWeek,
             })
             .eq('user_id', user.id)
 
@@ -161,6 +164,7 @@ export default function Addevent() {
                 endDate: moment(input.endDate + " " + input.endTime).format("YYYY-MM-DD HH:mm:ss"),
                 backgroundColor: input.backgroundColor,
                 icon: input.icon,
+                daysOfWeek: input.daysOfWeek,
             })
             .eq('id', id)
         if (error) {
@@ -241,6 +245,21 @@ export default function Addevent() {
 
     }
 
+    function handleCheckboxChange(event) {
+        const { value } = event.target;
+        if (input.daysOfWeek.includes(value)) {
+            setinput({
+                ...input,
+                daysOfWeek: input.daysOfWeek.filter((item) => item !== value)
+            })
+        } else {
+            setinput({
+                ...input,
+                daysOfWeek: [...input.daysOfWeek, value]
+            })
+        }
+    }
+    console.log('checkboxValues', input.daysOfWeek)
 
     //add event listener to the document
     useEffect(() => {
@@ -517,18 +536,6 @@ export default function Addevent() {
 
                         <div className={`${styles.miniSection}`} >
 
-                            {/* dropdown */}
-                            {/* <div className={`${styles.blok} ${styles.smallGroup}`}>
-                                <label htmlFor="repeat" className={styles.miniTitle}>Repeat</label>
-                                <select name="repeat" id="repeat" className={styles.selectMenu}>
-                                    <option value="none">None</option>
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="monthly">Monthly</option>
-                                    <option value="yearly">Yearly</option>
-                                </select>
-                            </div> */}
-
                             <div className={`${styles.blok} ${styles.smallGroup}`}>
 
                                 {/* input checkbox for the repeat option like Mo Tu We Th Fr Sa Su */}
@@ -536,7 +543,72 @@ export default function Addevent() {
                                 <div className={styles.repeatOn}>
                                     <div className={styles.repeatOnItem}>
 
-                                        <input type="checkbox" name="repeat0" id="repeat0" className={styles.checkBox}
+                                        <label htmlFor="repeat0" className={styles.repeatDay}>
+                                            <input type="checkbox" name="repeat0" id="repeat0" value={0} checked={input.daysOfWeek.includes("1")}
+                                                onChange={
+                                                    (e) => {
+                                                        handleCheckboxChange(e)
+                                                    }
+                                                } />
+                                            <span className={styles.repeatOnItemSpan}>Mo</span>
+                                        </label>
+
+                                        <label htmlFor="repeat1" className={styles.repeatDay}>
+                                            <input type="checkbox" name="repeat1" id="repeat1" value={1} checked={input.daysOfWeek.includes("2")} onChange={
+                                                (e) => {
+                                                    handleCheckboxChange(e)
+                                                }
+                                            } />
+                                            <span className={styles.repeatOnItemSpan}>Tu</span>
+                                        </label>
+
+                                        <label htmlFor="repeat2" className={styles.repeatDay}>
+                                            <input type="checkbox" name="repeat2" id="repeat2" value={2} checked={input.daysOfWeek.includes("3")} onChange={(e) => {
+                                                handleCheckboxChange(e)
+                                            }} />
+                                            <span className={styles.repeatOnItemSpan}>We</span>
+                                        </label>
+
+                                        <label htmlFor="repeat3" className={styles.repeatDay}>
+                                            <input type="checkbox" name="repeat3" id="repeat3" value={3} checked={input.daysOfWeek.includes("4")} onChange={(e) => {
+                                                handleCheckboxChange(e)
+                                            }} />
+                                            <span className={styles.repeatOnItemSpan}>Th</span>
+
+                                        </label>
+
+                                        <label htmlFor="repeat4" className={styles.repeatDay}>
+
+                                            <input type="checkbox" name="repeat4" id="repeat4" value={4} checked={input.daysOfWeek.includes("5")} onChange={(e) => {
+                                                handleCheckboxChange(e)
+                                            }} />
+
+                                            <span className={styles.repeatOnItemSpan}>Fr</span>
+
+                                        </label>
+
+                                        <label htmlFor="repeat5" className={styles.repeatDay}>
+
+                                            <input type="checkbox" name="repeat5" id="repeat5" value={5} checked={input.daysOfWeek.includes("6")} onChange={(e) => {
+                                                handleCheckboxChange(e)
+                                            }} />
+
+                                            <span className={styles.repeatOnItemSpan}>Sa</span>
+
+                                        </label>
+
+                                        <label htmlFor="repeat6" className={styles.repeatDay}>
+
+                                            <input type="checkbox" name="repeat6" id="repeat6" value={6} checked={input.daysOfWeek.includes("0")} onChange={(e) => {
+                                                handleCheckboxChange(e)
+                                            }} />
+
+                                            <span className={styles.repeatOnItemSpan}>Su</span>
+
+                                        </label>
+
+
+                                        {/* <input type="checkbox" name="repeat0" id="repeat0" className={styles.checkBox}
                                             value={[0]}
                                             onchange={
                                                 e => {
@@ -547,38 +619,8 @@ export default function Addevent() {
                                                     })
                                                 }
                                             }
-                                        />
-                                        < label htmlFor="repeat0">Mo</label>
+                                        /> */}
 
-                                        <input type="checkbox" name="repeat1" id="repeat1" className={styles.checkBox}
-                                            value={[1]}
-                                        />
-                                        <label htmlFor="repeat1">Tu</label>
-
-                                        <input type="checkbox" name="repeat2" id="repeat2" className={styles.checkBox}
-                                            value={[2]}
-                                        />
-                                        <label htmlFor="repeat2">We</label>
-
-                                        <input type="checkbox" name="repeat3" id="repeat3" className={styles.checkBox}
-                                            value={[3]}
-                                        />
-                                        <label htmlFor="repeat3">Th</label>
-
-                                        <input type="checkbox" name="repeat4" id="repeat4" className={styles.checkBox}
-                                            value={[4]}
-                                        />
-                                        <label htmlFor="repeat4">Fr</label>
-
-                                        <input type="checkbox" name="repeat5" id="repeat5" className={styles.checkBox}
-                                            value={[5]}
-                                        />
-                                        <label htmlFor="repeat5">Sa</label>
-
-                                        <input type="checkbox" name="repeat6" id="repeat6" className={styles.checkBox}
-                                            value={[6]}
-                                        />
-                                        <label htmlFor="repeat6">Su</label>
 
                                     </div>
 
@@ -694,7 +736,7 @@ export default function Addevent() {
                                         resetError()
                                     }}
                                 />
-                                <span className={styles.eventId}>ID: {input.id}</span>
+                                {/* <span className={styles.eventId}>ID: {input.id}</span> */}
                             </div>
                         }
 
