@@ -119,7 +119,7 @@ To configure the project, you need to create a `.env.local` file in the root dir
 
 ```
 
-we will not provide the environment variables values for security reasons.
+We will not provide the environment variables values for security reasons.
 </br></br>
 
 ## Author
