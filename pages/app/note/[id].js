@@ -14,7 +14,6 @@ import ListOfNotes from '../../../components/listOfNotes'
 
 import AppLayout from "/layouts/appLayout"
 import LoadingLine from '/components/loadingLine'
-import { StateProvider } from "/layouts/stateStore"
 
 import { useRouter } from "next/router";
 import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react'

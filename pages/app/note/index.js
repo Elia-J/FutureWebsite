@@ -61,13 +61,6 @@ export default function Index() {
             )
         }
     }
-
-    // if there isn't a session it should pop back to the landing page so you can sign in again
-    useEffect(() => {
-        if (!session) {
-            router.push("/")
-        }
-    })
     
     if (session) {
         return (
