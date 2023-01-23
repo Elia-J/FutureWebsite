@@ -51,7 +51,7 @@ const CustomEditorV2 = {
             case "type":
                 const [match5] = Editor.nodes(editor, {
                     match: (n) => n.type === format,
-                    // universal: true,
+                    universal: true,
                 })
                 return !!match5;
             case "align":
@@ -311,8 +311,10 @@ export default function Notes({ notes }) {
                     })
                 }
                 <div>
-                    <button style={{color: "#4c7987"}} onClick={() => {setFontSize(fontSize + 1)}}>&#129093;</button>
-                    <button style={{color: "#4c7987"}} onClick={() => {setFontSize(fontSize - 1)}}>&#129095;</button>
+                    {/* The fontsize doens't toggle unless you call the CustomEditorV2 */}
+                    {/* By calling a specific style twice, it does update the fontsize but it doesn't switch style */}
+                    <button style={{color: "#4c7987"}} onClick={() => {setFontSize(fontSize + 1); CustomEditorV2.toggle(editor, "bold", true, fontSize); CustomEditorV2.toggle(editor, "bold", true, fontSize)}}>&#129093;</button>
+                    <button style={{color: "#4c7987"}} onClick={() => {setFontSize(fontSize - 1); CustomEditorV2.toggle(editor, "bold", true, fontSize); CustomEditorV2.toggle(editor, "bold", true, fontSize)}}>&#129095;</button>
                 </div>
             </div>
         )
@@ -396,13 +398,6 @@ export default function Notes({ notes }) {
         var b = s.split(/\D+/);
         return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
     }
-
-    // if there isn't a session it should pop back to the landing page so you can sign in again
-    useEffect(() => {
-        if (!session) {
-            router.push("/")
-        }
-    })
 
     if (session) {
         // Returns the html is there is a session

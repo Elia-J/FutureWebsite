@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import ListOfNotes from '../../../components/listOfNotes'
 import LoadingLine from '/components/loadingLine'
 
+import { useRouter } from "next/router";
 import AppLayout from "/layouts/appLayout"
 import { useSession } from "@supabase/auth-helpers-react";
 
@@ -10,6 +11,7 @@ import { useSession } from "@supabase/auth-helpers-react";
 export default function Index() {
 
     const session = useSession()
+    const router = useRouter()
 
     // create refs for all element which needs its classname to be edited
     let collapsableElementSavedNotes = React.createRef();
