@@ -46,15 +46,6 @@ export default function Tasks() {
         GetFoldersSupabase()
     }
 
-    // Edits a folder in supabase
-    async function EditFolderSupabase() {
-        const { data, error } = await supabase
-                .from('todosFolders')
-                .update({title: folderTitle})
-                .eq('id', 3)
-        GetFoldersSupabase()
-    }
-
     // Discards a folder in supabase
     async function DiscardFolderSupabase(folder_id) {
         const { data, error } = await supabase
@@ -227,7 +218,7 @@ export default function Tasks() {
                                             </div>
                                             <hr className={styles.hr}></hr>
                                             {folders.map((folder, i) => (
-                                                <div>
+                                                <div key={i}>
                                                     <div>
                                                         <span>{folder.title}</span>
                                                         <button onClick={() => DiscardFolderSupabase(folder.id)}>x</button>
@@ -282,7 +273,7 @@ export default function Tasks() {
                         <select className={styles.select} onChange={(event) => setFolderID(event.target.value)}>
                             <option value={null}>None</option>
                             {folders.map((folder, i) => (
-                                <option value={folder.id}>{folder.title}</option>
+                                <option key={i} value={folder.id}>{folder.title}</option>
                             ))}
                         </select>
                         <div className={styles.inputContainer}>
