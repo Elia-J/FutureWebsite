@@ -82,6 +82,8 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                     end: item.endDate,
                     backgroundColor: item.backgroundColor,
                     icon: item.icon,
+                    daysOfWeek: item.daysOfWeek,
+
                 }])
             }
             )
@@ -112,6 +114,8 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     //add event to the database
     async function eventClick(event) {
 
+        console.log("test  " + event.event.recurringDef?.[2].daysOfWeek)
+
         convertFullDataToDataAndTime(event.event.startStr)
         convertFullDataToDataAndTime(event.event.endStr)
 
@@ -127,6 +131,8 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
             endTime: convertFullDataToDataAndTime(event.event.endStr).time,
             backgroundColor: event.event.backgroundColor,
             icon: event.event.extendedProps.icon,
+
+
         })
 
     }
@@ -321,18 +327,32 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     //Add 4 days to today date
     const today3 = momentTimezone.tz(settings.time_zone).add(4, 'days').format('DD-MM-YYYY');
 
+    const [active, setActive] = useState(true)
     function checkWeather(weatherTemp) {
         if (settings.weather) {
             return (
                 <div className={styles.weather}>
-                    <div className={styles.temperature}>{Math.round(parseInt(weatherTemp?.main.temp))} °C</div>
-                    <div className={styles.weatherIconClase}>
-                        <Image
-                            src={`https://openweathermap.org/img/wn/${weatherTemp?.weather[0].icon}@2x.png`}
-                            alt="weather icon"
-                            fill
-                        />
-                    </div>
+                    {
+                        active ?
+                            <>
+                                <div className={styles.temperature}>{Math.round(parseInt(weatherTemp?.main.temp))} °C</div>
+                                <div className={styles.weatherIconClase}>
+                                    <Image
+                                        src={`https://openweathermap.org/img/wn/${weatherTemp?.weather[0].icon}@2x.png`}
+                                        alt="weather icon"
+                                        fill
+                                        //handle error
+                                        onError={(e) => {
+                                            setActive(false)
+                                        }
+                                        }
+                                    />
+                                </div>
+                            </>
+
+                            : null
+
+                    }
                 </div>
             )
         }
@@ -520,6 +540,8 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                 weekends={settings.ShowWeekends}
                 firstDay={firstDayOfWeek()}
                 longPressDelay={1000}
+                slotMinTime={settings.BeginTimeDay}
+                slotMaxTime={settings.EndTimeDay}
 
                 select={
                     function (arg) {
@@ -548,9 +570,6 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                 //     hour: 'numeric',
                 //     meridiem: 'short'
                 // }}
-
-                // slotMinTime={settings.BeginTimeDay}
-                // slotMaxTime={settings.EndTimeDay}
 
 
 
