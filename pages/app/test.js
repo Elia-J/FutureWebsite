@@ -12,11 +12,9 @@ export default function Search() {
 
     async function search() {
         const { data, error } = await supabase
-            .from('todos')
-            .select()
-            .ilike('title', `%${input}%`)
-        // .order('id', { ascending: false })
-        // .limit(10)
+            .from('notesv2')
+            .select('*')
+            .eq('user_id', user?.id)
         console.log(data)
         setData(data)
 
@@ -27,7 +25,7 @@ export default function Search() {
         //wait 500ms after the user stops typing to search for the input value in the database 
         const timer = setTimeout(() => {
             search()
-        }, 500);
+        }, 5000);
 
         return () => clearTimeout(timer); //clear the timer if the user is still typing 
 
@@ -42,9 +40,9 @@ export default function Search() {
             <input type="text" value={input} onChange={e => setInput(e.target.value)} />
 
             <ul>
-                {data.map((item, index) => (
-                    <li key={index}>{item.title}</li>
-                ))}
+                    {data.map((item, index) => (
+                        <li key={index}>{item.title}</li>
+                    ))}
             </ul>
 
 

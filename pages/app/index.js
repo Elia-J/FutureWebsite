@@ -9,6 +9,7 @@ import LoadingLine from '/components/loadingLine'
 import { EventProvider } from "/layouts/stateStoreEvents"
 
 import ListOfTasks from "/components/listOfTasks"
+import ListOfNotes from "/components/listOfNotes"
 import Calendar from '/components/calendar'
 
 import Trash from "/public/trash.svg"
@@ -119,7 +120,7 @@ export default function IndexApp() {
             setPanelData(
                 <div className={styles.todoList}>
                     <h2>Tasks</h2>
-
+                    <ListOfTasks></ListOfTasks>
                 </div>
             )
         }
@@ -127,24 +128,7 @@ export default function IndexApp() {
             setPanelData(
                 <div className={styles.todoList}>
                     <h2>Notes</h2>
-                    {/* {notesData.map((item) => {
-                        const title = JSON.parse(item.title)[0].children[0].text
-                        const description = item.description[0].children[0].text
-
-                        return (
-                            <Link href={`/app/note/${item.id}`} key={item.id}>
-                                <div className={styles.notesItems}>
-                                    <div className={styles.titleWithIcon}>
-                                        <h4 className={styles.notesTitle}>{title}</h4>
-                                        <button className={styles.trash} onClick={() => removeNote(item.id)}><Trash /> </button>
-                                    </div>
-                                    <p className={styles.notesDescription}>{description}</p>
-
-                                </div>
-                            </Link>
-                        )
-                    })} */}
-
+                    <ListOfNotes inApp={true}></ListOfNotes>
                 </div>
             )
         }
@@ -179,12 +163,7 @@ export default function IndexApp() {
                                 <button className={styles.buttonAdd} onClick={switchPanel} value="notes">Notes</button>
 
                                 <div className={styles.todoListHeader}>
-                                    <h3>Tasks List</h3>
-
                                     {panelData}
-
-                                    <ListOfTasks></ListOfTasks>
-
                                 </div>
 
 

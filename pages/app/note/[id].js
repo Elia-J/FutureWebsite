@@ -19,7 +19,6 @@ import { useRouter } from "next/router";
 import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react'
 
 import { supabase } from "/lib/supasbaseClient"
-import { useTheme } from 'next-themes'
 
 const CustomEditorV2 = {
     isActive(editor, prop, format) {
@@ -51,7 +50,7 @@ const CustomEditorV2 = {
             case "type":
                 const [match5] = Editor.nodes(editor, {
                     match: (n) => n.type === format,
-                    // universal: true,
+                    universal: true,
                 })
                 return !!match5;
             case "align":
@@ -138,22 +137,15 @@ export default function Notes({ notes }) {
     const session = useSession()
     const user = useUser()
 
+    // sets the initial value used by the slate editor
     const [initialValue, setInitialValue] = useState(notes.description)
-    const { theme, setTheme } = useTheme()
-
-    const [THEME, setTHEME] = useState()
-
-    const [initialTitle, setInitialTitle] = useState([{ "type": "h1", "children": [{ "text": notes.title }] }])
-    const [collapsed, setCollapsed] = useState(false)
+    
+    // sets the initial value title used by the slate editor
+    const [initialTitle, setInitialTitle] = useState([{"type":"h1","children":[{"text":notes.title}]}])
     const [fontSize, setFontSize] = useState(16)
     // H1: 32
     // H2: 26
     // default: 16
-
-    useEffect(() => {
-        const html = document.querySelector('html')
-        // console.log(html.getAttribute('data-theme'))
-    }, [theme])
 
     // Checks if there is a change in the url, if so, it reloads the page
     // This is to make sure that the correct initialValue and initialTitle is loaded into the editor
@@ -171,31 +163,40 @@ export default function Notes({ notes }) {
             router.events.off('routeChangeComplete', handleRouteChange)
         }
     }, [])
-    // Variables to see if there have been changes.
-    var valueDescription = initialValue;
-    var valueTitle = initialTitle;
+
+    // Variables to see if there have been changes made to the document.
+    // var valueDescription = initialValue;
+    const [valueDescription, setValueDescription] = useState(initialValue)
+    // var valueTitle = initialTitle;
+    const [valueTitle, setValueTitle] = useState(initialTitle)
 
     // updateData gets a title and a description and updates them with the according note id
-    async function updateData(t, d) {
+    // it also updates the created_at to show when you last saved it.
+    async function updateData(t, d, reload) {
         let now = new Date()
         let ISONow = now.toISOString()
         const { data, error } = await supabase
             .from('notesv2')
             .update({ title: t, description: d, created_at: ISONow })
             .eq('id', notes.id)
-        alert('succes!')
-        location.reload()
+        if (reload) {
+            alert('succes!')
+            location.reload()
+        }
     }
 
+    // Creates refs to make sure we can toggle different classNames.
     let collapsableElementSavedNotes = React.createRef();
     let collapsableElementNotes = React.createRef();
     let collapsableElementAI = React.createRef();
     let openElement = React.createRef();
     let closeElement = React.createRef();
 
+    // toggles the appropriate classNames for the saved notesbar
     function changeSavedNotesBar() {
         openElement.current.classList.toggle(`${styles.openHide}`)
         closeElement.current.classList.toggle(`${styles.closeShow}`)
+        // if both the savednotes panel and ai panel are toggled it toggles the superCollapsed text editor
         if (collapsableElementAI.current.classList[1] == styles.showAIPanel) {
             collapsableElementNotes.current.classList.toggle(
                 `${styles.SuperCollapsedTextEditor}`
@@ -213,6 +214,7 @@ export default function Notes({ notes }) {
         }
     }
 
+    // does the same as changeSavedNotesBar() but without the openelement and close element.
     function changeAIPanel() {
         if (collapsableElementSavedNotes.current.classList[1] == undefined) {
             collapsableElementNotes.current.classList.toggle(
@@ -237,9 +239,6 @@ export default function Notes({ notes }) {
     // We have two editors, one for the title and one for the description
     const [editor] = useState(() => withReact(createEditor()));
     const [editorTitle] = useState(() => withReact(createEditor()));
-
-    // Function to make the saved notes bar smaller and bigger by adding a class to its classlist
-    // This is picked up by the css and changes it's width
 
     const renderElement = useCallback((props) => {
         // If the editor renders an eliment and there is an alignment prop then it sents the global align to its value
@@ -281,21 +280,31 @@ export default function Notes({ notes }) {
     const renderLeaf = useCallback((props) => {
         return <Leaf {...props} />;
     }, []);
-
+    
+    // These are the buttons that toggle a style by the editor
     const Buttons = ["bold", "italic", "underline", "code", "h1", "h2", "quote", "list-bulleted", "align-left", "align-center", "align-right", "align-justify"]
     const ToolbarV2 = () => {
         return (
             <div className={styles.toolbar}>
+                {/* it loops through that button each getting it's own icon and onMouseDown event */}
                 {
                     Buttons.map((button, i) => {
                         return (
                             <button key={i} className={styles.buttonWithoutStyle} onMouseDown={() => {
-                                if (button.slice(0, 5) == "align") {
+                                // if the button starts with 'align' it should toggle the align function together with how it should align
+                                if (button.slice(0,5) == "align") {
                                     CustomEditorV2.toggle(editor, "align", button.split('-')[1], fontSize)
-                                } else if (i < 4) {
+                                } 
+                                // if the first four buttons are clicked it only needs to set a propperty of the customeditor to true
+                                else if (i<4) {
+
                                     CustomEditorV2.toggle(editor, button, true, fontSize)
-                                } else {
-                                    if (button == "h1") {
+                                } 
+                                // for all other case (which are "h1", "h2", "quote" and "list-bulleted")
+                                // it toggles the type propertie together with the button name
+                                // for h1 and h2 it sets the fontsize to 32 or 26
+                                else {
+                                    if (button=="h1") {
                                         CustomEditorV2.toggle(editor, "type", button, 32)
                                     } else if (button == "h2") {
                                         CustomEditorV2.toggle(editor, "type", button, 26)
@@ -311,8 +320,10 @@ export default function Notes({ notes }) {
                     })
                 }
                 <div>
-                    <button style={{ color: "#4c7987" }} onClick={() => { setFontSize(fontSize + 1) }}>&#129093;</button>
-                    <button style={{ color: "#4c7987" }} onClick={() => { setFontSize(fontSize - 1) }}>&#129095;</button>
+                    {/* The fontsize doens't toggle unless you call the CustomEditorV2 */}
+                    {/* By calling a specific style twice, it does update the fontsize but it doesn't switch style */}
+                    <button style={{color: "#4c7987"}} onClick={() => {setFontSize(fontSize + 1); CustomEditorV2.toggle(editor, "bold", true, fontSize); CustomEditorV2.toggle(editor, "bold", true, fontSize)}}>&#129093;</button>
+                    <button style={{color: "#4c7987"}} onClick={() => {setFontSize(fontSize - 1); CustomEditorV2.toggle(editor, "bold", true, fontSize); CustomEditorV2.toggle(editor, "bold", true, fontSize)}}>&#129095;</button>
                 </div>
             </div>
         )
@@ -360,7 +371,6 @@ export default function Notes({ notes }) {
     };
 
     const DefaultElement = (props) => {
-        console.log(props.element.children[0].fontSize)
         return (
             <p style={{ textAlign: globalAlign, fontSize: props.element.children[0].fontSize }} {...props.attributes}>
                 {props.children}
@@ -392,86 +402,100 @@ export default function Notes({ notes }) {
         );
     };
 
+    // parses the ISO string saved in the database to a date to show on the page
     function parseISOString(s) {
         var b = s.split(/\D+/);
         return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
     }
 
-    if (session) {
+    useEffect(() => {
+        //search only afther the user is done with typing
+        //wait 500ms after the user stops typing to search for the input value in the database 
+        const timer = setTimeout(() => {
+            updateData(valueTitle[0].children[0].text, valueDescription, false)
+        }, 1000);
+
+        return () => clearTimeout(timer); //clear the timer if the user is still typing 
+
+    }, [valueTitle, valueDescription])
+
+    if (session && (user?.id == notes.user_id)) {
         // Returns the html is there is a session
         return (
             // The settingsProvider and AppLayout add the sidebar with settings functions
-            <AppLayout>
-                <div className={styles.content}>
-                    <div ref={openElement} onClick={changeSavedNotesBar} className={`${styles.openStyle} ${styles.openHide}`}>
-                        <strong>Open</strong>
-                    </div>
-                    <div ref={closeElement} onClick={changeSavedNotesBar} className={`${styles.closeStyle} ${styles.closeShow}`}>
-                        <strong>Close</strong>
-                    </div>
-                    <div
-                        ref={collapsableElementSavedNotes}
-                        id="SavedNotes"
-                        className={styles.SavedNotes}
-                    >
-                        {/* Returns the list of notes */}
-                        <ListOfNotes />
-                    </div>
-                    <div
-                        ref={collapsableElementNotes}
-                        id="TextEditor"
-                        className={`${styles.TextEditor} ${styles.CollapsedTextEditor}`}
-                    >
-                        <div className={styles.editorDiv}>
-                            {/* Title editor */}
-                            <div className={styles.title}>
-                                <h1>Title: </h1>
-                                {/* The editor itself */}
-                                <Slate
-                                    editor={editorTitle}
-                                    value={initialTitle}
-                                    onChange={(value) => {
-                                        valueTitle = value;
-                                    }}
-                                >
-                                    <Editable
-                                        className={styles.noteTitle}
-                                        onKeyDown={(event) => {
-                                            if (event.key == "Enter") event.preventDefault();
-                                        }}
-                                        renderElement={renderElement}
-                                        renderLeaf={renderLeaf}
-                                    />
-                                </Slate>
+                <AppLayout>
+                    <div className={styles.content}>
+                        <div ref={openElement} onClick={changeSavedNotesBar} className={`${styles.openStyle} ${styles.openHide}`}>
+                            <strong>Open</strong>
                             </div>
-                            <strong>{parseISOString(notes.created_at).toString().slice(0, 24)}</strong>
-                            {/* Returns the Toolbar with too breaks above and underneath it */}
-                            {/* The Toolbar element is defined in this file */}
-                            <hr />
-                            {/* <Toolbar /> */}
-                            <ToolbarV2 />
-                            <hr />
+                        <div ref={closeElement} onClick={changeSavedNotesBar} className={`${styles.closeStyle} ${styles.closeShow}`}>
+                            <strong>Close</strong>
+                        </div>
+                        <div
+                            ref={collapsableElementSavedNotes}
+                            id="SavedNotes"
+                            className={styles.SavedNotes}
+                        >
+                            {/* Returns the list of notes */}
+                            <ListOfNotes inApp={false}/>
+                        </div>
+                        <div
+                            ref={collapsableElementNotes}
+                            id="TextEditor"
+                            className={`${styles.TextEditor} ${styles.CollapsedTextEditor}`}
+                        >
+                            <div className={styles.editorDiv}>
+                                {/* Title editor */}
+                                <div className={styles.title}>
+                                    <h1>Title: </h1>    
+                                    {/* The editor itself */}
+                                    <Slate
+                                        editor={editorTitle}
+                                        value={initialTitle}
+                                        onChange={(value) => {
+                                            // valueTitle = value;
+                                            setValueTitle(value)
+                                        }}
+                                    >
+                                        <Editable
+                                            className={styles.noteTitle}
+                                            onKeyDown={(event) => {
+                                                if (event.key == "Enter") event.preventDefault();
+                                            }}
+                                            renderElement={renderElement}
+                                            renderLeaf={renderLeaf}
+                                        />
+                                    </Slate>
+                                </div>
+                                {/* the date it was last edited */}
+                                <strong>{parseISOString(notes.created_at).toString().slice(0,24)}</strong>
+                                {/* Returns the Toolbar with too breaks above and underneath it */}
+                                {/* The Toolbar element is defined in this file */}
+                                <hr />
+                                {/* returns the toolbar */}
+                                <ToolbarV2 />
+                                <hr />
 
-                            <div className={styles.description}>
-                                {/* Descriptor itself */}
-                                <Slate
-                                    editor={editor}
-                                    value={initialValue}
-                                    /* saving the data */
-                                    onChange={(value) => {
-                                        valueDescription = value;
-                                    }}
-                                >
-                                    <Editable
-                                        className={styles.noteDescription}
-                                        renderElement={renderElement}
-                                        renderLeaf={renderLeaf}
-                                        onKeyDown={(event) => {
-                                            // Checks for shortcut
-                                            // Only if the ctrl key is pressed
-                                            if (!event.ctrlKey) {
-                                                return;
-                                            }
+                                 <div className={styles.description}>
+                                     {/* Descriptor itself */}
+                                     <Slate
+                                        editor={editor}
+                                        value={initialValue}
+                                        /* saving the data */
+                                        onChange={(value) => {
+                                            setValueDescription(value)
+                                        }}
+                                    >
+                                        <Editable
+                                            className={styles.noteDescription}
+                                            renderElement={renderElement}
+                                            renderLeaf={renderLeaf}
+                                            onKeyDown={(event) => {
+                                                // Checks for shortcut
+                                                // Only if the ctrl key is pressed
+                                                if (!event.ctrlKey) {
+                                                    return;
+                                                }
 
                                             switch (event.key) {
                                                 case ",": {
@@ -480,233 +504,93 @@ export default function Notes({ notes }) {
                                                     break;
                                                 }
 
-                                                case "b": {
-                                                    event.preventDefault();
-                                                    CustomEditorV2.toggle(editor, "bold", true, fontSize)
-                                                    break;
+                                                    case "b": {
+                                                        event.preventDefault();
+                                                        CustomEditorV2.toggle(editor, "bold", true, fontSize)
+                                                        break;
+                                                    }
+                                                    case "i": {
+                                                        event.preventDefault();
+                                                        CustomEditorV2.toggle(editor, "italic", true, fontSize)
+                                                        break;
+                                                    }
+                                                    case "u": {
+                                                        event.preventDefault();
+                                                        CustomEditorV2.toggle(editor, "underline", true, fontSize)
+                                                        break;
+                                                    }
+                                                    case "1": {
+                                                        event.preventDefault();
+                                                        CustomEditorV2.toggle(editor, "type", "h1", fontSize)
+                                                        break;
+                                                    }
+                                                    case "2": {
+                                                        event.preventDefault();
+                                                        CustomEditorV2.toggle(editor, "type", "h2", fontSize)
+                                                        break;
+                                                    }
+                                                    case "q": {
+                                                        event.preventDefault();
+                                                        CustomEditorV2.toggle(editor, "type", "quote", fontSize)
+                                                        break;
+                                                    }
+                                                    case "b" && "l": {
+                                                        event.preventDefault();
+                                                        CustomEditorV2.toggle(editor, "type", "list-bulleted", fontSize)
+                                                        break;
+                                                    }
+                                                    case "Shift" && "R": {
+                                                        event.preventDefault();
+                                                        CustomEditorV2.toggle(editor, "align", "right", fontSize)
+                                                        break;
+                                                    }
+                                                    case "Shift" && "L": {
+                                                        event.preventDefault();
+                                                        CustomEditorV2.toggle(editor, "align", "left", fontSize)
+                                                        break;
+                                                    }
+                                                    case "Shift" && "E": {
+                                                        event.preventDefault();
+                                                        CustomEditorV2.toggle(editor, "align", "center", fontSize)
+                                                        break;
+                                                    }
+                                                    case "Shift" && "J": {
+                                                        event.preventDefault();
+                                                        CustomEditorV2.toggle(editor, "align", "justify", fontSize)
+                                                        break;
+                                                    }
                                                 }
-                                                case "i": {
-                                                    event.preventDefault();
-                                                    CustomEditorV2.toggle(editor, "italic", true, fontSize)
-                                                    break;
-                                                }
-                                                case "u": {
-                                                    event.preventDefault();
-                                                    CustomEditorV2.toggle(editor, "underline", true, fontSize)
-                                                    break;
-                                                }
-                                                case "1": {
-                                                    event.preventDefault();
-                                                    CustomEditorV2.toggle(editor, "type", "h1", fontSize)
-                                                    break;
-                                                }
-                                                case "2": {
-                                                    event.preventDefault();
-                                                    CustomEditorV2.toggle(editor, "type", "h2", fontSize)
-                                                    break;
-                                                }
-                                                case "q": {
-                                                    event.preventDefault();
-                                                    CustomEditorV2.toggle(editor, "type", "quote", fontSize)
-                                                    break;
-                                                }
-                                                case "b" && "l": {
-                                                    event.preventDefault();
-                                                    CustomEditorV2.toggle(editor, "type", "list-bulleted", fontSize)
-                                                    break;
-                                                }
-                                                case "Shift" && "R": {
-                                                    event.preventDefault();
-                                                    CustomEditorV2.toggle(editor, "align", "right", fontSize)
-                                                    break;
-                                                }
-                                                case "Shift" && "L": {
-                                                    event.preventDefault();
-                                                    CustomEditorV2.toggle(editor, "align", "left", fontSize)
-                                                    break;
-                                                }
-                                                case "Shift" && "E": {
-                                                    event.preventDefault();
-                                                    CustomEditorV2.toggle(editor, "align", "center", fontSize)
-                                                    break;
-                                                }
-                                                case "Shift" && "J": {
-                                                    event.preventDefault();
-                                                    CustomEditorV2.toggle(editor, "align", "justify", fontSize)
-                                                    break;
-                                                }
-                                            }
-                                        }}
-                                    />
-                                </Slate>
+                                            }}
+                                        />
+                                    </Slate>
+                                </div>
                             </div>
                         </div>
-                        {/* Saves the data by using the updateData function */}
-                        <button
-                            className={styles.mainButton}
-                            onClick={() => {
-                                updateData(valueTitle[0].children[0].text, valueDescription)
-                            }}
+                        <div
+                            ref={collapsableElementAI}
+                            id="AI"
+                            className={styles.AI}
                         >
-                            Save
-                        </button>
-                    </div>
-                    <div
-                        ref={collapsableElementAI}
-                        id="AI"
-                        className={styles.AI}
-                    >
-                    </div>
-                    <div
-                        className={styles.AIAssisctance}
-                        onClick={changeAIPanel}
-                    >
-                        <strong>AI Assistance</strong>
-                    </div>
-                </div>
-                <div
-                    ref={collapsableElementNotes}
-                    id="TextEditor"
-                    className={styles.TextEditor}
-                >
-                    <div className={styles.editorDiv}>
-                        {/* Title editor */}
-                        <div className={styles.title}>
-                            <h1>Title: </h1>
-                            {/* The editor itself */}
-                            <Slate
-                                editor={editorTitle}
-                                value={initialTitle}
-                                onChange={(value) => {
-                                    valueTitle = value;
-                                }}
-                            >
-                                <Editable
-                                    className={styles.noteTitle}
-                                    onKeyDown={(event) => {
-                                        if (event.key == "Enter") event.preventDefault();
-                                    }}
-                                    renderElement={renderElement}
-                                    renderLeaf={renderLeaf}
-                                />
-                            </Slate>
                         </div>
-                        {/* Returns the Toolbar with too breaks above and underneath it */}
-                        {/* The Toolbar element is defined in this file */}
-                        <hr />
-                        {/* <Toolbar /> */}
-                        <ToolbarV2 />
-                        <hr />
-
-                        <div className={styles.description}>
-                            {/* Descriptor itself */}
-                            <Slate
-                                editor={editor}
-                                value={initialValue}
-                                /* saving the data */
-                                onChange={(value) => {
-                                    valueDescription = value;
-                                }}
-                            >
-                                <Editable
-                                    className={styles.noteDescription}
-                                    renderElement={renderElement}
-                                    renderLeaf={renderLeaf}
-                                    onKeyDown={(event) => {
-                                        // Checks for shortcut
-                                        // Only if the ctrl key is pressed
-                                        if (!event.ctrlKey) {
-                                            return;
-                                        }
-
-                                        switch (event.key) {
-                                            case ",": {
-                                                event.preventDefault();
-                                                CustomEditorV2.toggle(editor, "code", true, fontSize)
-                                                break;
-                                            }
-
-                                            case "b": {
-                                                event.preventDefault();
-                                                CustomEditorV2.toggle(editor, "bold", true, fontSize)
-                                                break;
-                                            }
-                                            case "i": {
-                                                event.preventDefault();
-                                                CustomEditorV2.toggle(editor, "italic", true, fontSize)
-                                                break;
-                                            }
-                                            case "u": {
-                                                event.preventDefault();
-                                                CustomEditorV2.toggle(editor, "underline", true, fontSize)
-                                                break;
-                                            }
-                                            case "1": {
-                                                event.preventDefault();
-                                                CustomEditorV2.toggle(editor, "type", "h1", fontSize)
-                                                break;
-                                            }
-                                            case "2": {
-                                                event.preventDefault();
-                                                CustomEditorV2.toggle(editor, "type", "h2", fontSize)
-                                                break;
-                                            }
-                                            case "q": {
-                                                event.preventDefault();
-                                                CustomEditorV2.toggle(editor, "type", "quote", fontSize)
-                                                break;
-                                            }
-                                            case "b" && "l": {
-                                                event.preventDefault();
-                                                CustomEditorV2.toggle(editor, "type", "list-bulleted", fontSize)
-                                                break;
-                                            }
-                                            case "Shift" && "R": {
-                                                event.preventDefault();
-                                                CustomEditorV2.toggle(editor, "align", "right", fontSize)
-                                                break;
-                                            }
-                                            case "Shift" && "L": {
-                                                event.preventDefault();
-                                                CustomEditorV2.toggle(editor, "align", "left", fontSize)
-                                                break;
-                                            }
-                                            case "Shift" && "E": {
-                                                event.preventDefault();
-                                                CustomEditorV2.toggle(editor, "align", "center", fontSize)
-                                                break;
-                                            }
-                                            case "Shift" && "J": {
-                                                event.preventDefault();
-                                                CustomEditorV2.toggle(editor, "align", "justify", fontSize)
-                                                break;
-                                            }
-                                        }
-                                    }}
-                                />
-                            </Slate>
+                        <div
+                            className={styles.AIAssisctance}
+                            onClick={changeAIPanel}
+                        >
+                            <strong>AI Assistance</strong>
                         </div>
                     </div>
-                    {/* Saves the data by using the updateData function */}
-                    <button
-                        className={styles.mainButton}
-                        onClick={() => {
-                            updateData(valueTitle[0].children[0].text, valueDescription)
-                        }}
-                    >
-                        Save
-                    </button>
-                </div>
-            </AppLayout>
+                </AppLayout>
         );
     } else {
         // If there is not a session, return the loadingline
         return (
-            <LoadingLine />
+            <LoadingLine notYourNote={user?.id != notes.id ? true : false} />
         )
     }
 }
 
+
+// this gets the ID from the query and sets the notes propperty to the note corresponding with the id
 export async function getServerSideProps({ params }) {
     const { id } = params
 

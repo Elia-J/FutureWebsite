@@ -24,7 +24,7 @@
 .input {
     border: none;
     height: 30px;
-    width: 50%;
+    width: 120px;
     background-color: var(--lightGrey);
     border-radius: 12px;
     padding: 0.5rem 0.5rem 0.5rem 0.8rem; // top right bottom left
@@ -111,6 +111,7 @@
     background-color: #f1f1f1;
     min-width: 160px;
     overflow: auto;
+    margin-left: -215px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 10;
     border-radius: 10px;
@@ -165,6 +166,7 @@
     position: absolute;
     z-index: 1;
     background-color: var(--Special-light-gray);
+    margin-left: -140px;
     padding: 0.5rem;
     border-radius: 10px;
     width: 150px;
@@ -186,14 +188,6 @@
 }
 
 @media (max-width: 575.98px) {
-    .dropdownContent {
-        margin-left: -215px;
-    }
-
-    .addFolderShow {
-        margin-left: -140px;
-    }
-    
     .input {
         width: 100%;
     }

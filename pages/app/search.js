@@ -23,11 +23,13 @@ export default function Search() {
     const [dataTodoFolders, setDataTodoFolders] = useState([])
     const [match, setMatch] = useState([])
     const [wayOfSorting, setWayOfSorting] = useState('Aa')
+    const [score, setScore] = useState(0.5)
     // Aa = alphabetical ascending
     // Ad = alphabetical descending
     // Da = date ascending
     // Dd = date descending
 
+    // gets the notes from the database
     async function getNotes() {
         const { data, error } = await supabase
             .from('notesv2')
@@ -42,6 +44,7 @@ export default function Search() {
         }
     }
 
+    // gets the folders from the database
     async function getFolders() {
         const { data, error } = await supabase
             .from('folders')
@@ -56,6 +59,7 @@ export default function Search() {
         }
     }
 
+    // gets the todos from the database
     async function getTodos() {
         const { data, error } = await supabase
             .from('todos')
@@ -69,6 +73,7 @@ export default function Search() {
         }
     }
 
+    // gets the events from the database
     async function getEvents() {
         const { data, error } = await supabase
             .from('events')
@@ -82,6 +87,7 @@ export default function Search() {
         }
     }
 
+    // gets the todofolders from the database
     async function getTodoFolders() {
         const { data, error } = await supabase
             .from('todosFolders')
@@ -95,22 +101,25 @@ export default function Search() {
         }
     }
 
-    function sortAlphAsc(match) {
-        match = match.sort(function(a, b) {
+    // sorts the data alphabetically ascending a-z
+    function sortAlphAsc(data) {
+        data = data.sort(function(a, b) {
             // Compares the title of all the elements
             return a.item.title.localeCompare(b.item.title, { ignorePuncuation: true })
         })
     }
 
-    function sortAlphDesc(match) {
-        match = match.sort(function(a, b) {
+    // sorts the data alphabetically descending z-a
+    function sortAlphDesc(data) {
+        data = data.sort(function(a, b) {
             // Compares the title of all the elements
             return b.item.title.localeCompare(a.item.title, { ignorePuncuation: true })
         })
     }
 
-    function sortDateAsc(match) {
-        match = match.sort(function(a, b) {
+    // sorts the data by date ascending created first - created last
+    function sortDateAsc(data) {
+        data = data.sort(function(a, b) {
             // Compares the title of all the elements
             if (a.item.created_at == b.item.created_at) { return 0; }
             else if (a.item.created_at > b.item.created_at) { return 1; }
@@ -118,8 +127,9 @@ export default function Search() {
         })
     }
 
-    function sortDateDesc(match) {
-        match = match.sort(function(a, b) {
+    // sorts the data by date descending created last - created first
+    function sortDateDesc(data) {
+        data = data.sort(function(a, b) {
             // Compares the title of all the elements
             if (a.item.created_at == b.item.created_at) { return 0; }
             else if (a.item.created_at > b.item.created_at) { return -1; }
@@ -127,6 +137,7 @@ export default function Search() {
         })
     }
 
+    // checks which way of sorting is needed
     function checkSorting(match, wayOfSorting) {
         if (wayOfSorting == 'Aa') {
             sortAlphAsc(match)
@@ -139,12 +150,14 @@ export default function Search() {
         }
     }
 
+    // so that the classname of the element can be changed
     let dropdownSorting = React.createRef();
 
     function setDropdownSorting() {
         dropdownSorting.current.classList.toggle(`${styles.show}`)
     }
 
+    // gets the data at the beginning when the user opens the page
     useEffect(() => {
         getNotes()
         getFolders()
@@ -153,29 +166,36 @@ export default function Search() {
         getTodoFolders()
     }, [])
 
+    // if event is clicked return to the calendar
     function toEvent() {
         router.push("/app")
     }
 
+    // if the todo is clicked return to the todos
+    // this function is used for todofolders too
     function toTodo() {
         router.push("/app/tasks")
     }
 
+    // if the note is clicked return to the note with its id
     function toNote(id) {
         router.push(`/app/note/${id}`)
     }
 
+    // if a folder is clicked return to the indexpage of notes
     function toFolder() {
         router.push("/app/note")
     }
 
+    // keeps checking which way of sorting is needed
     checkSorting(match, wayOfSorting)
 
-    function fuzzysearch(event) {
-        event.preventDefault()
+    function fuzzysearch(input) {
+        // resets the matches
         setMatch([])
         let data = []
 
+        // loads all the data into a local variable
         let todos = [...dataTodos]
         for (let i = 0; i < todos.length; i++) {
             data.push(todos[i])
@@ -201,22 +221,26 @@ export default function Search() {
             data.push(todoFolders[i])
         }
 
+        // sets the options and on which fuse should search
         const options = {
             includeScore: true,
             keys: ['title', 'description', 'nameTable', ['description', 'children', 'text']]
         }
 
+        // uses the library fuse.js to search through the whole data
         const fuse = new Fuse(data, options)
         const result = fuse.search(input)
+        // if you want a strict search the score will be low and the other way around.
+        // the score shows how confident fuse is on what you meant by what you typed
+        // if the score you set is lower then the score fuse set it deletes that result
         for (let i=result.length-1; i>0; i--) {
-            console.log(result[i].score)
-            if (result[i].score > 0.5) {
+            if (result[i].score > score) {
                 result.splice(i, 1)
             }
         }
-        console.log(result)
-        setMatch(result)
 
+        // sets the matches to that result so that it automatically updates the list
+        setMatch(result)
     }
 
     if (session) {
@@ -224,33 +248,39 @@ export default function Search() {
             <AppLayout>
                 <div className={styles.container}>
                     <h1>Search</h1>
-                    <form onSubmit={fuzzysearch}>
-                        <div className={styles.form}>
-                            <input placeholder="Search:" className={styles.input} type="search" onChange={(e) => { setInput(e.target.value) }}></input>
-                            <button className={styles.submitButton} type="submit">submit</button>
-                        </div>
-                    </form>
+                    <div className={styles.form}>
+                        <input placeholder="Search:" className={styles.input} type="search" onChange={(e) => { setInput(e.target.value); fuzzysearch(e.target.value)}}></input>
+                    </div>
                     <div className={styles.items}>
                         <div style={{display: "flex", justifyContent: "flex-end"}}>
-                            <div>
-                                <button className={styles.dropdownSort} onClick={setDropdownSorting}>
-                                    <Image alt="sort" src="/sort.svg" width={25} height={25} />
-                                </button>
-                                <div ref={dropdownSorting} className={styles.dropdownContent}>
-                                    <button onClick={() => {setWayOfSorting('Aa')}} className={styles.dropdownstylebutton}>Alphabetical (a-z)</button>
-                                    <button onClick={() => {setWayOfSorting('Ad')}} className={styles.dropdownstylebutton}>Alphabetical (z-a)</button>
-                                    <button onClick={() => {setWayOfSorting('Da')}} className={styles.dropdownstylebutton}>Created at (ascending)</button>
-                                    <button onClick={() => {setWayOfSorting('Dd')}} className={styles.dropdownstylebutton}>Created at (descending)</button>
+                            <div style={{width: "100%", display: "flex", justifyContent: "space-between"}}>
+                                {/* sets score to see how strict you want to search */}
+                                <div>
+                                    <p>Score of search: </p>
+                                    <input type="range" min="0.00001" max="2" step="0.0001" value={score} onChange={(e) => {setScore(e.target.value); fuzzysearch(input)}} className={styles.scoreInput}></input>
+                                </div>
+                                <div>
+                                    <button className={styles.dropdownSort} onClick={setDropdownSorting}>
+                                        <Image alt="sort" src="/sort.svg" width={25} height={25} />
+                                    </button>
+                                    <div ref={dropdownSorting} className={styles.dropdownContent}>
+                                        <button onClick={() => {setWayOfSorting('Aa')}} className={styles.dropdownstylebutton}>Alphabetical (a-z)</button>
+                                        <button onClick={() => {setWayOfSorting('Ad')}} className={styles.dropdownstylebutton}>Alphabetical (z-a)</button>
+                                        <button onClick={() => {setWayOfSorting('Da')}} className={styles.dropdownstylebutton}>Created at (ascending)</button>
+                                        <button onClick={() => {setWayOfSorting('Dd')}} className={styles.dropdownstylebutton}>Created at (descending)</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <hr />
+                        {/* maps through the matches and returns the appropriate icon and name of the match */}
                         {match.map((match, i) => {
                             // make four cases, one for event, one for folders, one for todos and one for notes
                             // instead of just {item.item.title} it should link appropriatly
                             return (
                                 <div key={i} className={styles.item}>
                                     <div className={styles.textAndIcon} onClick={() => {
+                                        // for every click on the match if the match is for example a note it will go to the notes page
                                         switch (match.item.nameTable) {
                                             case 'todo':
                                                 toTodo()
