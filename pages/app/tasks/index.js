@@ -3,7 +3,6 @@ import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-r
 import styles from "/styles/task.module.scss"
 import AppLayout from "/layouts/appLayout"
 import ListOfTasks from "/components/listOfTasks"
-import { SettingsProvider } from "/layouts/stateStore"
 
 export default function Tasks() {
     const session = useSession()
@@ -200,7 +199,6 @@ export default function Tasks() {
         return (
             <div>
                 <div className={creatingTask || editingTask ? styles.blur : null}>
-                    <SettingsProvider>
                         <AppLayout>
                                 <div className={styles.body}>
                                     <div className={openPanel ? `${styles.panel} ${styles.openFolderPanel}` : `${styles.panel} ${styles.closedFolderPanel}`}>
@@ -243,7 +241,6 @@ export default function Tasks() {
                                     </div>
                                                                     
                                 <div className={styles.main}>
-                                    <h1 className={styles.h1}>Tasks</h1>
                                     <ListOfTasks reload={reload}></ListOfTasks>
                                 </div>
                                 <div className={AIPanel ? `${styles.panel} ${styles.openAIPanel}` : `${styles.panel} ${styles.closedAIPanel}`}>
@@ -257,7 +254,6 @@ export default function Tasks() {
                                     </div>
                                 </div>
                         </AppLayout>
-                    </SettingsProvider>
                 </div>
 
                 <div className={creatingTask || editingTask ? styles.taskForm : `${styles.hiddenTaskForm} ${styles.taskForm}`}>

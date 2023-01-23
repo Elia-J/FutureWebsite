@@ -3,16 +3,29 @@ import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-r
 import styles from "/styles/task.module.scss"
 import AppLayout from "/layouts/appLayout"
 import ListOfTasks from "/components/listOfTasks"
-import { SettingsProvider } from "/layouts/stateStore"
 import { useRouter } from 'next/router'
 import { supabase } from '/lib/supasbaseClient'
 
-export default function Tasks( {task} ) {
+export default function Tasks( {taskID} ) {
     const session = useSession()
     const supabase = useSupabaseClient()
     const user = useUser()
     const router = useRouter()
-    const taskID = task.id
+    const [task, setTask] = useState([])
+
+    async function GetTask() {
+        const{data, error} = await supabase
+        .from('todos')
+        .select('*')
+        .eq('id', taskID)
+        if(data) {
+            setTask(data[0])
+            console.log("Task" + task)
+        }
+        if(error) {
+            console.log(error)
+        }
+    }
 
     // Get all folders from supabase
     async function GetFoldersSupabase() {
@@ -48,15 +61,6 @@ export default function Tasks( {task} ) {
         const { data, error } = await supabase
                 .from('todosFolders')
                 .insert({ user_id: user.id, title: folderTitle})
-        GetFoldersSupabase()
-    }
-
-    // Edits a folder in supabase
-    async function EditFolderSupabase() {
-        const { data, error } = await supabase
-                .from('todosFolders')
-                .update({title: folderTitle})
-                .eq('id', 3)
         GetFoldersSupabase()
     }
 
@@ -140,7 +144,8 @@ export default function Tasks( {task} ) {
     }
 
     // Function that sets all the states according to the given task and sets editingTask to true
-    function EditTask(task) {
+    function EditTask() {
+        console.log("task.title" + task)
         setTaskTitle(task.title)
         if (task.date === null) {
             setTaskDate(new Date(null))
@@ -155,7 +160,7 @@ export default function Tasks( {task} ) {
             setTaskTime(task.time)
         }
         setTaskDescription(task.description)
-        setTaskPriority(0)
+        setTaskPriority(task.priority)
         setEditingTask(true)
     }
 
@@ -194,14 +199,11 @@ export default function Tasks( {task} ) {
 
     const [folders, setFolders] = useState([])
 
-    useEffect(() => {
-        GetFoldersSupabase(), EditTask(task)
-    }, [])
-
     // Checks if there is a change in the url, if so, it reloads the page
     // This is to make sure that the correct initialValue and initialTitle is loaded into the editor
     // Else the server will load the value one time and won't change it
     useEffect(() => {
+        GetTask(), GetFoldersSupabase()
         const handleRouteChange = () => {
             location.reload()
         }
@@ -215,11 +217,16 @@ export default function Tasks( {task} ) {
         }
     }, [])
 
+    useEffect(() => {
+        if(task.title != undefined) {
+            EditTask()
+        }
+    }, [task])
+
     if (session) {
         return (
             <div>
                 <div className={creatingTask || editingTask ? styles.blur : null}>
-                    <SettingsProvider>
                         <AppLayout>
                                 <div className={styles.body}>
                                     <div className={openPanel ? `${styles.panel} ${styles.openFolderPanel}` : `${styles.panel} ${styles.closedFolderPanel}`}>
@@ -262,7 +269,6 @@ export default function Tasks( {task} ) {
                                     </div>
                                                                     
                                 <div className={styles.main}>
-                                    <h1 className={styles.h1}>Tasks</h1>
                                     <ListOfTasks reload={reload}></ListOfTasks>
                                 </div>
                                 <div className={AIPanel ? `${styles.panel} ${styles.openAIPanel}` : `${styles.panel} ${styles.closedAIPanel}`}>
@@ -276,7 +282,6 @@ export default function Tasks( {task} ) {
                                     </div>
                                 </div>
                         </AppLayout>
-                    </SettingsProvider>
                 </div>
 
                 <div className={creatingTask || editingTask ? styles.taskForm : `${styles.hiddenTaskForm} ${styles.taskForm}`}>
@@ -353,18 +358,11 @@ export default function Tasks( {task} ) {
     }
 }
 
-export async function getServerSideProps(context) {
-    const{ params } = context
-    const id = params.taskID
-
-    const{data, error} = await supabase
-        .from('todos')
-        .select('*')
-        .filter('id', 'eq', id)
-        .single()
+export async function getServerSideProps({params}) {
+    const {id} = params
     return {
         props: {
-            task: data
+            taskID: id
         }
     }
 }

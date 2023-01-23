@@ -118,16 +118,7 @@ export default function IndexApp() {
         if (panel === "tasks") {
             setPanelData(
                 <div className={styles.todoList}>
-                    <h2>Tasks</h2>
-                    {tasksData.map((item) => {
-                        return (
-                            <div className={styles.todoItem} key={item.id}>
-                                <h4>{item.title}</h4>
-                                <p>{item.description}</p>
-                            </div>
-                        )
-                    }
-                    )}
+                    <ListOfTasks></ListOfTasks>
                 </div>
             )
         }
@@ -185,16 +176,14 @@ export default function IndexApp() {
                             <div className={styles.todoListHeader}>
                                 <button className={styles.buttonAdd} onClick={switchPanel} value="tasks">Task</button>
                                 <button className={styles.buttonAdd} onClick={switchPanel} value="notes">Notes</button>
-
-                                <div className={styles.todoListHeader}>
-                                    <h3>Tasks List</h3>
-
-                                    <ListOfTasks></ListOfTasks>
-
+                            
+                            <div className={styles.todoListHeader}>
+                                {panelData}
                             </div>
 
 
                         </div>
+                    </div>
                     </div>
 
                 </AppLayout>

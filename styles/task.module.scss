@@ -223,7 +223,6 @@
   color: var(--black);
   padding-right: 10px;
   margin-bottom: 0;
-  margin-left: 20px;
 }
 
 .h3 {
@@ -462,8 +461,42 @@
 
 .main {
   width: 100%;
+  padding: 0px 10px;
 }
 
 .foldersContainer {
   margin-top: 70px;
+}
+
+.selecterContainer {
+  display: flex;
+  background-color: var(--lightGrey);
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+}
+
+.selecterButton {
+  display: flex;
+  text-align: center;
+  font-weight: 700;
+  border-radius: 6px;
+  background-color: var(--lightGrey);
+  margin: 5px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.selecterButton:hover {
+  background-color: var(--lightGrey1);
+  transition: background-color 0.3s ease-in-out;
+}
+
+.selecterButtonSelected {
+  color: white;
+  background-color: var(--primary);
+}
+
+.selecterButtonSelected:hover {
+  background-color: #305961;
+  transition: background-color 0.3s ease-in-out;
 }
