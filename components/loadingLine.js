@@ -7,7 +7,7 @@ export default function loadingLine() {
     return (
         <div>
             <Navbar />
-            <center><strong>You're not yet signed in</strong></center>
+            <center><strong>You&apos;re not yet signed in</strong></center>
             <div className={styles.holder}>
                 <div className={styles.line}></div>
             </div>
