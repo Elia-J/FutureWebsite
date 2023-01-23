@@ -89,8 +89,11 @@
   align-items: center;
   gap: 5px;
 }
-
 @media (max-width: 1199.98px) {
+  .bigDate {
+    text-align: left;
+    min-width: 280px;
+  }
 }
 
 @media (max-width: 991.98px) {
@@ -103,6 +106,16 @@
   .temperature {
     display: none;
   }
+
+  .buttonTools {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    justify-items: start;
+    margin-right: 0px;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
 }
 
 @media (max-width: 767.98px) {
@@ -111,6 +124,9 @@
 @media (max-width: 575.98px) {
   .daydate {
     font-size: 20px;
+  }
+  .buttonTools {
+    padding: 0px 10px;
   }
 }
 
