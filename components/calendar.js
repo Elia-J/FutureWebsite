@@ -24,6 +24,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid'
+import momentTimezonePlugin from '@fullcalendar/moment-timezone'
+
 
 //global variable
 import { useStateStoreEventsContext } from "/layouts/stateStoreEvents"
@@ -432,8 +434,6 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     }
 
 
-
-
     useEffect(() => {
 
         resizeCalendar()
@@ -449,11 +449,13 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
 
 
     useEffect(() => {
+
         if (eventsPanel === false) {
             setTimeout(() => {
                 getEvents()
             }, 100)
         }
+
     }, [eventsPanel])
 
 
@@ -465,6 +467,28 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
 
     }, [])
 
+    useEffect(() => {
+        const calendarApi = calendarComponentRef.current.getApi();
+        //set the claendar timezone to the selected timezone
+        calendarApi.nowIndicator = () => moment.tz(new Date(), settings.time_zone).format();
+        calendarApi.setOption(
+            'nowIndicator', true,
+            'timeZone', settings.time_zone,
+            //iso8601 format
+            'now', moment.tz(new Date(), settings.time_zone).format()
+
+        );
+
+    }, [settings.time_zone])
+
+    function gettimezone() {
+
+        return moment.tz(new Date(), 'America/Los_Angeles').format();
+    }
+
+    console.log("eventsPanel " + settings.time_zone)
+    let zone = settings.time_zone;
+    let timie = moment.tz(new Date(), settings.time_zone).format();
 
     return (
         <>
@@ -516,100 +540,119 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                 height={50}
             /> */}
 
+            {
+                settings.time_zone !== undefined | settings.time_zone !== null | settings.time_zone !== "" ?
 
-            <FullCalendar
-                plugins={[
-                    timeGridPlugin,
-                    interactionPlugin,
-                    dayGridPlugin
-                ]}
-                defaultView="timeGridWeek"
-                height="85%"
-                eventBackgroundColor="#4c7987"
-                eventBorderColor="#ffffff00"
-                headerToolbar={false}
-                weekNumbers={false}
-                editable={true}
-                selectable={true}
-                selectMirror={true}
-                dayMaxEvents={true}
-                nowIndicator={true}
-                handleWindowResize={true}
-                initialView={view}
-                ref={calendarComponentRef}
-                weekends={settings.ShowWeekends}
-                firstDay={firstDayOfWeek()}
-                longPressDelay={1000}
-                slotMinTime={settings.BeginTimeDay}
-                slotMaxTime={settings.EndTimeDay}
+                    <FullCalendar
+                        plugins={[
+                            timeGridPlugin,
+                            interactionPlugin,
+                            dayGridPlugin,
 
-                select={
-                    function (arg) {
-                        select(arg);
-                    }
-                }
-
-                eventClick={
-                    function (arg) {
-                        eventClick(arg)
-                    }
-                }
-
-                eventChange={
-                    function (arg) {
-                        eventChange(arg)
-                    }
-                }
+                        ]}
+                        defaultView="timeGridWeek"
+                        height="85%"
+                        eventBackgroundColor="#4c7987"
+                        eventBorderColor="#ffffff00"
+                        headerToolbar={false}
+                        weekNumbers={false}
+                        editable={true}
+                        selectable={true}
+                        selectMirror={true}
+                        dayMaxEvents={true}
+                        nowIndicator={true}
+                        timeZone={zone}
+                        // timeZone={
+                        //     function () {
+                        //         return settings.time_zone
+                        //     }
+                        // } //America/Los_Angeles
+                        now={
+                            function () {
+                                return timie
+                            }
+                        }
+                        handleWindowResize={true}
+                        initialView={view}
+                        ref={calendarComponentRef}
+                        weekends={settings.ShowWeekends}
+                        firstDay={firstDayOfWeek()}
+                        longPressDelay={1000}
+                        slotMinTime={settings.BeginTimeDay}
+                        slotMaxTime={settings.EndTimeDay}
 
 
-                // timeZone="America/Buenos_Aires"
-                // dayHeaderFormat={{
-                //     weekday: 'short', month: 'short', day: 'numeric'
-                // }}
-                // slotLabelFormat={{
-                //     hour: 'numeric',
-                //     meridiem: 'short'
-                // }}
+                        select={
+                            function (arg) {
+                                select(arg);
+                            }
+                        }
+
+                        eventClick={
+                            function (arg) {
+                                eventClick(arg)
+                            }
+                        }
+
+                        eventChange={
+                            function (arg) {
+                                eventChange(arg)
+                            }
+                        }
 
 
-
-                dayHeaderClassNames={`${styles.dayHeaderClassNames}`}
-                //add class to the presentation of the day
-
-                dayHeaderContent={
-                    function (arg) {
-                        return dayHeaderContent(arg)
-                    }
-                }
-
-
-                events={
-                    events
-                    // [
-                    //     {
-                    //         title: '😀 event 1',
-                    //         start: '2023-01-20 10:00:00',
-                    //         end: '2023-01-20 11:00:00',
-                    //         allDay: false,
-                    //         backgroundColor: '#000000',
-                    //         //add icon to the event title
-
-
-                    //         daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-                    //         startTime: '10:00',
-                    //         endTime: '11:00',
+                        // timeZone="America/Buenos_Aires"
+                        // dayHeaderFormat={{
+                        //     weekday: 'short', month: 'short', day: 'numeric'
+                        // }}
+                        // slotLabelFormat={{
+                        //     hour: 'numeric',
+                        //     meridiem: 'short'
+                        // }}
 
 
 
+                        dayHeaderClassNames={`${styles.dayHeaderClassNames}`}
+                        //add class to the presentation of the day
+
+                        dayHeaderContent={
+                            function (arg) {
+                                return dayHeaderContent(arg)
+                            }
+                        }
 
 
-                    //     },
-                    // ]
-                }
+                        events={
+                            events
+                            // [
+                            //     {
+                            //         title: '😀 event 1',
+                            //         start: '2023-01-20 10:00:00',
+                            //         end: '2023-01-20 11:00:00',
+                            //         allDay: false,
+                            //         backgroundColor: '#000000',
+                            //         //add icon to the event title
+
+
+                            //         daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                            //         startTime: '10:00',
+                            //         endTime: '11:00',
 
 
 
-            />
+
+
+                            //     },
+                            // ]
+                        }
+
+
+
+                    />
+                    :
+                    null
+            }
+
         </>
     )
 }
