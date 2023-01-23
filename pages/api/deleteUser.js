@@ -1,6 +1,6 @@
 import { supabaseAdmin } from "/lib/supasbaseClient.js"
 
-export default async function CreateStripeCustomer(req, res) {
+export default async function DeleteUser(req, res) {
 
 
     const supabase = supabaseAdmin()
