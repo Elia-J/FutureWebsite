@@ -255,7 +255,7 @@ export default function Tasks( {taskID} ) {
                                             </div>
                                             <hr className={styles.hr}></hr>
                                             {folders.map((folder, i) => (
-                                                <div>
+                                                <div key={i}>
                                                     <div>
                                                         <span>{folder.title}</span>
                                                         <button onClick={() => DiscardFolderSupabase(folder.id)}>x</button>
@@ -310,7 +310,7 @@ export default function Tasks( {taskID} ) {
                         <select className={styles.select} onChange={(event) => setFolderID(event.target.value)}>
                             <option value={null}>None</option>
                             {folders.map((folder, i) => (
-                                <option value={folder.id}>{folder.title}</option>
+                                <option key={i} value={folder.id}>{folder.title}</option>
                             ))}
                         </select>
                         <div className={styles.inputContainer}>
