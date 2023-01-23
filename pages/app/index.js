@@ -119,15 +119,7 @@ export default function IndexApp() {
             setPanelData(
                 <div className={styles.todoList}>
                     <h2>Tasks</h2>
-                    {tasksData.map((item) => {
-                        return (
-                            <div className={styles.todoItem} key={item.id}>
-                                <h4>{item.title}</h4>
-                                <p>{item.description}</p>
-                            </div>
-                        )
-                    }
-                    )}
+
                 </div>
             )
         }
@@ -135,7 +127,7 @@ export default function IndexApp() {
             setPanelData(
                 <div className={styles.todoList}>
                     <h2>Notes</h2>
-                    {notesData.map((item) => {
+                    {/* {notesData.map((item) => {
                         const title = JSON.parse(item.title)[0].children[0].text
                         const description = item.description[0].children[0].text
 
@@ -151,7 +143,7 @@ export default function IndexApp() {
                                 </div>
                             </Link>
                         )
-                    })}
+                    })} */}
 
                 </div>
             )
@@ -164,14 +156,13 @@ export default function IndexApp() {
         return (
             <EventProvider>
                 <AppLayout>
-                
+
                     <div className={styles.mainCalendar}>
                         <div className={styles.CalendarHeader}>
                             <Calendar panel={todoPanelToggle} setPanel={setTodoPanelToggle} toggleValue={todoPanelToggle} />
                         </div>
 
                         <div className={todoPanelStyle}>
-
                             <div className={styles.topNav}>
                                 <button className={styles.buttonTodo}
                                     onClick={
@@ -182,12 +173,15 @@ export default function IndexApp() {
                                 </button>
                             </div>
 
+
                             <div className={styles.todoListHeader}>
                                 <button className={styles.buttonAdd} onClick={switchPanel} value="tasks">Task</button>
                                 <button className={styles.buttonAdd} onClick={switchPanel} value="notes">Notes</button>
 
                                 <div className={styles.todoListHeader}>
                                     <h3>Tasks List</h3>
+
+                                    {panelData}
 
                                     <ListOfTasks></ListOfTasks>
 
@@ -199,7 +193,7 @@ export default function IndexApp() {
                     </div>
 
                 </AppLayout>
-        </EventProvider>
+            </EventProvider>
         )
     }
 
