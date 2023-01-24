@@ -341,7 +341,7 @@ export default function Notes({ notes }) {
                 }
                 <div style={{display: "flex"}}>
                     <button className={styles.buttonWithoutStyle} onClick={() => showTasks()}>
-                        <Image alt={'tasks'} className={styles.icon} src={`/tasks.svg`} width={25} height={25} />
+                        <Image alt={'tasks'} className={styles.icon} src={`/Tasks.svg`} width={25} height={25} />
                     </button>
                     <div ref={tasksRef} className={styles.tasks}>
                         {dataTasks.map((task, i) => {
@@ -414,7 +414,7 @@ export default function Notes({ notes }) {
     const TaskElement = (props) => {
         return (
             <div style={{display: "flex", gap: '5px'}}>
-                <Image alt={'tasks'} className={styles.icon} src={`/tasks.svg`} width={25} height={25} />
+                <Image alt={'tasks'} className={styles.icon} src={`/Tasks.svg`} width={25} height={25} />
                 <Link
                     {...props.attributes}
                     style={{textAlign: globalAlign}}
