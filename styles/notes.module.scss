@@ -1,202 +1,200 @@
 .SavedNotes {
-    display: block;
-    padding: 10px;
-    float: left;
-    margin-top: 20px;
-    height: calc(100vh - 20px);
-    width: 20%;
+  display: block;
+  padding: 10px;
+  float: left;
+  margin-top: 20px;
+  height: calc(100vh - 20px);
+  width: 20%;
 }
 
 .hideNotesPanel {
-    display: none;
+  display: none;
 }
 
-.TextEditor {   
-    margin-top: 20px;
-    height: calc(100vh - 20px);
-    padding: 10px;
-    float: left;
-    width: 100%;
-    background-color: var(--special-5);
-    overflow-y: auto;
+.TextEditor {
+  margin-top: 20px;
+  height: calc(100vh - 20px);
+  padding: 10px;
+  float: left;
+  width: 100%;
+  background-color: var(--special-5);
+  overflow-y: auto;
 }
 
 .CollapsedTextEditor {
-    width: 80%;
+  width: 70%;
 }
 
 .SuperCollapsedTextEditor {
-    width: 60%;
-    margin-top: 0px;
-    height: 100vh
+  width: 60%;
+  margin-top: 0px;
+  height: 100vh;
 }
 
 .AI {
-    display: none;
+  display: none;
 }
 
 .showAIPanel {
-    float: right;
-    background-color: gray;
-    width: 20%;
-    display: block;
-    height: 100vh;
+  float: right;
+  background: var(--special-3);
+  width: 30%;
+  display: block;
+  height: 100vh;
 }
 
 .AIAssisctance {
-    position: absolute;
-    z-index: 1;
-    right: 10px;
-    top: 0;
+  position: absolute;
+  z-index: 1;
+  right: 10px;
+  top: 0;
 }
 
 .openStyle {
-    display: block;
-    position: absolute;
-    z-index: 1;
-    left: 10px;
-    top: 7px;
+  display: block;
+  position: absolute;
+  z-index: 1;
+  left: 10px;
+  top: 7px;
 }
 
 .openHide {
-    display: none;
+  display: none;
 }
 
 .closeStyle {
-    display: none;
+  display: none;
 }
 
 .closeShow {
-    display: block;
-    position: absolute;
-    z-index: 1;
-    top: 7px;
-    left: 15%;
+  display: block;
+  position: absolute;
+  z-index: 1;
+  top: 7px;
+  left: 15%;
 }
 
-
 .buttonWithoutStyle {
-    background: none;
-    color: inherit;
-    border: none;
-    padding: 0;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit;
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
 }
 
 .titleNoNotes {
-    text-align: center;
+  text-align: center;
 }
 
 .toolbar {
-    width: 100%;
-    display: inline-flex;
-    gap: 10px;
-    justify-content: space-between;
+  width: 100%;
+  display: inline-flex;
+  gap: 10px;
+  justify-content: space-between;
 }
 
 .icon:hover {
-    background-color: var(--Special-darker-gray);
-    border-radius: 5px;
+  background-color: var(--Special-darker-gray);
+  border-radius: 5px;
 }
 
 .title {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .noteTitle {
-    background-color: var(--Special-gray);
-    border-radius: 20px;
-    padding-left: 10px;
-    width: 100%;
+  background-color: var(--Special-gray);
+  border-radius: 20px;
+  padding-left: 10px;
+  width: 100%;
 }
 
 .noteDescription {
-    background-color: var(--Special-gray);
-    min-height: 79vh;
-    max-height: 100%;
-    padding: 5px 20px;
-    border-radius: 20px;
+  background-color: var(--Special-gray);
+  min-height: 79vh;
+  max-height: 100%;
+  padding: 5px 20px;
+  border-radius: 20px;
 }
 
 .createButton {
-    width: 100px;
-    height: 30px;
-    background-color: var(--primary);
-    border-radius: 12px;
+  width: 100px;
+  height: 30px;
+  background-color: var(--primary);
+  border-radius: 12px;
 
-    color: white;
-    margin-bottom: 10px;
+  color: white;
+  margin-bottom: 10px;
 }
 
 .content {
-    position: relative;
-    overflow: auto;
-    min-height: 100%;
-    z-index: 0;
+  position: relative;
+  overflow: auto;
+  min-height: 100%;
+  z-index: 0;
 }
 
-
 @media (max-width: 575.98px) {
-    .showAIPanel {
-        position: fixed;
-        bottom: 70px;
-        width: 100vw;
-        height: 45vh;
-        background-color: gray;
-        overflow: auto;
-        z-index: 100;
-    }
+  .showAIPanel {
+    position: fixed;
+    bottom: 70px;
+    width: 100vw;
+    height: 45vh;
+    background-color: gray;
+    overflow: auto;
+    z-index: 100;
+  }
 
-    .SavedNotes {
-        padding: 5px;
-        position: fixed;
-        bottom: 70px;
-        width: 100vw;
-        height: 45vh;
-        background-color: var(--L-white-D-Grey);
-        border-top: 1px solid var(--Special-darker-gray);  
-        overflow: auto;
-        z-index: 100;
-    }
+  .SavedNotes {
+    padding: 5px;
+    position: fixed;
+    bottom: 70px;
+    width: 100vw;
+    height: 45vh;
+    background-color: var(--L-white-D-Grey);
+    border-top: 1px solid var(--Special-darker-gray);
+    overflow: auto;
+    z-index: 100;
+  }
 
-    .SuperCollapsedTextEditor {
-        margin-top: 20px;
-    }
+  .SuperCollapsedTextEditor {
+    margin-top: 20px;
+  }
 
-    .CollapsedTextEditor {
-        width: 100%;
-    }
+  .CollapsedTextEditor {
+    width: 100%;
+  }
 
-    .closeShow {
-        left: 10px;
-    }
+  .closeShow {
+    left: 10px;
+  }
 
-    .close {
-        display: none !important;
-    }
+  .close {
+    display: none !important;
+  }
 
-    .content {
-        min-height: 80%;
-    }
+  .content {
+    min-height: 80%;
+  }
 
-    .toolbar {
-        flex-wrap: wrap;
-        justify-content: flex-start;
-    }
+  .toolbar {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
 
-    .noteTitle {
-        font-size: 10px !important;
-    }
+  .noteTitle {
+    font-size: 10px !important;
+  }
 
-    .noteDescription {
-        min-height: 50vh;
-    }
+  .noteDescription {
+    min-height: 50vh;
+  }
 
-    .mainButton {
-        margin: 80px 10px;
-    }
+  .mainButton {
+    margin: 80px 10px;
+  }
 }
