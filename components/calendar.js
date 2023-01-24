@@ -329,35 +329,34 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     //Add 4 days to today date
     const today3 = momentTimezone.tz(settings.time_zone).add(4, 'days').format('DD-MM-YYYY');
 
-    const [active, setActive] = useState(true)
     function checkWeather(weatherTemp) {
         if (settings.weather) {
             return (
                 <div className={styles.weather}>
-                    {
-                        active ?
-                            <>
-                                <div className={styles.temperature}>{Math.round(parseInt(weatherTemp?.main.temp))} °C</div>
-                                <div className={styles.weatherIconClase}>
-                                    <Image
-                                        src={`https://openweathermap.org/img/wn/${weatherTemp?.weather[0].icon}@2x.png`}
-                                        alt="weather icon"
-                                        fill
-                                        //handle error
-                                        onError={(e) => {
-                                            setActive(false)
-                                        }
-                                        }
-                                    />
-                                </div>
-                            </>
 
-                            : null
+                    {weatherTemp?.main.temp === undefined ? "" :
+                        <>
+                            <div className={styles.temperature}>{
 
+                                Math.round(parseInt(weatherTemp?.main.temp))
+
+                            } °C</div>
+                            <div className={styles.weatherIconClase}>
+                                <Image
+                                    src={`https://openweathermap.org/img/wn/${weatherTemp?.weather[0].icon}@2x.png`}
+                                    alt="weather icon"
+                                    fill
+
+                                />
+                            </div>
+                        </>
                     }
+
+
                 </div>
             )
         }
+
         else {
             return ""
         }
@@ -409,7 +408,7 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
             return (
                 <div className={styles.dayHeader}>
                     <div className={styles.dayHeaderSundayText}>
-                        {arg.date.getDay() === 0 ? <div className={styles.dayName}>SUN</div> : null}
+                        {arg.date.getDay() === 0 ? <div className={`${styles.dayName} ${styles.red}`}>SUN</div> : null}
                         {arg.date.getDay() === 1 ? <div className={styles.dayName}>MON</div> : null}
                         {arg.date.getDay() === 2 ? <div className={styles.dayName}>TUE</div> : null}
                         {arg.date.getDay() === 3 ? <div className={styles.dayName}>WED</div> : null}
