@@ -1,0 +1,86 @@
+.title {
+  margin-top: 54px;
+  margin-bottom: 10px;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.textareaAI {
+  background-color: var(--special-4);
+  outline: none;
+  border: none;
+
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.generateButton {
+  background-color: var(--night-train-600);
+  color: var(--snowflake-100);
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.view {
+  background-color: var(--special-4);
+  margin-top: 20px;
+  width: 100%;
+
+  border-radius: 10px;
+  overflow: hidden;
+}
+.content {
+  min-height: 250px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+.taskText {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.task {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.taskButton {
+  border-radius: 5px;
+  padding: 0px 6px;
+  font-size: 14px;
+  font-weight: 500;
+  height: 25px;
+}
+.copyButton {
+  background-color: var(--special-4);
+  margin-top: 20px;
+  margin-bottom: -15px;
+  width: 56px;
+  border-radius: 5px;
+  display: inline-block;
+}
