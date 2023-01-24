@@ -207,7 +207,7 @@ export default function Notes({ notes }) {
             )
         } else {
             collapsableElementNotes.current.classList.toggle(
-                `${styles.CollapsedTextEditor}`
+                `${styles.CollapsedTextEditorNotes}`
             );
             collapsableElementSavedNotes.current.classList.toggle(
                 `${styles.hideNotesPanel}`
@@ -226,12 +226,12 @@ export default function Notes({ notes }) {
             )
         }
         else {
+            collapsableElementAI.current.classList.toggle(
+                `${styles.showAIPanel}`
+                )
             collapsableElementNotes.current.classList.toggle(
                 `${styles.CollapsedTextEditor}`
             );
-            collapsableElementAI.current.classList.toggle(
-                `${styles.showAIPanel}`
-            )
         }
     }
 
