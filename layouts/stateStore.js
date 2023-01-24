@@ -30,7 +30,6 @@ export function StateProvider({ children }) {
         ShowWeekends: true,
         avatar_url: "/pro.png",
         filepath: "/pro.png",
-
         weather: false,
         country_name: "",
         iso_ode: "",
