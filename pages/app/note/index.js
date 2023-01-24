@@ -7,6 +7,8 @@ import { useRouter } from "next/router";
 import AppLayout from "/layouts/appLayout"
 import { useSession } from "@supabase/auth-helpers-react";
 
+import Ai from "/components/ai"
+
 
 export default function Index() {
 
@@ -52,7 +54,7 @@ export default function Index() {
                 `${styles.showAIPanel}`
             )
         }
-         else {
+        else {
             collapsableElementNotes.current.classList.toggle(
                 `${styles.CollapsedTextEditor}`
             );
@@ -61,7 +63,7 @@ export default function Index() {
             )
         }
     }
-    
+
     if (session) {
         return (
             <AppLayout>
@@ -77,13 +79,13 @@ export default function Index() {
                         id="SavedNotes"
                         className={styles.SavedNotes}
                     >
-                        <ListOfNotes inApp={false}/>
+                        <ListOfNotes inApp={false} />
                     </div>
                     <div
                         ref={collapsableElementNotes}
                         id="TextEditor"
                         className={`${styles.TextEditor} ${styles.CollapsedTextEditor} ${styles.titleNoNotes}`}
-                    >   
+                    >
                         <h1>Select one of your notes or create a note!</h1>
                     </div>
                     <div
@@ -91,6 +93,8 @@ export default function Index() {
                         id="AI"
                         className={styles.AI}
                     >
+                        <Ai type="notes" />
+
                     </div>
                     <div
                         className={styles.AIAssisctance}
