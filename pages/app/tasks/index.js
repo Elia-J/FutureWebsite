@@ -3,9 +3,6 @@ import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-r
 import styles from "/styles/task.module.scss"
 import AppLayout from "/layouts/appLayout"
 import ListOfTasks from "/components/listOfTasks"
-import { useStateStoreContext } from "/layouts/stateStore"
-
-import Ai from "/components/ai"
 
 export default function Tasks() {
     const session = useSession()
@@ -46,15 +43,6 @@ export default function Tasks() {
         const { data, error } = await supabase
             .from('todosFolders')
             .insert({ user_id: user.id, title: folderTitle })
-        GetFoldersSupabase()
-    }
-
-    // Edits a folder in supabase
-    async function EditFolderSupabase() {
-        const { data, error } = await supabase
-            .from('todosFolders')
-            .update({ title: folderTitle })
-            .eq('id', 3)
         GetFoldersSupabase()
     }
 
@@ -202,63 +190,61 @@ export default function Tasks() {
         return (
             <div>
                 <div className={creatingTask || editingTask ? styles.blur : null}>
-                    <AppLayout>
-                        <div className={styles.body}>
-                            <div className={openPanel ? `${styles.panel} ${styles.openFolderPanel}` : `${styles.panel} ${styles.closedFolderPanel}`}>
-                                <div className={`${styles.nav} ${styles.navMargin}`}>
-                                    <button className={styles.mainButton} onClick={CreateTask}>
-                                        <span className={styles.create}>Create </span>
-                                        <span>+</span>
-                                    </button>
-                                    <button className={openPanel ? `${styles.button} ${styles.openButton}` : styles.button} onClick={() => setOpenPanel(!openPanel)}>
-                                        {openPanel ? "Close" : "Open"}
-                                    </button>
-                                </div>
-                                <div className={styles.foldersContainer}>
-                                    <hr className={styles.hr}></hr>
-                                    <div style={{ margin: "15px" }}>
-                                        <input className={`${styles.input} ${styles.folderInput}`}
-                                            id="title"
-                                            type="text"
-                                            name="folderTitle"
-                                            placeholder="Folder Title"
-                                            value={folderTitle}
-                                            required
-                                            onChange={(event) => setFolderTitle(event.target.value)}
-                                        ></input>
-                                        <button className={`${styles.mainButton} ${styles.createFolderMainButton}`} onClick={() => CreateFolderSupabase()}>Create Folder!</button>
-                                    </div>
-                                    <hr className={styles.hr}></hr>
-                                    {folders.map((folder, i) => (
-                                        <div key={i}>
-                                            <div>
-                                                <span>{folder.title}</span>
-                                                <button onClick={() => DiscardFolderSupabase(folder.id)}>x</button>
-                                            </div>
-                                            <div>
-
-                                            </div>
+                        <AppLayout>
+                                <div className={styles.body}>
+                                    <div className={openPanel ? `${styles.panel} ${styles.openFolderPanel}` : `${styles.panel} ${styles.closedFolderPanel}`}>
+                                        <div className={`${styles.nav} ${styles.navMargin}`}>
+                                            <button className={styles.mainButton} onClick={CreateTask}>
+                                            <span className={styles.create}>Create </span>
+                                            <span>+</span>
+                                            </button>  
+                                            <button className={openPanel ? `${styles.button} ${styles.openButton}` : styles.button} onClick={() => setOpenPanel(!openPanel)}>
+                                                {openPanel ? "Close" : "Open"}
+                                            </button>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
+                                        <div className={styles.foldersContainer}>
+                                            <hr className={styles.hr}></hr>
+                                            <div style={{ margin: "15px" }}>
+                                                <input className={`${styles.input} ${styles.folderInput}`}
+                                                    id="title"
+                                                    type="text"
+                                                    name="folderTitle"
+                                                    placeholder="Folder Title"
+                                                    value={folderTitle}
+                                                    required
+                                                    onChange={(event) => setFolderTitle(event.target.value)}
+                                                ></input>
+                                                <button className={`${styles.mainButton} ${styles.createFolderMainButton}`} onClick={() => CreateFolderSupabase()}>Create Folder!</button>
+                                            </div>
+                                            <hr className={styles.hr}></hr>
+                                            {folders.map((folder, i) => (
+                                                <div key={i}>
+                                                    <div>
+                                                        <span>{folder.title}</span>
+                                                        <button onClick={() => DiscardFolderSupabase(folder.id)}>x</button>
+                                                    </div>
+                                                    <div>
 
-                            <div className={styles.main}>
-                                <h1 className={styles.h1}>Tasks</h1>
-                                <ListOfTasks reload={reload}></ListOfTasks>
-                            </div>
-                            <div className={AIPanel ? `${styles.panel} ${styles.openAIPanel}` : `${styles.panel} ${styles.closedAIPanel}`}>
-                                <div className={styles.navAI}>
-                                    <button className={AIPanel ? `${styles.button} ${styles.AIButton} ${styles.openAIButton}` : `${styles.button} ${styles.AIButton}`} onClick={() => setAIPanel(!AIPanel)}>
-                                        {AIPanel ? "Close" : "AI Assistance"}
-                                    </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                                                    
+                                <div className={styles.main}>
+                                    <ListOfTasks reload={reload}></ListOfTasks>
                                 </div>
-                                <div>
-                                    <Ai type="tasks" />
+                                <div className={AIPanel ? `${styles.panel} ${styles.openAIPanel}` : `${styles.panel} ${styles.closedAIPanel}`}>
+                                        <div className={styles.navAI}>
+                                            <button className={AIPanel ? `${styles.button} ${styles.AIButton} ${styles.openAIButton}` : `${styles.button} ${styles.AIButton}`} onClick={() => setAIPanel(!AIPanel)}>
+                                                {AIPanel ? "Close" : "AI Assistance"}
+                                            </button>
+                                        </div>
+                                        <div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </AppLayout>
+                        </AppLayout>
                 </div>
 
                 <div className={creatingTask || editingTask ? styles.taskForm : `${styles.hiddenTaskForm} ${styles.taskForm}`}>

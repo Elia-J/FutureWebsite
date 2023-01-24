@@ -3,19 +3,29 @@ import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-r
 import styles from "/styles/task.module.scss"
 import AppLayout from "/layouts/appLayout"
 import ListOfTasks from "/components/listOfTasks"
-import { SettingsProvider } from "/layouts/stateStore"
 import { useRouter } from 'next/router'
 import { supabase } from '/lib/supasbaseClient'
 
-import Ai from "/components/ai"
-
-export default function Tasks({ task }) {
-    console.log("task: " + task)
+export default function Tasks( {taskID} ) {
     const session = useSession()
     const supabase = useSupabaseClient()
     const user = useUser()
     const router = useRouter()
-    const taskID = task.id
+    const [task, setTask] = useState([])
+
+    async function GetTask() {
+        const{data, error} = await supabase
+        .from('todos')
+        .select('*')
+        .eq('id', taskID)
+        if(data) {
+            setTask(data[0])
+            console.log("Task" + task)
+        }
+        if(error) {
+            console.log(error)
+        }
+    }
 
     // Get all folders from supabase
     async function GetFoldersSupabase() {
@@ -33,7 +43,7 @@ export default function Tasks({ task }) {
 
     // Get all the tasks associated with a certain folder
     async function GetFolderTasksSupabase(folder) {
-        const { data, error } = await supabase
+        const {data, error} = await supabase
             .from('todos')
             .select('*')
             .eq('folder_id', folder.id)
@@ -49,17 +59,8 @@ export default function Tasks({ task }) {
     // Create a new folder in supabase
     async function CreateFolderSupabase() {
         const { data, error } = await supabase
-            .from('todosFolders')
-            .insert({ user_id: user.id, title: folderTitle })
-        GetFoldersSupabase()
-    }
-
-    // Edits a folder in supabase
-    async function EditFolderSupabase() {
-        const { data, error } = await supabase
-            .from('todosFolders')
-            .update({ title: folderTitle })
-            .eq('id', 3)
+                .from('todosFolders')
+                .insert({ user_id: user.id, title: folderTitle})
         GetFoldersSupabase()
     }
 
@@ -80,7 +81,7 @@ export default function Tasks({ task }) {
         if (taskDate.getFullYear === nullDate.getFullYear && taskTime.getFullYear === nullDate.getFullYear) {
             const { data, error } = await supabase
                 .from('todos')
-                .insert({ user_id: user.id, title: taskTitle, date: null, time: null, description: taskDescription, priority: taskPriority, folder_id: folderID })
+                .insert({ user_id: user.id, title: taskTitle, date: null, time: null, description: taskDescription, priority: taskPriority, folder_id: folderID})
         }
         else if (taskDate.getFullYear === nullDate.getFullYear) {
             const { data, error } = await supabase
@@ -143,7 +144,8 @@ export default function Tasks({ task }) {
     }
 
     // Function that sets all the states according to the given task and sets editingTask to true
-    function EditTask(task) {
+    function EditTask() {
+        console.log("task.title" + task)
         setTaskTitle(task.title)
         if (task.date === null) {
             setTaskDate(new Date(null))
@@ -158,7 +160,7 @@ export default function Tasks({ task }) {
             setTaskTime(task.time)
         }
         setTaskDescription(task.description)
-        setTaskPriority(0)
+        setTaskPriority(task.priority)
         setEditingTask(true)
     }
 
@@ -197,14 +199,11 @@ export default function Tasks({ task }) {
 
     const [folders, setFolders] = useState([])
 
-    useEffect(() => {
-        GetFoldersSupabase(), EditTask(task)
-    }, [])
-
     // Checks if there is a change in the url, if so, it reloads the page
     // This is to make sure that the correct initialValue and initialTitle is loaded into the editor
     // Else the server will load the value one time and won't change it
     useEffect(() => {
+        GetTask(), GetFoldersSupabase()
         const handleRouteChange = () => {
             location.reload()
         }
@@ -218,68 +217,71 @@ export default function Tasks({ task }) {
         }
     }, [])
 
+    useEffect(() => {
+        if(task.title != undefined) {
+            EditTask()
+        }
+    }, [task])
+
     if (session) {
         return (
             <div>
                 <div className={creatingTask || editingTask ? styles.blur : null}>
-                    <AppLayout>
-                        <div className={styles.body}>
-                            <div className={openPanel ? `${styles.panel} ${styles.openFolderPanel}` : `${styles.panel} ${styles.closedFolderPanel}`}>
-                                <div className={`${styles.nav} ${styles.navMargin}`}>
-                                    <button className={styles.mainButton} onClick={CreateTask}>
-                                        <span className={styles.create}>Create </span>
-                                        <span>+</span>
-                                    </button>
-                                    <button className={openPanel ? `${styles.button} ${styles.openButton}` : styles.button} onClick={() => setOpenPanel(!openPanel)}>
-                                        {openPanel ? "Close" : "Open"}
-                                    </button>
-                                </div>
-                                <div className={styles.foldersContainer}>
-                                    <hr className={styles.hr}></hr>
-                                    <div style={{ margin: "15px" }}>
-                                        <input className={`${styles.input} ${styles.folderInput}`}
-                                            id="title"
-                                            type="text"
-                                            name="folderTitle"
-                                            placeholder="Folder Title"
-                                            value={folderTitle}
-                                            required
-                                            onChange={(event) => setFolderTitle(event.target.value)}
-                                        ></input>
-                                        <button className={`${styles.mainButton} ${styles.createFolderMainButton}`} onClick={() => CreateFolderSupabase()}>Create Folder!</button>
-                                    </div>
-                                    <hr className={styles.hr}></hr>
-                                    {folders.map((folder, i) => (
-                                        <div key={i}>
-                                            <div>
-                                                <span>{folder.title}</span>
-                                                <button onClick={() => DiscardFolderSupabase(folder.id)}>x</button>
-                                            </div>
-                                            <div>
-
-                                            </div>
+                        <AppLayout>
+                                <div className={styles.body}>
+                                    <div className={openPanel ? `${styles.panel} ${styles.openFolderPanel}` : `${styles.panel} ${styles.closedFolderPanel}`}>
+                                        <div className={`${styles.nav} ${styles.navMargin}`}>
+                                            <button className={styles.mainButton} onClick={CreateTask}>
+                                            <span className={styles.create}>Create </span>
+                                            <span>+</span>
+                                            </button>  
+                                            <button className={openPanel ? `${styles.button} ${styles.openButton}` : styles.button} onClick={() => setOpenPanel(!openPanel)}>
+                                                {openPanel ? "Close" : "Open"}
+                                            </button>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
+                                        <div className={styles.foldersContainer}>
+                                            <hr className={styles.hr}></hr>
+                                            <div style={{ margin: "15px" }}>
+                                                <input className={`${styles.input} ${styles.folderInput}`}
+                                                    id="title"
+                                                    type="text"
+                                                    name="folderTitle"
+                                                    placeholder="Folder Title"
+                                                    value={folderTitle}
+                                                    required
+                                                    onChange={(event) => setFolderTitle(event.target.value)}
+                                                ></input>
+                                                <button className={`${styles.mainButton} ${styles.createFolderMainButton}`} onClick={() => CreateFolderSupabase()}>Create Folder!</button>
+                                            </div>
+                                            <hr className={styles.hr}></hr>
+                                            {folders.map((folder, i) => (
+                                                <div key={i}>
+                                                    <div>
+                                                        <span>{folder.title}</span>
+                                                        <button onClick={() => DiscardFolderSupabase(folder.id)}>x</button>
+                                                    </div>
+                                                    <div>
 
-                            <div className={styles.main}>
-                                <h1 className={styles.h1}>Tasks</h1>
-                                <ListOfTasks reload={reload}></ListOfTasks>
-                            </div>
-                            <div className={AIPanel ? `${styles.panel} ${styles.openAIPanel}` : `${styles.panel} ${styles.closedAIPanel}`}>
-                                <div className={styles.navAI}>
-                                    <button className={AIPanel ? `${styles.button} ${styles.AIButton} ${styles.openAIButton}` : `${styles.button} ${styles.AIButton}`} onClick={() => setAIPanel(!AIPanel)}>
-                                        {AIPanel ? "Close" : "AI Assistance"}
-                                    </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                                                    
+                                <div className={styles.main}>
+                                    <ListOfTasks reload={reload}></ListOfTasks>
                                 </div>
-                                <div>
-                                    <Ai type="tasks" />
-
+                                <div className={AIPanel ? `${styles.panel} ${styles.openAIPanel}` : `${styles.panel} ${styles.closedAIPanel}`}>
+                                        <div className={styles.navAI}>
+                                            <button className={AIPanel ? `${styles.button} ${styles.AIButton} ${styles.openAIButton}` : `${styles.button} ${styles.AIButton}`} onClick={() => setAIPanel(!AIPanel)}>
+                                                {AIPanel ? "Close" : "AI Assistance"}
+                                            </button>
+                                        </div>
+                                        <div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </AppLayout>
+                        </AppLayout>
                 </div>
 
                 <div className={creatingTask || editingTask ? styles.taskForm : `${styles.hiddenTaskForm} ${styles.taskForm}`}>
@@ -356,17 +358,11 @@ export default function Tasks({ task }) {
     }
 }
 
-export async function getServerSideProps({ params }) {
-    const { id } = params
-
-    const { data, error } = await supabase
-        .from('todos')
-        .select('*')
-        .eq('id', id)
-        .single()
+export async function getServerSideProps({params}) {
+    const {id} = params
     return {
         props: {
-            task: data
+            taskID: id
         }
     }
 }
