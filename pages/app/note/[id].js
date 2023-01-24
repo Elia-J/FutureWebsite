@@ -356,9 +356,9 @@ export default function Notes({ notes }) {
                                     fontSize: fontSize,
                                     ID: task.id
                                 })
-                                editor.insertText('\n')
                                 editor.insertBreak()
                                 CustomEditorV2.toggle(editor, 'type', 'paragraph', fontSize)
+                                Transforms.select(editor, Editor.end(editor, []))
                             }}
                             >
                                 {task.title}
