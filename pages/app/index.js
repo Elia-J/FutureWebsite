@@ -170,7 +170,6 @@ export default function IndexApp() {
                             </div>
                         </div>
                     </div>
-
                 </AppLayout>
             </EventProvider>
         )

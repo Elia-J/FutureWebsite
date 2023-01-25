@@ -17,6 +17,7 @@ import LoadingLine from '/components/loadingLine'
 
 import { useRouter } from "next/router";
 import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react'
+import Link from 'next/link'
 
 import { supabase } from "/lib/supasbaseClient"
 import Ai from "/components/ai"
@@ -144,9 +145,14 @@ export default function Notes({ notes }) {
     // sets the initial value title used by the slate editor
     const [initialTitle, setInitialTitle] = useState([{ "type": "h1", "children": [{ "text": notes.title }] }])
     const [fontSize, setFontSize] = useState(16)
+    const [dataTasks, setDataTasks] = useState([])
     // H1: 32
     // H2: 26
     // default: 16
+
+    useEffect(() => {
+        getTasks()
+    }, [])
 
     // Checks if there is a change in the url, if so, it reloads the page
     // This is to make sure that the correct initialValue and initialTitle is loaded into the editor
@@ -207,7 +213,7 @@ export default function Notes({ notes }) {
             )
         } else {
             collapsableElementNotes.current.classList.toggle(
-                `${styles.CollapsedTextEditor}`
+                `${styles.CollapsedTextEditorNotes}`
             );
             collapsableElementSavedNotes.current.classList.toggle(
                 `${styles.hideNotesPanel}`
@@ -226,12 +232,12 @@ export default function Notes({ notes }) {
             )
         }
         else {
+            collapsableElementAI.current.classList.toggle(
+                `${styles.showAIPanel}`
+                )
             collapsableElementNotes.current.classList.toggle(
                 `${styles.CollapsedTextEditor}`
             );
-            collapsableElementAI.current.classList.toggle(
-                `${styles.showAIPanel}`
-            )
         }
     }
 
@@ -271,10 +277,23 @@ export default function Notes({ notes }) {
                 return <QuoteElement {...props} />;
             case "list-bulleted":
                 return <BulletElement {...props} />;
+            case "task":
+                return <TaskElement {...props} />;
             default:
                 return <DefaultElement {...props} />;
         }
     }, []);
+
+    async function getTasks() {
+        const { data, error } = await supabase
+            .from('todos')
+            .select('*')
+        if (data) {
+            setDataTasks(data)
+        }
+    }
+
+    const tasksRef = React.createRef();
 
     // This is a render leaf function for all the different styles. 
     // Controll click on "Leaf" and you can see which styles we can have
@@ -320,6 +339,34 @@ export default function Notes({ notes }) {
                         )
                     })
                 }
+                <div style={{display: "flex"}}>
+                    <button className={styles.buttonWithoutStyle} onClick={() => showTasks()}>
+                        <Image alt={'tasks'} className={styles.icon} src={`/Tasks.svg`} width={25} height={25} />
+                    </button>
+                    <div ref={tasksRef} className={styles.tasks}>
+                        {dataTasks.map((task, i) => {
+                            return (
+                            <button 
+                            key={i} 
+                            className={`${styles.task} ${styles.buttonWithoutStyle}`}
+                            onClick={() => {
+                                Transforms.insertNodes(editor, {
+                                    type: 'task',
+                                    children: [{text: `${task.title}`}],
+                                    fontSize: fontSize,
+                                    ID: task.id
+                                })
+                                editor.insertBreak()
+                                CustomEditorV2.toggle(editor, 'type', 'paragraph', fontSize)
+                                Transforms.select(editor, Editor.end(editor, []))
+                            }}
+                            >
+                                {task.title}
+                            </button>
+                            )
+                        })}
+                    </div> 
+                </div>
                 <div>
                     {/* The fontsize doens't toggle unless you call the CustomEditorV2 */}
                     {/* By calling a specific style twice, it does update the fontsize but it doesn't switch style */}
@@ -328,6 +375,10 @@ export default function Notes({ notes }) {
                 </div>
             </div>
         )
+    }
+
+    function showTasks() {
+        tasksRef.current.classList.toggle(`${styles.tasksShow}`)
     }
 
     // A function that returns all the different elements if called by the renderElement function
@@ -359,6 +410,21 @@ export default function Notes({ notes }) {
             </div>
         );
     };
+
+    const TaskElement = (props) => {
+        return (
+            <div style={{display: "flex", gap: '5px'}}>
+                <Image alt={'tasks'} className={styles.icon} src={`/Tasks.svg`} width={25} height={25} />
+                <Link
+                    {...props.attributes}
+                    style={{textAlign: globalAlign}}
+                    href={`/app/tasks/${props.element.ID}`}
+                >
+                    {props.children}
+                </Link>
+            </div>
+        )
+    }
 
     const QuoteElement = (props) => {
         return (

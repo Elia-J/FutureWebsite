@@ -22,7 +22,7 @@
 }
 
 .CollapsedTextEditor {
-  width: 70%;
+  width: 80%;
 }
 
 .SuperCollapsedTextEditor {
@@ -38,7 +38,7 @@
 .showAIPanel {
   float: right;
   background: var(--special-3);
-  width: 30%;
+  width: 20%;
   display: block;
   height: 100vh;
 }
@@ -136,6 +136,39 @@
   overflow: auto;
   min-height: 100%;
   z-index: 0;
+}
+
+.tasks {
+  display: none;
+}
+
+.tasksShow {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  z-index: 1;
+  background-color: var(--Special-light-gray);
+  margin-top: 30px;
+  margin-left: -225px;
+  padding: 0.5rem;
+  border-radius: 10px;
+  width: 250px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.task {
+  width: 100%;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.task:hover {
+  background-color: var(--Special-dark-gray);
+  cursor: pointer;
 }
 
 @media (max-width: 575.98px) {
