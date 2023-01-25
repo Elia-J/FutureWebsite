@@ -177,7 +177,7 @@
     bottom: 70px;
     width: 100vw;
     height: 45vh;
-    background-color: gray;
+    border-top: 1px solid var(--Special-darker-gray);
     overflow: auto;
     z-index: 100;
   }
@@ -188,7 +188,6 @@
     bottom: 70px;
     width: 100vw;
     height: 45vh;
-    background: var(--special-3);
     border-top: 1px solid var(--Special-darker-gray);
     overflow: auto;
     z-index: 100;
