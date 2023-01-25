@@ -120,6 +120,8 @@ To configure the project, you need to create a `.env.local` file in the root dir
 ```
 
 We will not provide the environment variables values for security reasons.
+</br>
+If you want more information about our backend (supabase) setup, you can reach us at [https://future-website.vercel.app/about](https://future-website.vercel.app/about).
 </br></br>
 
 ## Author
