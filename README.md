@@ -120,6 +120,8 @@ WEATHER_API_KEY= is the API key of the OpenWeatherMap API.
 ```
 
 We will not provide the environment variables values for security reasons.
+</br>
+If you want more information about our backend (supabase) setup, you can reach us at [https://future-website.vercel.app/about](https://future-website.vercel.app/about).
 </br></br>
 
 ## Author

@@ -79,12 +79,12 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
             data.map((item) => {
                 setEvents((event) => [...event, {
                     id: item.id,
-                    title: `${item.icon !== "" ? item.icon : null}` + " " + item.title,
+                    title: item.title,
                     start: item.beginDate,
                     end: item.endDate,
                     backgroundColor: item.backgroundColor,
                     icon: item.icon,
-                    daysOfWeek: item.daysOfWeek,
+                    // daysOfWeek: item.daysOfWeek,
 
                 }])
             }
@@ -229,17 +229,6 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
             setWeeknumber(weekNo);
         } catch (error) {
             console.log(error)
-        }
-    }
-
-    //Not completed yet - update the week number when the month view is selected
-    //get week number in month view
-    function weeknumberFirstweek() {
-        if (weeknumber + 6 > 52) {
-            return weeknumber + 6 - 52
-        }
-        else {
-            return weeknumber + 5
         }
     }
 
@@ -480,14 +469,7 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
 
     }, [settings.time_zone])
 
-    function gettimezone() {
 
-        return moment.tz(new Date(), 'America/Los_Angeles').format();
-    }
-
-    console.log("eventsPanel " + settings.time_zone)
-    let zone = settings.time_zone;
-    let timie = moment.tz(new Date(), settings.time_zone).format();
 
     return (
         <>
@@ -513,8 +495,7 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
 
                 <div className={styles.bigDate}>{title}</div>
 
-                <div className={styles.weekNumber}>Week {weeknumber} {monthViewWeeknumber ?
-                    weeknumberFirstweek() : ``}</div>
+                <div className={styles.weekNumber}>Week {weeknumber}</div>
 
                 {/* navigation buttons  */}
                 <div className={styles.toolbarNavigationButton}>
@@ -560,17 +541,17 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                         selectMirror={true}
                         dayMaxEvents={true}
                         nowIndicator={true}
-                        timeZone={zone}
+                        timeZone="local"
                         // timeZone={
                         //     function () {
                         //         return settings.time_zone
                         //     }
                         // } //America/Los_Angeles
-                        now={
-                            function () {
-                                return timie
-                            }
-                        }
+                        // now={
+                        //     function () {
+                        //         return timie
+                        //     }
+                        // }
                         handleWindowResize={true}
                         initialView={view}
                         ref={calendarComponentRef}
