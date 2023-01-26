@@ -3,16 +3,14 @@ import styles from "/styles/addevent.module.scss"
 import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react'
 import toast, { Toaster } from 'react-hot-toast';
 import { ButtonWithShortCut, RightIconButton } from './buttons'
-import AddIcon from "/public/AddIcon.svg"
 
 import { useStateStoreEventsContext } from "/layouts/stateStoreEvents"
 
 
 import moment from 'moment';
 import { TwitterPicker } from 'react-color';
-import data from '@emoji-mart/data'
-import Picker from '@emoji-mart/react'
-import { get } from 'http';
+import Icons from "/components/icons"
+import Image from 'next/image';
 
 export default function Addevent() {
 
@@ -54,7 +52,9 @@ export default function Addevent() {
             endTime: "",
             allDay: false,
             daysOfWeek: [],
+
         })
+        setIconPanel(false)
     }
 
     //empty the input date and time fields
@@ -246,20 +246,16 @@ export default function Addevent() {
     }
 
     function handleCheckboxChange(event) {
-        const { value } = event.target;
-        if (input.daysOfWeek.includes(value)) {
-            setinput({
-                ...input,
-                daysOfWeek: input.daysOfWeek.filter((item) => item !== value)
-            })
-        } else {
-            setinput({
-                ...input,
-                daysOfWeek: [...input.daysOfWeek, value]
-            })
-        }
+        const value = parseInt(event.target.value)
+        const list = [...input.daysOfWeek, value]
+        const orderTheListFromSmallestToBiggest = list.sort((a, b) => a - b)
+
+        setinput({
+            ...input,
+            daysOfWeek: orderTheListFromSmallestToBiggest
+        })
+
     }
-    console.log('checkboxValues', input.daysOfWeek)
 
     //add event listener to the document
     useEffect(() => {
@@ -401,6 +397,7 @@ export default function Addevent() {
                             }
                         >
                         </textarea>
+
                         <div className={`${styles.miniSection}`} >
 
                             {/*  check box*/}
@@ -424,47 +421,48 @@ export default function Addevent() {
                             </div>
 
                             <div className={`${styles.blok} ${styles.smallGroup} ${styles.displayFlexSpecial}`}>
-                                <div
-                                    className={`${styles.miniTitle} ${styles.addEmoji}`}
-                                    onClick={() => {
-                                        setIconPanel(!iconPanel)
-                                    }}
+                                <div className={styles.holder}>
 
-                                >Add a emoji {input.icon !== "" ? input.icon : ""}</div>
-
-                                <div className={iconpanelstyle}>
-                                    <div className={styles.emojiPicker}>
-
-                                        <Picker
-                                            data={data}
-                                            onEmojiSelect={
-                                                (emoji) => {
-                                                    console.log(emoji)
-                                                    setinput({
-                                                        ...input,
-                                                        icon: emoji.native,
-                                                    })
-                                                    setIconPanel(!iconPanel)
-                                                }
-                                            }
-                                            theme="dark"
-                                            previewEmoji="none"
-                                            showSkinTones={false}
-                                            locale="en"
-                                            perLine={8}
-
-
-
-
-
-                                        />
-
-                                    </div>
-                                    <div className={styles.background}
+                                    <div className={`${styles.miniTitle} ${styles.addEmoji}`}
                                         onClick={() => {
                                             setIconPanel(!iconPanel)
                                         }}
-                                    ></div>
+
+                                    >
+                                        Add a emoji
+                                        {
+
+                                            input.icon !== "" ?
+                                                <div
+                                                    onClick={
+                                                        e => {
+                                                            setinput({
+                                                                ...input,
+                                                                icon: ""
+                                                            })
+                                                        }
+                                                    }
+                                                >
+
+                                                    <Image
+                                                        src={input.icon}
+                                                        alt="icon-selected"
+                                                        width={18}
+                                                        height={18}
+                                                    />
+                                                </div>
+                                                : ""
+
+                                        }
+
+                                    </div>
+
+
+                                    <div className={iconpanelstyle}>
+
+                                        <Icons />
+
+                                    </div>
 
                                 </div>
 
@@ -472,7 +470,6 @@ export default function Addevent() {
 
 
                         </div>
-
 
                         {/* input date and time */}
                         <div className={`${styles.miniSection}`} >
@@ -544,7 +541,7 @@ export default function Addevent() {
                                     <div className={styles.repeatOnItem}>
 
                                         <label htmlFor="repeat0" className={styles.repeatDay}>
-                                            <input type="checkbox" name="repeat0" id="repeat0" value={0} checked={input.daysOfWeek.includes("1")}
+                                            <input type="radio" name="repeat0" id="repeat0" value={1} checked={input.daysOfWeek?.includes(1)}
                                                 onChange={
                                                     (e) => {
                                                         handleCheckboxChange(e)
@@ -554,7 +551,7 @@ export default function Addevent() {
                                         </label>
 
                                         <label htmlFor="repeat1" className={styles.repeatDay}>
-                                            <input type="checkbox" name="repeat1" id="repeat1" value={1} checked={input.daysOfWeek.includes("2")} onChange={
+                                            <input type="radio" name="repeat1" id="repeat1" value={2} checked={input.daysOfWeek?.includes(2)} onChange={
                                                 (e) => {
                                                     handleCheckboxChange(e)
                                                 }
@@ -563,14 +560,14 @@ export default function Addevent() {
                                         </label>
 
                                         <label htmlFor="repeat2" className={styles.repeatDay}>
-                                            <input type="checkbox" name="repeat2" id="repeat2" value={2} checked={input.daysOfWeek.includes("3")} onChange={(e) => {
+                                            <input type="radio" name="repeat2" id="repeat2" value={3} checked={input.daysOfWeek?.includes(3)} onChange={(e) => {
                                                 handleCheckboxChange(e)
                                             }} />
                                             <span className={styles.repeatOnItemSpan}>We</span>
                                         </label>
 
                                         <label htmlFor="repeat3" className={styles.repeatDay}>
-                                            <input type="checkbox" name="repeat3" id="repeat3" value={3} checked={input.daysOfWeek.includes("4")} onChange={(e) => {
+                                            <input type="radio" name="repeat3" id="repeat3" value={4} checked={input.daysOfWeek?.includes(4)} onChange={(e) => {
                                                 handleCheckboxChange(e)
                                             }} />
                                             <span className={styles.repeatOnItemSpan}>Th</span>
@@ -579,7 +576,7 @@ export default function Addevent() {
 
                                         <label htmlFor="repeat4" className={styles.repeatDay}>
 
-                                            <input type="checkbox" name="repeat4" id="repeat4" value={4} checked={input.daysOfWeek.includes("5")} onChange={(e) => {
+                                            <input type="radio" name="repeat4" id="repeat4" value={5} checked={input.daysOfWeek?.includes(5)} onChange={(e) => {
                                                 handleCheckboxChange(e)
                                             }} />
 
@@ -589,7 +586,7 @@ export default function Addevent() {
 
                                         <label htmlFor="repeat5" className={styles.repeatDay}>
 
-                                            <input type="checkbox" name="repeat5" id="repeat5" value={5} checked={input.daysOfWeek.includes("6")} onChange={(e) => {
+                                            <input type="radio" name="repeat5" id="repeat5" value={6} checked={input.daysOfWeek?.includes(6)} onChange={(e) => {
                                                 handleCheckboxChange(e)
                                             }} />
 
@@ -599,7 +596,7 @@ export default function Addevent() {
 
                                         <label htmlFor="repeat6" className={styles.repeatDay}>
 
-                                            <input type="checkbox" name="repeat6" id="repeat6" value={6} checked={input.daysOfWeek.includes("0")} onChange={(e) => {
+                                            <input type="radio" name="repeat6" id="repeat6" value={0} checked={input.daysOfWeek?.includes(0)} onChange={(e) => {
                                                 handleCheckboxChange(e)
                                             }} />
 
@@ -607,22 +604,16 @@ export default function Addevent() {
 
                                         </label>
 
-
-                                        {/* <input type="checkbox" name="repeat0" id="repeat0" className={styles.checkBox}
-                                            value={[0]}
-                                            onchange={
-                                                e => {
-                                                    setinput({
-                                                        ...input,
-                                                        //add to the array
-                                                        daysOfWeek: [...input.daysOfWeek, e.target.value]
-                                                    })
-                                                }
-                                            }
-                                        /> */}
-
-
                                     </div>
+                                    <button className={styles.restButton} onClick={
+                                        () => {
+                                            setinput({
+                                                ...input,
+                                                daysOfWeek: []
+                                            })
+                                        }
+
+                                    }>Reset</button>
 
                                 </div>
 
@@ -746,15 +737,14 @@ export default function Addevent() {
                     </div>
                 </div>
 
-
                 <div className={styles.bgClose} onClick={(e) => { { setEventsPanel(!eventsPanel) } removeElement(), clearInput() }}></div>
 
             </div>
+
             <Toaster
                 position="bottom-right"
                 reverseOrder={false}
                 theme="auto"
-
             />
 
         </div >
