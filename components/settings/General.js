@@ -19,7 +19,11 @@ export default function General() {
     const [dataAndTime, setDataAndTime] = useState()
 
     //generate a list of time zones using moment-timezone only names
+
     const timeZonesFromMoment = moment.tz.names();
+    //time zones 2 get from https://fullcalendar.io/api/demo-feeds/timezones.json
+
+
 
     const { theme, setTheme } = useTheme()
 
@@ -204,6 +208,17 @@ export default function General() {
 
                 </select>
                 <p className={styles.dateAndTime}>{dataAndTime} </p>
+                {/* {
+                    timeZones.map((zone, i) => (
+                        <option key={i}
+                            value={zone}
+                        >
+                            {zone}
+                        </option>
+                    ))
+
+
+                } */}
 
             </div>
 
