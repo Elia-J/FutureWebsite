@@ -194,41 +194,26 @@ $buttonsHeight: 60px;
   border-radius: 4px;
   margin-top: 10px;
 }
-
+.holder {
+  position: relative;
+}
 .iconPanel {
-  backdrop-filter: blur(10px);
-  background-color: rgba(55, 55, 55, 0.5);
   position: absolute;
-  top: 0;
+  top: 40px;
   left: 0;
   left: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
   z-index: 100;
+
+  overflow: hidden;
+
+  background-color: var(--special-3);
+  border-radius: 8px;
 }
 .iconPanelOpen {
-  display: flex;
+  display: block;
 }
 .iconPanelHidden {
   display: none;
-}
-.background {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
 }
 
 .addEmoji {
@@ -236,13 +221,18 @@ $buttonsHeight: 60px;
   border-radius: 8px;
   padding: 5px;
   background-color: var(--special-3);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }
 .repeatOnItem {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 7px;
   align-items: center;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .repeatDay {
@@ -255,6 +245,16 @@ $buttonsHeight: 60px;
   background-color: var(--special-3);
   border-radius: 8px;
   padding: 5px;
+}
+
+.restButton {
+  background-color: var(--special-3);
+  border: 1px solid var(--snowflake-100);
+  border-radius: 8px;
+  margin-top: 10px;
+}
+.repeatDay input {
+  accent-color: var(--night-train-600);
 }
 @media (max-width: 1199.98px) {
   .addeventPanel {
