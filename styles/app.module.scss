@@ -101,6 +101,20 @@
   align-items: flex-start;
 }
 
+.buttonAdd {
+  background: var(--special-3);
+  border: 1px solid var(--snowflake-100);
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 0px 6px;
+  height: 30px;
+  margin-right: 10px;
+}
+.todoListHeader {
+  padding-top: 15px;
+}
+
 @media (max-width: 1199.98px) {
 }
 @media (max-width: 991.98px) {
