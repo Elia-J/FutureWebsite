@@ -213,7 +213,7 @@ export default function Notes({ notes }) {
             )
         } else {
             collapsableElementNotes.current.classList.toggle(
-                `${styles.CollapsedTextEditorNotes}`
+                `${styles.CollapsedTextEditor}`
             );
             collapsableElementSavedNotes.current.classList.toggle(
                 `${styles.hideNotesPanel}`
