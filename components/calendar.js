@@ -51,7 +51,9 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     const [title, setTitle] = useState("");
     const [view, setView] = useState("timeGridWeek");
     const [monthViewWeeknumber, setMonthViewWeeknumber] = useState(false)
+
     const [events, setEvents] = useState([]);
+
 
     //styles
     const marginLeftStyle = panel ? styles.WithoutMargin : styles.WithMargin;
@@ -62,7 +64,8 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     //lieciesnse key for fullcalendar
     FullCalendar.licenseKey = "GPL-My-Project-Is-Open-Source";
 
-    //get the list of events from supabase
+
+    //get the list of events from supabase to calendar
     async function getEvents() {
         const { data, error } = await supabase
             .from('events')
@@ -84,14 +87,19 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                     end: item.endDate,
                     backgroundColor: item.backgroundColor,
                     icon: item.icon,
-                    // daysOfWeek: item.daysOfWeek,
-
+                    daysOfWeek: item.daysOfWeek,
+                    startRecur: item.startRecur,
+                    endRecur: item.endRecur,
+                    startTime: item.startTime,
+                    endTime: item.endTime,
                 }])
             }
             )
+
+
+
         }
     }
-
 
     function convertFullDataToDataAndTime(date) {
         const dateWithouthTime = moment(date).format("YYYY-MM-DD");
@@ -114,27 +122,25 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     }
 
     //add event to the database
-    async function eventClick(event) {
+    async function eventClick(arg) {
 
-        console.log("test  " + event.event.recurringDef?.[2].daysOfWeek)
+        console.log(arg)
 
-        convertFullDataToDataAndTime(event.event.startStr)
-        convertFullDataToDataAndTime(event.event.endStr)
+        convertFullDataToDataAndTime(arg.event.startStr)
+        convertFullDataToDataAndTime(arg.event.endStr)
 
         setEventsPanel(true)
-        console.log(event.event)
         setinput({
             ...input,
-            id: event.event.id,
-            title: event.event.title,
-            startDate: convertFullDataToDataAndTime(event.event.startStr).dateWithouthTime,
-            startTime: convertFullDataToDataAndTime(event.event.startStr).time,
-            endDate: convertFullDataToDataAndTime(event.event.endStr).dateWithouthTime,
-            endTime: convertFullDataToDataAndTime(event.event.endStr).time,
-            backgroundColor: event.event.backgroundColor,
-            icon: event.event.extendedProps.icon,
-
-
+            id: arg.event.id,
+            title: arg.event.title,
+            startDate: convertFullDataToDataAndTime(arg.event.startStr).dateWithouthTime,
+            startTime: convertFullDataToDataAndTime(arg.event.startStr).time,
+            endDate: convertFullDataToDataAndTime(arg.event.endStr).dateWithouthTime,
+            endTime: convertFullDataToDataAndTime(arg.event.endStr).time,
+            backgroundColor: arg.event.backgroundColor,
+            icon: arg.event.extendedProps.icon,
+            daysOfWeek: arg.event._def.recurringDef?.typeData?.daysOfWeek ? arg.event._def.recurringDef.typeData.daysOfWeek : [],
         })
 
     }
@@ -158,6 +164,9 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
             getEvents()
         }
     }
+
+
+
 
     //next week function
     function nextWeek() {
@@ -422,6 +431,42 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     }
 
 
+    function eventContent(arg) {
+        return (
+            <div className={styles.eventContent}>
+                <div className={styles.eventContentTime}>
+                    {arg.timeText}
+                </div>
+                <div className={styles.eventContentTitle}>
+                    {arg.event.title}
+                </div>
+                {
+                    arg.event.extendedProps.icon === "" ? null :
+                        <div className={styles.evenIconHolder}>
+
+                            <div className={styles.eventIcon}>
+                                <Image
+                                    src={arg.event.extendedProps.icon}
+                                    alt="icon"
+                                    fill
+                                />
+                            </div>
+                        </div>
+                }
+
+            </div>
+
+        )
+    }
+
+    function slotLabelFormat(arg) {
+        return (
+            <div className={styles.slotLabelFormat}>
+                {arg.start.hour}
+            </div>
+        )
+    }
+
     useEffect(() => {
 
         resizeCalendar()
@@ -453,24 +498,37 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
         getWeekNumber();
         titleFullCalendar();
 
+
     }, [])
 
-    useEffect(() => {
-        const calendarApi = calendarComponentRef.current.getApi();
-        //set the claendar timezone to the selected timezone
-        calendarApi.nowIndicator = () => moment.tz(new Date(), settings.time_zone).format();
-        calendarApi.setOption(
-            'nowIndicator', true,
-            'timeZone', settings.time_zone,
-            //iso8601 format
-            'now', moment.tz(new Date(), settings.time_zone).format()
-
-        );
-
-    }, [settings.time_zone])
 
 
+    // function updateNowIndicator() {
+    //     const calendarApi = calendarComponentRef.current.getApi();
+    //     //set the claendar timezone to the selected timezone
+    //     calendarApi.setOption(
+    //         'timeZone', "America/Los_Angeles",
+    //         "now", moment.tz(new Date(), "America/Los_Angeles").format()
+    //     );
+    // }
 
+    // useEffect(() => {
+    //     updateNowIndicator();
+    // }, [settings.time_zone]);
+
+
+
+    // function nowIndicator(arg) {
+    //     let currentDate = new Date();
+    //     let timeZone = settings.time_zone;
+
+    //     return moment.tz(currentDate, "America/Los_Angeles").format();
+    // }
+
+    //add " to the begin and end of the time zone string
+
+
+    let time_zone123 = settings.time_zone || 'UTC';
     return (
         <>
             <div className={`${styles.buttonTools} ${marginLeftStyle}`}>
@@ -530,8 +588,8 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                             dayGridPlugin,
 
                         ]}
-                        defaultView="timeGridWeek"
-                        height="85%"
+                        // defaultView="timeGridWeek"
+                        height="89%"
                         eventBackgroundColor="#4c7987"
                         eventBorderColor="#ffffff00"
                         headerToolbar={false}
@@ -540,27 +598,15 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                         selectable={true}
                         selectMirror={true}
                         dayMaxEvents={true}
-                        nowIndicator={true}
-                        timeZone="local"
-                        // timeZone={
-                        //     function () {
-                        //         return settings.time_zone
-                        //     }
-                        // } //America/Los_Angeles
-                        // now={
-                        //     function () {
-                        //         return timie
-                        //     }
-                        // }
+
                         handleWindowResize={true}
                         initialView={view}
                         ref={calendarComponentRef}
                         weekends={settings.ShowWeekends}
                         firstDay={firstDayOfWeek()}
                         longPressDelay={1000}
-                        slotMinTime={settings.BeginTimeDay}
-                        slotMaxTime={settings.EndTimeDay}
-
+                        // slotMinTime={settings.BeginTimeDay}
+                        // slotMaxTime={settings.EndTimeDay}
 
                         select={
                             function (arg) {
@@ -580,15 +626,39 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                             }
                         }
 
+                        eventContent={
+                            function (arg) {
+                                if (monthViewWeeknumber === false) {
+                                    return eventContent(arg)
+                                }
+                            }
+                        }
+                        timeZone={settings.time_zone}
+                        nowIndicator={true}
+                        // initialDate={moment.tz(new Date(), settings.time_zone).format("YYYY-MM-DD")}
 
-                        // timeZone="America/Buenos_Aires"
-                        // dayHeaderFormat={{
-                        //     weekday: 'short', month: 'short', day: 'numeric'
-                        // }}
-                        // slotLabelFormat={{
-                        //     hour: 'numeric',
-                        //     meridiem: 'short'
-                        // }}
+                        // nowIndicator={
+                        //     function (arg) {
+                        //         return
+                        //     }
+                        // }
+
+                        now={
+                            function () {
+                                return new Date()
+                            }
+                        }
+                        viewClassNames={styles.moreLinkClassNames}
+
+
+
+
+
+                        slotLabelFormat={
+                            function (arg) {
+                                return slotLabelFormat(arg)
+                            }
+                        }
 
 
 
@@ -601,10 +671,26 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                             }
                         }
 
-
+                        eventClassNames={styles.eventClassNames}
                         events={
                             events
-                            // [
+                        }
+
+
+
+                    />
+                    :
+                    null
+            }
+
+        </>
+    )
+}
+
+
+
+
+           // [
                             //     {
                             //         title: '😀 event 1',
                             //         start: '2023-01-20 10:00:00',
@@ -624,19 +710,3 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
 
                             //     },
                             // ]
-                        }
-
-
-
-                    />
-                    :
-                    null
-            }
-
-        </>
-    )
-}
-
-
-
-
