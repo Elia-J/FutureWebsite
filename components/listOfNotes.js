@@ -313,6 +313,7 @@ export default function ListOfNotes({ inApp }) {
     Sorter(folderData, wayOfSorting )
     return (
         <div>
+            <h1>Saved Notes</h1>
             <form onSubmit={createNote} className={styles.form}>
                 <input value={noteTitle} type="text" placeholder="Note:" onChange={(e) => setNoteTitle(e.target.value)} className={styles.input} required />
                 <button className={styles.mainButton} type="submit" >Create note</button>
