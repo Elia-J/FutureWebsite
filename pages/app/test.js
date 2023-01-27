@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react'
 
-//this is a basic search experiment
+//This is a simple test page to test the search function.
 
 export default function Search() {
     const [input, setInput] = useState('')
