@@ -602,6 +602,7 @@ export default function Addevent() {
                                 {/* input checkbox for the repeat option like Mo Tu We Th Fr Sa Su */}
                                 <label htmlFor="Color" className={styles.miniTitle}>Color</label>
 
+                                {/* TwitterPicker is a color picker from react-color */}
                                 <TwitterPicker
                                     color={input.backgroundColor}
                                     onChangeComplete={color => {
