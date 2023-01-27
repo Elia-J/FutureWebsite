@@ -138,21 +138,38 @@ export default function Notes({ notes }) {
     const supabase = useSupabaseClient()
     const session = useSession()
     const user = useUser()
+    const [dataTasks, setDataTasks] = useState([])
+    const [taskID, setTaskID] = useState([])
+    const [loadingTask, setLoadingTask] = useState(true)
+    useEffect(() => {
+        getTasks()
+    }, [])
+
+    function deleteDeletedTasks(data) {
+        let test = [...data]
+        // for (let j=0; j<test.length; j++) {
+        //     if (test[j].type == "task") {
+        //         if (taskID.indexOf(test[j].ID)  == -1) {
+        //             test.splice(j, 1)
+        //         }
+        //     } else {
+        //         console.log('nee')
+        //     }
+        // }
+        return test
+    }
+    
 
     // sets the initial value used by the slate editor
     const [initialValue, setInitialValue] = useState(notes.description)
+    const [initialTitle, setInitialTitle] = useState([{ "type": "h1", "children": [{ "text": notes.title }] }])
 
     // sets the initial value title used by the slate editor
-    const [initialTitle, setInitialTitle] = useState([{ "type": "h1", "children": [{ "text": notes.title }] }])
     const [fontSize, setFontSize] = useState(16)
-    const [dataTasks, setDataTasks] = useState([])
     // H1: 32
     // H2: 26
     // default: 16
 
-    useEffect(() => {
-        getTasks()
-    }, [])
 
     // Checks if there is a change in the url, if so, it reloads the page
     // This is to make sure that the correct initialValue and initialTitle is loaded into the editor
@@ -180,11 +197,12 @@ export default function Notes({ notes }) {
     // updateData gets a title and a description and updates them with the according note id
     // it also updates the created_at to show when you last saved it.
     async function updateData(t, d, reload) {
+        getTasks()
         let now = new Date()
         let ISONow = now.toISOString()
         const { data, error } = await supabase
             .from('notesv2')
-            .update({ title: t, description: d, created_at: ISONow })
+            .update({ title: t, description: !loadingTask ? deleteDeletedTasks(d) : d, created_at: ISONow })
             .eq('id', notes.id)
         if (reload) {
             alert('succes!')
@@ -285,11 +303,18 @@ export default function Notes({ notes }) {
     }, []);
 
     async function getTasks() {
+        setLoadingTask(true)
         const { data, error } = await supabase
             .from('todos')
             .select('*')
         if (data) {
             setDataTasks(data)
+            let taskID = []
+            for (let i=0; i<data.length; i++) {
+                taskID.indexOf(data[i].id) == -1 ? taskID.push(data[i].id) : console.log('')
+            }
+            setTaskID(taskID)
+            setLoadingTask(false)
         }
     }
 
