@@ -5,9 +5,11 @@ import { createEditor } from "slate";
 import { withReact } from "slate-react";
 import ListOfNotes from '../../../components/listOfNotes'
 import LoadingLine from '/components/loadingLine'
+import Image from 'next/image'
 
 import AppLayout from "/layouts/appLayout"
 import { useSession } from "@supabase/auth-helpers-react";
+import LoadingLine from '/components/loadingLine'
 
 
 export default function Index() {

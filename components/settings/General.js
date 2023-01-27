@@ -19,8 +19,6 @@ export default function General() {
 
     const { theme, setTheme } = useTheme()
     const [checkboxThemeSync, setCheckboxThemeSync] = useState(false)
-    const [removeCheckedTasks, setRemoveCheckedTasks] = useState()
-    const [showTimeForTasks, setShowTimeForTasks] = useState()
     const [timeZone, setTimeZone] = useState('')
     const [firstDayOfWeek, setFirstDayOfWeek] = useState('')
 
@@ -36,7 +34,7 @@ export default function General() {
     async function GetData() {
         const { data, error } = await supabase
             .from('profiles')
-            .select(`syncTheme , timeZone, firstDayOfWeek, mode, removeCheckedTasks, showTimeForTasks`)
+            .select(`syncTheme , timeZone, firstDayOfWeek, mode`)
             .eq('id', user.id)
             .single()
 
@@ -109,37 +107,6 @@ export default function General() {
 
 
     // }
-
-
-    //update removeCheckedTasks in database
-    async function UpdateRemoveCheckedTasks(e) {
-        const { data, error } = await supabase
-            .from('profiles')
-            .update({ removeCheckedTasks: e })
-            .eq('id', user.id)
-
-        if (error) {
-            console.log(error)
-        }
-        else {
-            console.log(data)
-        }
-    }
-
-    // update showTimeForTasks
-    async function UpdateShowTimeForTasks(e) {
-        const { data, error } = await supabase
-            .from('profiles')
-            .update({ showTimeForTasks: e })
-            .eq('id', user.id)
-
-        if (error) {
-            console.log(error)
-        }
-        else {
-            console.log(data)
-        }
-    }
 
     function lg() {
         console.log(checkboxThemeSync)
@@ -231,32 +198,6 @@ export default function General() {
                     <label htmlFor="toggle" className={styles.toggleLabel}></label>
                 </div>
 
-            </div>
-
-            <div className={styles.optionsHorizontal}>
-                <div className={styles.details}>
-                    <div className={styles.minititle}>Automatically removing checked tasks</div>
-                    <div className={styles.discription}>Automatically remove tasks when you click on their checkbox</div>
-                </div>
-                <div className={styles.toggleContainer}>
-                    <input type="checkbox" name="removetoggle" id="removetoggle" className={styles.toggleInput}
-                        onChange={() => { setRemoveCheckedTasks(!removeCheckedTasks), UpdateRemoveCheckedTasks(!removeCheckedTasks) }} checked={removeCheckedTasks}
-                    />
-                    <label htmlFor="removetoggle" className={styles.toggleLabel}></label>
-                </div>
-            </div>
-
-            <div className={styles.optionsHorizontal}>
-                <div className={styles.details}>
-                    <div className={styles.minititle}>Show time for tasks</div>
-                    <div className={styles.discription}>Show the time for tasks instead of the date</div>
-                </div>
-                <div className={styles.toggleContainer}>
-                    <input type="checkbox" name="showTimeToggle" id="showTimeToggle" className={styles.toggleInput}
-                        onChange={() => { setShowTimeForTasks(!showTimeForTasks), UpdateShowTimeForTasks(!showTimeForTasks) }} checked={showTimeForTasks}
-                    />
-                    <label htmlFor="showTimeToggle" className={styles.toggleLabel}></label>
-                </div>
             </div>
             <Toaster position="bottom-right" reverseOrder={false} />
 

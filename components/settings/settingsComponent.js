@@ -6,12 +6,14 @@ import ButtonWithIcon from '../buttons'
 import AccountSetting from '/components/settings/Account'
 import GeneralSetting from '/components/settings/General'
 import CalendarSetting from '/components/settings/CalendarSetting'
+import TasksSetting from 'components/settings/TasksSetting'
 
 //icons
 import CloseIcon from "/public/close.svg"
 import Account from "/public/Profile.svg"
 import General from "/public/Settings.svg"
 import Calendar from "/public/Calendar.svg"
+import Tasks from "/public/Tasks.svg"
 
 //global state
 import { useStateStoreContext } from "/layouts/stateStore"
@@ -64,9 +66,11 @@ export default function Setting() {
                     syncTheme: data[0].syncTheme,
                     FirstDayOfTheWeek: data[0].firstDayOfWeek,
                     TimeZone: data[0].timeZone,
+                    removeCheckedTasks: data[0].removeCheckedTasks,
                     BeginTimeDay: data[0].BeginTimeDay,
                     EndTimeDay: data[0].EndTimeDay,
                     ShowWeekends: data[0].ShowWeekends,
+                    showTimeForTasks: data[0].showTimeForTasks,
                     avatar_url: data[0].avatar_url
                 }
 
@@ -148,9 +152,11 @@ export default function Setting() {
                 syncTheme: settings.syncTheme,
                 firstDayOfWeek: settings.FirstDayOfTheWeek,
                 timeZone: settings.TimeZone,
+                removeCheckedTasks: settings.removeCheckedTasks,
                 BeginTimeDay: settings.BeginTimeDay,
                 EndTimeDay: settings.EndTimeDay,
                 ShowWeekends: settings.ShowWeekends,
+                showTimeForTasks: settings.showTimeForTasks,
                 avatar_url: settings.filepath
             })
             .eq('id', user.id)
@@ -226,6 +232,18 @@ export default function Setting() {
 
     }
 
+    //handle tasks, show tasks settings
+    const handleTasks = () => {
+
+        setAccount(false);
+        setGeneral(false);
+        setCalendarSettings(false);
+        setTasksSettings(true);
+        setNotesSettings(false);
+        setAi(false);
+
+    }
+
     //if general is true, show general settings, if account is true, show account settings
     useEffect(() => {
 
@@ -238,8 +256,11 @@ export default function Setting() {
         if (calendarSettings) {
             setData(<CalendarSetting />)
         }
+        if (tasksSettings) {
+            setData(<TasksSetting />)
+        }
 
-    }, [account, general, calendarSettings])
+    }, [account, general, calendarSettings, tasksSettings])
 
 
     return (
@@ -260,6 +281,7 @@ export default function Setting() {
                             <ButtonWithIcon icon={<Account />} text="Account" onClick={handleAccount} active={account} />
                             <ButtonWithIcon icon={<General />} text="General" onClick={handleGeneral} active={general} />
                             <ButtonWithIcon icon={<Calendar />} text="Calendar" onClick={handleCalendar} active={calendarSettings} />
+                            <ButtonWithIcon icon={<Tasks />} text="Tasks" onClick={handleTasks} active={tasksSettings} />
 
                         </div>
 
