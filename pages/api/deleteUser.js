@@ -1,3 +1,5 @@
+// This is the API route that deletes the user from the supabase auth table and deletes the user data from the database tables
+
 import { supabaseAdmin } from "/lib/supasbaseClient.js"
 
 export default async function DeleteUserAccount(req, res) {
@@ -90,7 +92,7 @@ export default async function DeleteUserAccount(req, res) {
         })
     }
 
-
+    //send a success message
     res.status(200).send({
         message: "User deleted"
     })
