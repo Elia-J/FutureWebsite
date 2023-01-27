@@ -141,21 +141,22 @@ export default function Notes({ notes }) {
     const [dataTasks, setDataTasks] = useState([])
     const [taskID, setTaskID] = useState([])
     const [loadingTask, setLoadingTask] = useState(true)
+    const [loadingUpdate, setLoadingUpdate] = useState(false)
     useEffect(() => {
         getTasks()
     }, [])
 
     function deleteDeletedTasks(data) {
         let test = [...data]
-        // for (let j=0; j<test.length; j++) {
-        //     if (test[j].type == "task") {
-        //         if (taskID.indexOf(test[j].ID)  == -1) {
-        //             test.splice(j, 1)
-        //         }
-        //     } else {
-        //         console.log('nee')
-        //     }
-        // }
+        for (let j=0; j<test.length; j++) {
+            if (test[j].type == "task") {
+                if (taskID.indexOf(test[j].ID)  == -1) {
+                    test.splice(j, 1)
+                }
+            } else {
+                console.log('nee')
+            }
+        }
         return test
     }
     
@@ -197,17 +198,19 @@ export default function Notes({ notes }) {
     // updateData gets a title and a description and updates them with the according note id
     // it also updates the created_at to show when you last saved it.
     async function updateData(t, d, reload) {
+        setLoadingUpdate(true)
         getTasks()
         let now = new Date()
         let ISONow = now.toISOString()
         const { data, error } = await supabase
-            .from('notesv2')
-            .update({ title: t, description: !loadingTask ? deleteDeletedTasks(d) : d, created_at: ISONow })
-            .eq('id', notes.id)
+        .from('notesv2')
+        .update({ title: t, description: !loadingTask ? deleteDeletedTasks(d) : d, created_at: ISONow })
+        .eq('id', notes.id)
         if (reload) {
             alert('succes!')
             location.reload()
         }
+        setLoadingUpdate(false)
     }
 
     // Creates refs to make sure we can toggle different classNames.
@@ -437,6 +440,7 @@ export default function Notes({ notes }) {
     };
 
     const TaskElement = (props) => {
+        Transforms.select(editor, Editor.end(editor, []))
         return (
             <div style={{display: "flex", gap: '5px'}}>
                 <Image alt={'tasks'} className={styles.icon} src={`/Tasks.svg`} width={25} height={25} />
@@ -559,8 +563,12 @@ export default function Notes({ notes }) {
                                     />
                                 </Slate>
                             </div>
+                            <br />
                             {/* the date it was last edited */}
-                            <strong>{parseISOString(notes.created_at).toString().slice(0, 24)}</strong>
+                            <div style={{display: "flex", gap: "10px"}}>
+                                <strong>{parseISOString(notes.created_at).toString().slice(0, 24)}</strong>
+                                <Image alt={'tasks'} src={!loadingUpdate ? `/rich-text-icons-dark/saved.svg` : '/rich-text-icons-dark/loading.svg'} width={25} height={25} />
+                            </div>
                             {/* Returns the Toolbar with too breaks above and underneath it */}
                             {/* The Toolbar element is defined in this file */}
                             <hr />
