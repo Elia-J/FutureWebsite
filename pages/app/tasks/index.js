@@ -6,6 +6,7 @@ import ListOfTasks from "/components/listOfTasks"
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import LoadingLine from '/components/loadingLine'
+import Ai from "/components/ai"
 
 export default function Tasks() {
     const session = useSession()

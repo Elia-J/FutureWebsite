@@ -9,7 +9,7 @@ import AccountSettings from '/components/settings/Account'
 import GeneralSettings from '/components/settings/General'
 import CalendarSettings from '/components/settings/CalendarSetting'
 import WeatherSettings from '/components/settings/weatherSettings'
-import TasksSetting from 'components/settings/TasksSetting'
+import TasksSetting from '/components/settings/TasksSetting'
 
 //icons
 import CloseIcon from "/public/close.svg"
@@ -488,4 +488,4 @@ export default function Setting() {
         </div>
     )
 }
-
+}

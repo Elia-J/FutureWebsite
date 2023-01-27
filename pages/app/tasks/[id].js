@@ -4,6 +4,7 @@ import styles from "/styles/task.module.scss"
 import Image from 'next/image'
 import AppLayout from "/layouts/appLayout"
 import ListOfTasks from "/components/listOfTasks"
+import Ai from "/components/ai"
 import { useRouter } from 'next/router'
 import LoadingLine from '/components/loadingLine'
 
@@ -393,6 +394,7 @@ export default function Tasks({ taskID }) {
                                         </button>
                                     </div>
                                     <div>
+                                        <Ai type="tasks" />
                                     </div>
                                 </div>
                             </div>
@@ -476,7 +478,7 @@ export default function Tasks({ taskID }) {
         )
     } catch (error) {
         return (
-            <LoadingLine />
+            <LoadingLine notYourTask={true}/>
         )
     }}
     else {
