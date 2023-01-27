@@ -10,7 +10,6 @@ import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-r
 import { IconsOnly, TextOnly, RightIconButton } from './buttons';
 import Addevent from "/components/addEvent"
 
-
 //icons
 import OneArrowRight from "/public/right.svg"
 import TwoArrowRight from "/public/d-right.svg"
@@ -18,14 +17,11 @@ import OneArrowLeft from "/public/left.svg"
 import TwoArrowLeft from "/public/d-left.svg"
 import AddIcon from "/public/AddIcon.svg"
 
-//calendar
+//FullCalendar calendar 
 import FullCalendar from "@fullcalendar/react";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid'
-import momentTimezonePlugin from '@fullcalendar/moment-timezone'
-
 
 //global variable
 import { useStateStoreEventsContext } from "/layouts/stateStoreEvents"
@@ -51,9 +47,8 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     const [title, setTitle] = useState("");
     const [view, setView] = useState("timeGridWeek");
     const [monthViewWeeknumber, setMonthViewWeeknumber] = useState(false)
-
+    const [weatherData, setWeatherData] = useState()
     const [events, setEvents] = useState([]);
-
 
     //styles
     const marginLeftStyle = panel ? styles.WithoutMargin : styles.WithMargin;
@@ -64,6 +59,14 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     //lieciesnse key for fullcalendar
     FullCalendar.licenseKey = "GPL-My-Project-Is-Open-Source";
 
+
+    //################################################################ getevents , select , eventclick , eventchange - start #############
+    //convert full date to date and time for the input
+    function convertFullDataToDataAndTime(date) {
+        const dateWithouthTime = moment(date).format("YYYY-MM-DD");
+        const time = moment(date).format("HH:mm");
+        return { dateWithouthTime, time }
+    }
 
     //get the list of events from supabase to calendar
     async function getEvents() {
@@ -76,6 +79,7 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
         if (error) {
             console.log(error)
         }
+
         else {
             //empty the events array
             setEvents([])
@@ -83,78 +87,91 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                 setEvents((event) => [...event, {
                     id: item.id,
                     title: item.title,
-                    start: item.beginDate,
-                    end: item.endDate,
+                    description: item.description,
+                    allDay: item.allDay,
+
                     backgroundColor: item.backgroundColor,
                     icon: item.icon,
-                    daysOfWeek: item.daysOfWeek,
-                    startRecur: item.startRecur,
-                    endRecur: item.endRecur,
-                    startTime: item.startTime,
-                    endTime: item.endTime,
+
+                    start: item.allDay ? item.startDate : item.startDate + "T" + item.startTime,
+                    end: item.allDay ? item.endDate : item.endDate + "T" + item.endTime,
+
+                    activeRecur: item.activeRecur,
+                    daysOfWeek: item.activeRecur ? item.daysOfWeek : null,
+                    startTime: item.activeRecur ? item.startTime : null,
+                    endTime: item.activeRecur ? item.endTime : null,
+                    startRecur: item.activeRecur ? item.startDate : null,
+                    endRecur: item.activeRecur ? item.endDate : null,
                 }])
             }
             )
-
-
-
+            console.log(data)
         }
     }
 
-    function convertFullDataToDataAndTime(date) {
-        const dateWithouthTime = moment(date).format("YYYY-MM-DD");
-        const time = moment(date).format("HH:mm:ss");
-        return { dateWithouthTime, time }
-    }
-
-    // add event to the database
+    //Show the event panel when the user click on the calendar. (drag and select)
     async function select(event) {
 
         setEventsPanel(true)
+        console.log(event)
         setinput({
             ...input,
-            startDate: convertFullDataToDataAndTime(event.startStr).dateWithouthTime,
+            startDate: convertFullDataToDataAndTime(event.start).dateWithouthTime,
             startTime: convertFullDataToDataAndTime(event.startStr).time,
-            endDate: convertFullDataToDataAndTime(event.endStr).dateWithouthTime,
+            endDate: convertFullDataToDataAndTime(event.end).dateWithouthTime,
             endTime: convertFullDataToDataAndTime(event.endStr).time,
         })
 
     }
 
-    //add event to the database
+    //Show the event panel when the user click already existing event.
     async function eventClick(arg) {
 
-        console.log(arg)
+        console.log("eventClick" + arg)
 
         convertFullDataToDataAndTime(arg.event.startStr)
         convertFullDataToDataAndTime(arg.event.endStr)
 
         setEventsPanel(true)
+
+        console.log(arg)
+        console.log("test" + convertFullDataToDataAndTime(arg.event._instance.range.end).dateWithouthTime)
+
         setinput({
             ...input,
             id: arg.event.id,
             title: arg.event.title,
-            startDate: convertFullDataToDataAndTime(arg.event.startStr).dateWithouthTime,
-            startTime: convertFullDataToDataAndTime(arg.event.startStr).time,
-            endDate: convertFullDataToDataAndTime(arg.event.endStr).dateWithouthTime,
-            endTime: convertFullDataToDataAndTime(arg.event.endStr).time,
+            description: arg.event.extendedProps.description,
+            allDay: arg.event.allDay,
+
             backgroundColor: arg.event.backgroundColor,
             icon: arg.event.extendedProps.icon,
-            daysOfWeek: arg.event._def.recurringDef?.typeData?.daysOfWeek ? arg.event._def.recurringDef.typeData.daysOfWeek : [],
-        })
 
+
+            startDate: arg.event.extendedProps.activeRecur ? convertFullDataToDataAndTime(arg.event._def.recurringDef.typeData.startRecur).dateWithouthTime : convertFullDataToDataAndTime(arg.event._instance.range.start).dateWithouthTime,
+            startTime: convertFullDataToDataAndTime(arg.event.startStr).time,
+
+            endDate: arg.event.extendedProps.activeRecur ? convertFullDataToDataAndTime(arg.event._def.recurringDef.typeData.endRecur).dateWithouthTime : convertFullDataToDataAndTime(arg.event._instance.range.end).dateWithouthTime,
+            endTime: convertFullDataToDataAndTime(arg.event.endStr).time,
+
+            activeRecur: arg.event.extendedProps.activeRecur,
+            daysOfWeek: arg.event.extendedProps.activeRecur ? arg.event._def.recurringDef.typeData.daysOfWeek : [],
+        })
     }
 
     //event handlers for the calendar change
     async function eventChange(event) {
+        console.log(event.event)
         const { data, error } = await supabase
             .from('events')
             .update([
                 {
-                    id: event.event.id,
-                    title: event.event.title,
-                    beginDate: event.event.startStr,
-                    endDate: event.event.endStr,
+                    allDay: event.event.allDay,
+                    startDate: event.event.extendedProps.activeRecur ? convertFullDataToDataAndTime(event.event._def.recurringDef.typeData.startRecur).dateWithouthTime : convertFullDataToDataAndTime(event.event._instance.range.start).dateWithouthTime,
+                    startTime: convertFullDataToDataAndTime(event.event.startStr).time,
+
+                    endDate: event.event.extendedProps.activeRecur ? convertFullDataToDataAndTime(event.event._def.recurringDef.typeData.endRecur).dateWithouthTime : convertFullDataToDataAndTime(event.event._instance.range.end).dateWithouthTime,
+                    endTime: convertFullDataToDataAndTime(event.event.endStr).time,
                 }
             ])
             .eq('id', event.event.id)
@@ -165,9 +182,10 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
         }
     }
 
+    //################################################################ getevents , select , eventclick , eventchange - end #############
 
 
-
+    //############################################################################################# mini functions - start #############
     //next week function
     function nextWeek() {
         const calendarApi = calendarComponentRef.current.getApi();
@@ -207,7 +225,6 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
         getWeekNumber();
         titleFullCalendar();
 
-
     }
 
     //today function
@@ -220,7 +237,7 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
 
     }
 
-    //get week number
+    //Get the week number to show in the clendar
     function getWeekNumber() {
         try {
 
@@ -236,6 +253,7 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
             }
 
             setWeeknumber(weekNo);
+
         } catch (error) {
             console.log(error)
         }
@@ -295,11 +313,11 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                 return 0
         }
     }
+    //############################################################################################# mini functions - end #############
 
+    //######################################################################################### Weather & events - start #############
 
-    const [weatherData, setWeatherData] = useState()
-
-    //Api call to get the weather data
+    //Api call to get the weather data from api/weather, return the data as json
     async function getWeather() {
 
         const lat1 = settings.latitude.toString().substring(0, 5)
@@ -317,6 +335,7 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                 })
             })
         const data = await response.json()
+
         setWeatherData(data)
 
     }
@@ -327,29 +346,30 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     //Add 4 days to today date
     const today3 = momentTimezone.tz(settings.time_zone).add(4, 'days').format('DD-MM-YYYY');
 
+    //If weather is checked in the settings, show the weather data in the calendar
     function checkWeather(weatherTemp) {
         if (settings.weather) {
             return (
                 <div className={styles.weather}>
 
                     {weatherTemp?.main.temp === undefined ? "" :
+
                         <>
                             <div className={styles.temperature}>{
 
                                 Math.round(parseInt(weatherTemp?.main.temp))
 
                             } °C</div>
+
                             <div className={styles.weatherIconClase}>
                                 <Image
                                     src={`https://openweathermap.org/img/wn/${weatherTemp?.weather[0].icon}@2x.png`}
                                     alt="weather icon"
                                     fill
-
                                 />
                             </div>
                         </>
                     }
-
 
                 </div>
             )
@@ -358,23 +378,27 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
         else {
             return ""
         }
-
     }
 
+    //Function to show and control the day header in the calendar. to add the weather data and icons to it.
     function dayHeaderContent(arg) {
 
         const date = moment(arg.date).format('DD-MM-YYYY');
 
+        //If the date is today or in the next 4 days, show the weather data
         if (date >= today2 && date <= today3) {
 
+            //Find the weather data for the current date
             const weatherTemp = weatherData?.list?.find(
                 (item) => item.dt_txt.includes(moment(arg.date).format('YYYY-MM-DD'))
             )
+
             return (
 
                 <div className={styles.dayHeader}>
                     <div className={styles.dayHeaderSundayText}>
 
+                        {/* Convert ma to MAN and so to SUN ... */}
                         {arg.date.getDay() === 0 ? <div className={`${styles.dayName} ${styles.red}`}>SUN</div> : null}
                         {arg.date.getDay() === 1 ? <div className={styles.dayName}>MON</div> : null}
                         {arg.date.getDay() === 2 ? <div className={styles.dayName}>TUE</div> : null}
@@ -383,29 +407,28 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                         {arg.date.getDay() === 5 ? <div className={styles.dayName}>FRI</div> : null}
                         {arg.date.getDay() === 6 ? <div className={styles.dayName}>SAT</div> : null}
 
+                        {/* Do not show the day number and the weather data in the month view */}
                         {
-                            monthViewWeeknumber ?
-
-                                null
-
-                                :
-
+                            monthViewWeeknumber ? null :
                                 <>
-                                    <div className={styles.daydate}>
-                                        {arg.date.getDate()}
-                                    </div>
+                                    <div className={styles.daydate}> {arg.date.getDate()} </div>
                                     {checkWeather(weatherTemp)}
-
                                 </>
                         }
+
                     </div>
                 </div >
+
             )
         }
+
         else {
             return (
                 <div className={styles.dayHeader}>
+
                     <div className={styles.dayHeaderSundayText}>
+
+                        {/* Convert ma to MAN and so to SUN ... */}
                         {arg.date.getDay() === 0 ? <div className={`${styles.dayName} ${styles.red}`}>SUN</div> : null}
                         {arg.date.getDay() === 1 ? <div className={styles.dayName}>MON</div> : null}
                         {arg.date.getDay() === 2 ? <div className={styles.dayName}>TUE</div> : null}
@@ -414,6 +437,7 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                         {arg.date.getDay() === 5 ? <div className={styles.dayName}>FRI</div> : null}
                         {arg.date.getDay() === 6 ? <div className={styles.dayName}>SAT</div> : null}
 
+                        {/* Do not show the day number and the weather data in the month view */}
                         {
                             monthViewWeeknumber ?
 
@@ -425,33 +449,40 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                         }
 
                     </div>
+
                 </div >
             )
         }
     }
 
-
+    //Function to show the events in the calendar 
     function eventContent(arg) {
         return (
             <div className={styles.eventContent}>
+
                 <div className={styles.eventContentTime}>
                     {arg.timeText}
                 </div>
+
                 <div className={styles.eventContentTitle}>
                     {arg.event.title}
                 </div>
+
                 {
-                    arg.event.extendedProps.icon === "" ? null :
+                    arg.event.extendedProps.icon && (
                         <div className={styles.evenIconHolder}>
 
                             <div className={styles.eventIcon}>
+
                                 <Image
                                     src={arg.event.extendedProps.icon}
                                     alt="icon"
                                     fill
                                 />
                             </div>
+
                         </div>
+                    )
                 }
 
             </div>
@@ -459,14 +490,12 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
         )
     }
 
-    function slotLabelFormat(arg) {
-        return (
-            <div className={styles.slotLabelFormat}>
-                {arg.start.hour}
-            </div>
-        )
-    }
+    //############################################################################################## Weather & events - end #############
 
+
+    //################################################################################################### useEffect - start #############
+
+    // resize the calendar when the toggleValue changes (side panel open/close)
     useEffect(() => {
 
         resizeCalendar()
@@ -474,6 +503,7 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     }, [toggleValue])
 
 
+    // get the weather data when the latitude or longitude changes
     useEffect(() => {
 
         getWeather()
@@ -481,6 +511,7 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     }, [settings.latitude, settings.longitude])
 
 
+    // get the events when the eventsPanel changes (open/close)
     useEffect(() => {
 
         if (eventsPanel === false) {
@@ -492,6 +523,7 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     }, [eventsPanel])
 
 
+    //Run the functions when loading the page once
     useEffect(() => {
 
         getEvents()
@@ -501,58 +533,35 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
 
     }, [])
 
+    //################################################################################################### useEffect - end #############
 
 
-    // function updateNowIndicator() {
-    //     const calendarApi = calendarComponentRef.current.getApi();
-    //     //set the claendar timezone to the selected timezone
-    //     calendarApi.setOption(
-    //         'timeZone', "America/Los_Angeles",
-    //         "now", moment.tz(new Date(), "America/Los_Angeles").format()
-    //     );
-    // }
-
-    // useEffect(() => {
-    //     updateNowIndicator();
-    // }, [settings.time_zone]);
-
-
-
-    // function nowIndicator(arg) {
-    //     let currentDate = new Date();
-    //     let timeZone = settings.time_zone;
-
-    //     return moment.tz(currentDate, "America/Los_Angeles").format();
-    // }
-
-    //add " to the begin and end of the time zone string
-
-
-    let time_zone123 = settings.time_zone || 'UTC';
     return (
         <>
             <div className={`${styles.buttonTools} ${marginLeftStyle}`}>
 
+                {/* Create event button */}
                 <RightIconButton
                     icon={<AddIcon />}
                     text="Create"
                     onClick={
                         () => {
                             setEventsPanel(true)
-                            console.log("add event " + eventsPanel)
                         }
                     } />
+
+                {/* Addevent is a component that contains the form to create a new event  */}
                 <Addevent />
 
+                {/* Options to change the view of the calendar */}
                 <select onChange={changeView} className={styles.select}>
                     <option value="timeGridWeek" defaultValue>Week</option>
                     <option value="timeGridDay" >Day</option>
                     <option value="dayGridMonth">Month</option>
-                    {/* <option value="listWeek">List Week</option> */}
                 </select>
 
+                {/* Today date and week number*/}
                 <div className={styles.bigDate}>{title}</div>
-
                 <div className={styles.weekNumber}>Week {weeknumber}</div>
 
                 {/* navigation buttons  */}
@@ -567,146 +576,88 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                 </div>
 
             </div>
-            {/* <p>
-                {weatherData?.list?.[0].main.temp} °C
-            </p>
-            <p>{weatherData?.list?.[0].weather[0].description}</p>
-            <Image
-                src={`https://openweathermap.org/img/wn/${weatherData?.list?.[0].weather[0].icon}@2x.png`}
-                alt="weather icon"
-                width={50}
-                height={50}
-            /> */}
 
-            {
-                settings.time_zone !== undefined | settings.time_zone !== null | settings.time_zone !== "" ?
+            {/* The calendar */}
+            <FullCalendar
+                plugins={[
+                    timeGridPlugin,
+                    interactionPlugin,
+                    dayGridPlugin,
+                ]}
 
-                    <FullCalendar
-                        plugins={[
-                            timeGridPlugin,
-                            interactionPlugin,
-                            dayGridPlugin,
+                height="89%"
+                eventBackgroundColor="#4c7987"
+                eventBorderColor="#ffffff00"
+                headerToolbar={false}
+                weekNumbers={false}
+                editable={true}
+                selectable={true}
+                selectMirror={true}
+                dayMaxEvents={true}
+                handleWindowResize={true} //resize the calendar when the window is resized
+                initialView={view} //the view of the calendar, default is week
+                ref={calendarComponentRef} //reference to the calendar
+                weekends={settings.ShowWeekends} //show weekends
+                firstDay={firstDayOfWeek()} //first day of the week
+                longPressDelay={1000} //long press delay to drag and drop
+                slotMinTime={settings.BeginTimeDay} //start time of the day
+                slotMaxTime={settings.EndTimeDay} //end time of the day
+                timeZone="local" //timezone
+                nowIndicator={true} //show the current time indicator
 
-                        ]}
-                        // defaultView="timeGridWeek"
-                        height="89%"
-                        eventBackgroundColor="#4c7987"
-                        eventBorderColor="#ffffff00"
-                        headerToolbar={false}
-                        weekNumbers={false}
-                        editable={true}
-                        selectable={true}
-                        selectMirror={true}
-                        dayMaxEvents={true}
+                //custom classes
+                viewClassNames={styles.moreLinkClassNames}
+                dayHeaderClassNames={`${styles.dayHeaderClassNames}`}
+                eventClassNames={styles.eventClassNames}
 
-                        handleWindowResize={true}
-                        initialView={view}
-                        ref={calendarComponentRef}
-                        weekends={settings.ShowWeekends}
-                        firstDay={firstDayOfWeek()}
-                        longPressDelay={1000}
-                        // slotMinTime={settings.BeginTimeDay}
-                        // slotMaxTime={settings.EndTimeDay}
+                //custom events
+                select={
+                    function (arg) {
+                        select(arg);
+                    }
+                }
 
-                        select={
-                            function (arg) {
-                                select(arg);
-                            }
+                //custom event click
+                eventClick={
+                    function (arg) {
+                        eventClick(arg)
+                    }
+                }
+
+                //custom event change (drag and drop)
+                eventChange={
+                    function (arg) {
+                        eventChange(arg)
+                    }
+                }
+
+                navLinkDayClick={
+                    function (arg) {
+                        navLinkDayClick(arg)
+                    }
+                }
+
+                //custom event content and styles (time, title, icon)
+                eventContent={
+                    function (arg) {
+                        if (monthViewWeeknumber === false) {
+                            return eventContent(arg)
                         }
+                    }
+                }
 
-                        eventClick={
-                            function (arg) {
-                                eventClick(arg)
-                            }
-                        }
+                //custom header content and styles (weathers, day name, day date)
+                dayHeaderContent={
+                    function (arg) {
+                        return dayHeaderContent(arg)
+                    }
+                }
 
-                        eventChange={
-                            function (arg) {
-                                eventChange(arg)
-                            }
-                        }
-
-                        eventContent={
-                            function (arg) {
-                                if (monthViewWeeknumber === false) {
-                                    return eventContent(arg)
-                                }
-                            }
-                        }
-                        timeZone={settings.time_zone}
-                        nowIndicator={true}
-                        // initialDate={moment.tz(new Date(), settings.time_zone).format("YYYY-MM-DD")}
-
-                        // nowIndicator={
-                        //     function (arg) {
-                        //         return
-                        //     }
-                        // }
-
-                        now={
-                            function () {
-                                return new Date()
-                            }
-                        }
-                        viewClassNames={styles.moreLinkClassNames}
-
-
-
-
-
-                        slotLabelFormat={
-                            function (arg) {
-                                return slotLabelFormat(arg)
-                            }
-                        }
-
-
-
-                        dayHeaderClassNames={`${styles.dayHeaderClassNames}`}
-                        //add class to the presentation of the day
-
-                        dayHeaderContent={
-                            function (arg) {
-                                return dayHeaderContent(arg)
-                            }
-                        }
-
-                        eventClassNames={styles.eventClassNames}
-                        events={
-                            events
-                        }
-
-
-
-                    />
-                    :
-                    null
-            }
-
+                // Events to show in the calendar
+                events={
+                    events
+                }
+            />
         </>
     )
 }
-
-
-
-
-           // [
-                            //     {
-                            //         title: '😀 event 1',
-                            //         start: '2023-01-20 10:00:00',
-                            //         end: '2023-01-20 11:00:00',
-                            //         allDay: false,
-                            //         backgroundColor: '#000000',
-                            //         //add icon to the event title
-
-
-                            //         daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-                            //         startTime: '10:00',
-                            //         endTime: '11:00',
-
-
-
-
-
-                            //     },
-                            // ]
