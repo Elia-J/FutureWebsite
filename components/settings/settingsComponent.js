@@ -9,12 +9,14 @@ import AccountSettings from '/components/settings/Account'
 import GeneralSettings from '/components/settings/General'
 import CalendarSettings from '/components/settings/CalendarSetting'
 import WeatherSettings from '/components/settings/weatherSettings'
+import TasksSetting from '/components/settings/TasksSetting'
 
 //icons
 import CloseIcon from "/public/close.svg"
 import Account from "/public/Profile.svg"
 import General from "/public/Settings.svg"
 import Calendar from "/public/Calendar.svg"
+import Tasks from "/public/Tasks.svg"
 import Weather from "/public/Weather.svg"
 
 //global state
@@ -64,6 +66,23 @@ export default function Setting() {
     //Get data from database
     async function GetProfileData() {
 
+            if (data) {
+                const dataFromDatabase = {
+                    //variable name : name in data
+                    FullName: data[0].full_name,
+                    UserName: data[0].username,
+                    Website: data[0].website,
+                    Theme: data[0].mode,
+                    syncTheme: data[0].syncTheme,
+                    FirstDayOfTheWeek: data[0].firstDayOfWeek,
+                    TimeZone: data[0].timeZone,
+                    removeCheckedTasks: data[0].removeCheckedTasks,
+                    BeginTimeDay: data[0].BeginTimeDay,
+                    EndTimeDay: data[0].EndTimeDay,
+                    ShowWeekends: data[0].ShowWeekends,
+                    showTimeForTasks: data[0].showTimeForTasks,
+                    avatar_url: data[0].avatar_url
+                }
         setIsLoading(true)
 
         const { data, error } = await supabase
@@ -157,6 +176,13 @@ export default function Setting() {
                 mode: settings.Theme,
                 syncTheme: settings.syncTheme,
                 firstDayOfWeek: settings.FirstDayOfTheWeek,
+                timeZone: settings.TimeZone,
+                removeCheckedTasks: settings.removeCheckedTasks,
+                BeginTimeDay: settings.BeginTimeDay,
+                EndTimeDay: settings.EndTimeDay,
+                ShowWeekends: settings.ShowWeekends,
+                showTimeForTasks: settings.showTimeForTasks,
+                avatar_url: settings.filepath,
                 time_zone: settings.time_zone,
                 BeginTimeDay: settings.BeginTimeDay,
                 EndTimeDay: settings.EndTimeDay,
@@ -301,6 +327,18 @@ export default function Setting() {
         setAi(false);
     }
 
+    //handle tasks, show tasks settings
+    const handleTasks = () => {
+
+        setAccount(false);
+        setGeneral(false);
+        setCalendarSettings(false);
+        setTasksSettings(true);
+        setNotesSettings(false);
+        setAi(false);
+
+    }
+
     //handle WeatherSettings, show WeatherSettings
     const handleWeather = () => {
         setAccount(false);
@@ -329,8 +367,11 @@ export default function Setting() {
         if (weatherSettings) {
             setData(<WeatherSettings />)
         }
+        if (tasksSettings) {
+            setData(<TasksSetting />)
+        }
 
-    }, [account, general, calendarSettings, weatherSettings])
+    }, [account, general, calendarSettings, weatherSettings, tasksSettings])
 
 
     return (
@@ -351,9 +392,8 @@ export default function Setting() {
                             <ButtonWithIcon icon={<Account />} text="Account" onClick={handleAccount} active={account} />
                             <ButtonWithIcon icon={<General />} text="General" onClick={handleGeneral} active={general} />
                             <ButtonWithIcon icon={<Calendar />} text="Calendar" onClick={handleCalendar} active={calendarSettings} />
+                            <ButtonWithIcon icon={<Tasks />} text="Tasks" onClick={handleTasks} active={tasksSettings} />
                             <ButtonWithIcon icon={<Weather />} text="Weather" onClick={handleWeather} active={weatherSettings} />
-
-
                         </div>
 
                     </div>
@@ -448,4 +488,4 @@ export default function Setting() {
         </div>
     )
 }
-
+}

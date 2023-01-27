@@ -1,11 +1,12 @@
 import styles from "../../../styles/notes.module.scss";
 import React, { useState, useEffect } from "react";
 import ListOfNotes from '../../../components/listOfNotes'
-import LoadingLine from '/components/loadingLine'
+import Image from 'next/image'
 
 import { useRouter } from "next/router";
 import AppLayout from "/layouts/appLayout"
 import { useSession } from "@supabase/auth-helpers-react";
+import LoadingLine from '/components/loadingLine'
 
 import Ai from "/components/ai"
 

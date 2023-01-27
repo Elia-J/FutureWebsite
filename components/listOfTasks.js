@@ -4,28 +4,11 @@ import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-r
 import styles from "/styles/task.module.scss"
 import Check from "/public/Check.svg"
 import Image from 'next/image'
+import { useStateStoreContext } from "/layouts/stateStore"
 
 export default function ListOfTasks({reload}) {
-    const session = useSession()
     const supabase = useSupabaseClient()
-    const user = useUser()
-
-    //Get the usersettings from database on page load
-    async function GetUserSettings() {
-        const { data, error } = await supabase
-            .from('profiles')
-            .select(`removeCheckedTasks, showTimeForTasks`)
-            .eq('id', user.id)
-            .single()
-
-        if (error) {
-            console.log(error)
-        }
-        if (data) {
-            setRemoveCheckedTasks(data.removeCheckedTasks)
-            setShowTimeForTasks(data.showTimeForTasks)
-        }
-    }
+    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy] = useStateStoreContext();
 
     // Function that changes the checked boolean from a given task to their opposite value
     async function CheckToggleSupabase(value, id) {
@@ -68,7 +51,7 @@ export default function ListOfTasks({reload}) {
             setSelectedTasks(tasks)
         }
         else if (selecter == "Scheduled") {
-            tasks.map(function (task) {
+            tasks.map(function (task, i) {
                 if(task.date != null) {
                     selectedTasksList.push(task)
                 }
@@ -76,7 +59,7 @@ export default function ListOfTasks({reload}) {
             setSelectedTasks(selectedTasksList)
         }
         else if (selecter == "NonScheduled") {
-            tasks.map(function (task) {
+            tasks.map(function (task, i) {
                 if(task.date == null) {
                     selectedTasksList.push(task)
                 }
@@ -118,6 +101,12 @@ export default function ListOfTasks({reload}) {
         }
         else if(sorter == "PriorityDescending") {
             PriorityDescending(selectedTasks)
+        }
+        else if(sorter == "CreatedAtAscending") {
+            CreatedAtAscending(selectedTasks)
+        }
+        else if(sorter == "CreatedAtDescending") {
+            CreatedAtDescending(selectedTasks)
         }
         CheckedSorter(selectedTasks)
     }
@@ -210,10 +199,29 @@ export default function ListOfTasks({reload}) {
         })
     }
 
+    // Function that sorts all selectedTasks by date of creation in ascending order
+    function CreatedAtAscending(selectedTasks) {
+        selectedTasks = selectedTasks.sort(function (taskX, taskY) {
+            console.log(taskX.created_at + taskY.created_at)
+            if (taskX.created_at == taskY.created_at) {return 0}
+            else if (taskX.created_at > taskY.created_at) {return 1}
+            else {return -1}
+        })
+    }
+
+    // Function that sorts all selectedTasks by date of creation in ascending order
+    function CreatedAtDescending(selectedTasks) {
+        selectedTasks = selectedTasks.sort(function (taskX, taskY) {
+            if (taskX.created_at == taskY.created_at) {return 0}
+            else if (taskX.created_at > taskY.created_at) {return -1}
+            else {return 1}
+        })
+    }
+
     // Function that moves all checked selectedTasks to the end of the selectedTasks array
     // Or a function that removes all checked selectedTasks from the database if removeCheckedTasks is activated via the usersettings
     function CheckedSorter(selectedTasks) {
-        if(removeCheckedTasks) {
+        if(settings.removeCheckedTasks) {
             let numRemovedTasks = 0
             selectedTasks.map((task) => (
                 task.checked ? DiscardTask(task) && numRemovedTasks++ : null
@@ -239,7 +247,7 @@ export default function ListOfTasks({reload}) {
             .eq('id', task.id)
     }
 
-    // Function that returns either all scheduled tasks or a text indicating that there are currently no scheduled tasks
+    // Function that returns either all scheduled tasks or a text indicating that there are currently no tasks
     function Tasks(selectedTasks) {
         if (selectedTasks.length == 0) {
             return <h3 className={styles.h3}>You currently don&apos;t have any tasks</h3>
@@ -261,13 +269,13 @@ export default function ListOfTasks({reload}) {
                         </span>
                     </div>
                     <div className={styles.taskPart}>
-                        <span className={styles.taskDate}>{showTimeForTasks ? task.time : task.date}</span>
+                        <span className={styles.taskDate}>{settings.showTimeForTasks ? task.time : task.date}</span>
                         <span className={styles.operatorSign} onClick={() => UpdateExpandedSupabase(!task.expanded, task.id)}>{task.expanded ? '-' : '+'}</span>
                     </div>
                 </div>
                 <div className={task.expanded ? (task.checked ? `${styles.taskExtension} ${styles.taskChecked} ${styles.task}` : `${styles.taskExtension} ${styles.task}`) : styles.taskCollapsed}>
                     <span className={styles.taskDescription}>{task.description}</span>
-                    <span className={`${styles.taskExtendedDate} ${styles.taskDate}`}>{showTimeForTasks ? task.date : task.time}</span>
+                    <span className={`${styles.taskExtendedDate} ${styles.taskDate}`}>{settings.showTimeForTasks ? task.date : task.time}</span>
                 </div>
             </section>
         )))
@@ -277,11 +285,9 @@ export default function ListOfTasks({reload}) {
     const [selectedTasks, setSelectedTasks] = useState([])
     const [selecter, setSelecter] = useState("All")
     const [sorter, setSorter] = useState("AlphabeticalAscending")
-    const [removeCheckedTasks, setRemoveCheckedTasks] = useState(null)
-    const [showTimeForTasks, setShowTimeForTasks] = useState(null)
 
     useEffect(() => {
-        GetTasks(), GetUserSettings()
+        GetTasks()
     }, [reload])
 
     useEffect(() => {
@@ -293,13 +299,17 @@ export default function ListOfTasks({reload}) {
         <main className={styles.mainContainer}>
             <div className={styles.selecterContainer}>
                 <button className={selecter == "All" ? `${styles.selecterButton} ${styles.selecterButtonSelected}` : styles.selecterButton} 
-                onClick={(event) => setSelecter("All")}>All <Image alt="sort" src="/sort.svg" width={25} height={25}/></button>
+                onClick={(event) => setSelecter("All")}>
+                All <Image className={selecter == "All" ? styles.whiteSort : null} alt="sort" src="/sort.svg" width={25} height={25}/></button>
                 <button className={selecter == "Scheduled" ? `${styles.selecterButton} ${styles.selecterButtonSelected}` : styles.selecterButton} 
-                onClick={(event) => setSelecter("Scheduled")}>Scheduled <Image alt="sort" src="/sort.svg" width={25} height={25}/></button>
+                onClick={(event) => setSelecter("Scheduled")}>
+                Scheduled <Image className={selecter == "Scheduled" ? styles.whiteSort : null} alt="sort" src="/sort.svg" width={25} height={25}/></button>
                 <button className={selecter == "NonScheduled" ? `${styles.selecterButton} ${styles.selecterButtonSelected}` : styles.selecterButton} 
-                onClick={(event) => setSelecter("NonScheduled")}>Not Scheduled <Image alt="sort" src="/sort.svg" width={25} height={25}/></button>
+                onClick={(event) => setSelecter("NonScheduled")}>
+                Not Scheduled <Image className={selecter == "NonScheduled" ? styles.whiteSort : null} alt="sort" src="/sort.svg" width={25} height={25}/></button>
                 <button className={selecter == "Completed" ? `${styles.selecterButton} ${styles.selecterButtonSelected}` : styles.selecterButton} 
-                onClick={(event) => setSelecter("Completed")}>Completed <Image alt="sort" src="/sort.svg" width={25} height={25}/></button>
+                onClick={(event) => setSelecter("Completed")}>
+                Completed <Image className={selecter == "Completed" ? styles.whiteSort : null} alt="sort" src="/sort.svg" width={25} height={25}/></button>
             </div>
             <div className={styles.tasksContainer}>
                 <div className={styles.comboBoxAndH3Container}>
@@ -307,12 +317,14 @@ export default function ListOfTasks({reload}) {
                     <select className={styles.select} onChange={(event) => setSorter(event.target.value)}>
                         <option value="AlphabeticalAscending">Alphabetical (a-z)</option>
                         <option value="AlphabeticalDescending">Alphabetical (z-a)</option>
-                        <option value="DateAscending">Date Ascending</option>
-                        <option value="DateDescending">Date Descending</option>
-                        <option value="TimeAscending">Time Ascending</option>
-                        <option value="TimeDescending">Time Descending</option>
-                        <option value="PriorityAscending">Priority Ascending</option>
-                        <option value="PriorityDescending">Priority Descending</option>
+                        <option value="DateAscending">Date (ascending)</option>
+                        <option value="DateDescending">Date (descending)</option>
+                        <option value="TimeAscending">Time (ascending)</option>
+                        <option value="TimeDescending">Time (descending)</option>
+                        <option value="PriorityAscending">Priority (ascending)</option>
+                        <option value="PriorityDescending">Priority (descending)</option>
+                        <option value="CreatedAtAscending">Created At (ascending)</option>
+                        <option value="CreatedAtDescending">Created At (descending)</option>
                     </select>
                 </div>
                 <hr className={styles.hr}></hr>
