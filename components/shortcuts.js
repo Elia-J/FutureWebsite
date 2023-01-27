@@ -58,7 +58,9 @@ export default function Shortcuts() {
     return (
         <div id="shortcutsHolder">
 
+
             <div className={styles.shortcutsPanel} ref={shortcuts}>
+
                 <div className={styles.shortcutsPanelHeader}>
 
                     <h3 className={styles.shortcutsPanelTitle}>Shortcuts</h3>
@@ -79,6 +81,7 @@ export default function Shortcuts() {
                 </div>
 
             </div>
-        </div>
+
+        </div >
     )
 }
