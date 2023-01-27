@@ -29,6 +29,10 @@
 ## About
 
 This is a Next.js web application that uses a Supabase database and is hosted on Vercel. You can view the live demo at [https://future-website.vercel.app/](https://future-website.vercel.app/).
+
+[Project vision](<https://github.com/Elia-J/FutureWebsite/blob/main/Team%5B19%5D_Vision_SP%5B1%5D%20(1).pdf>) <br/>
+[MidTerm Report](https://github.com/Elia-J/FutureWebsite/blob/main/Team%5B19%5D_Report.pdf)
+
 </br></br>
 
 ## Libraries and Frameworks
