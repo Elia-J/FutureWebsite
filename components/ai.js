@@ -33,7 +33,6 @@ export default function AuseStatei({ type }) {
         setNotesData(data.choices[0].text)
         setLoadingNotes(false)
     }
-    console.log(notesData)
 
     //Tasks
     const [tasksAIinput, setTasksAIinput] = useState('')
