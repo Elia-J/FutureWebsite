@@ -7,10 +7,8 @@ import { useStateStoreContext } from "/layouts/stateStore"
 
 //theme
 import { useTheme } from 'next-themes'
-import { request } from 'http'
 
 export default function General() {
-
 
     //moment-timezone
     const moment = require('moment-timezone');
@@ -18,12 +16,12 @@ export default function General() {
     //variables
     const [dataAndTime, setDataAndTime] = useState()
 
-    //generate a list of time zones using moment-timezone only names
-
+    //List of time zones
     const timeZonesFromMoment = moment.tz.names();
-    //time zones 2 get from https://fullcalendar.io/api/demo-feeds/timezones.json
 
 
+    //global variables
+    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel] = useStateStoreContext();
 
     const { theme, setTheme } = useTheme()
 
@@ -31,102 +29,18 @@ export default function General() {
     const [removeCheckedTasks, setRemoveCheckedTasks] = useState()
     const [showTimeForTasks, setShowTimeForTasks] = useState()
     const [timeZone, setTimeZone] = useState('')
-    const [firstDayOfWeek, setFirstDayOfWeek] = useState('')
 
-
-    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel] = useStateStoreContext();
 
     //change theme by clicking on dropdown menu in settings
     function changeTheme(e) {
         setTheme(e.target.value)
     }
 
-
-    //using moment-timezone to get the current time and date
+    //using moment-timezone to get the current time and date based on the time zone
     function getDataAndTime() {
         const date = moment().tz(`${settings.time_zone}`).format('MMMM Do YYYY, h:mm:ss a');
         setDataAndTime(date)
     }
-
-
-    //Get data from database on page load
-    async function GetData() {
-        const { data, error } = await supabase
-            .from('profiles')
-            .select(`syncTheme , timeZone, firstDayOfWeek, mode, removeCheckedTasks, showTimeForTasks`)
-            .eq('id', user.id)
-            .single()
-
-        if (error) {
-            console.log(error)
-        }
-        if (data) {
-            setCheckboxThemeSync(data.syncTheme)
-            setTimeZone(data.timeZone)
-            setRemoveCheckedTasks(data.removeCheckedTasks)
-            setShowTimeForTasks(data.showTimeForTasks)
-            console.log(data.timeZone)
-            // setFirstDayOfWeek(data.firstDayOfWeek)
-            // setTheme(data.mode)
-        }
-
-    }
-
-
-    //update boolean value in database
-    async function updateThemeBoolean() {
-        const { data, error } = await supabase
-            .from('profiles')
-            .update({ syncTheme: !checkboxThemeSync })
-            .eq('id', user.id)
-        if (error) {
-            console.log(error)
-            toast.error(error.message)
-        }
-        if (data) {
-            console.log(data)
-            toast.success('Theme sync updated')
-        }
-
-    }
-
-    //update time zone in database
-    // async function UpdateTimeZone(e) {
-    //     const { data, error } = await supabase
-    //         .from('profiles')
-    //         .update({ timeZone: e })
-    //         .eq('id', user.id)
-
-    //     if (error) {
-    //         console.log(error)
-    //     }
-    //     else {
-    //         console.log(data)
-    //     }
-    // }
-
-    //updat theme in database
-    // async function UpdateTheme(e) {
-    //     const { data, error } = await supabase
-    //         .from('profiles')
-    //         .update({ mode: e })
-    //         .eq('id', user.id)
-
-    //     if (error) {
-    //         toast.error(error.message)
-    //     }
-    //     else {
-    //         toast.success('Theme updated', {
-    //             iconTheme: {
-    //                 primary: '#4C7987',
-    //                 secondary: '#ffffff',
-    //             }
-    //         });
-    //     }
-
-
-    // }
-
 
     //update removeCheckedTasks in database
     async function UpdateRemoveCheckedTasks(e) {
@@ -162,12 +76,6 @@ export default function General() {
         console.log(checkboxThemeSync)
     }
 
-    //note done yet
-    // useEffect(() => {
-    //     if (checkboxThemeSync == true) {
-    //         UpdateTheme(theme)
-    //     }
-    // }, [theme, changeTheme, checkboxThemeSync])
 
     useEffect(() => {
         getDataAndTime()
@@ -184,13 +92,14 @@ export default function General() {
     return (
         <SettingsLayout title="General">
 
-
             <div className={styles.optionsVertical}>
 
                 <div className={styles.details}>
 
                     <div className={styles.minititle}>Time Zone</div>
-                    <div className={styles.discription}>Your time zone is used to display the time in your calendar.</div>
+                    <div className={styles.discription}>Your time zone is used to display the time in your calendar. <br />PLEASE NOTE:
+                        This feature is currently in development. The calendar time zone is set to your browser time zone by default.</div>
+
 
                 </div>
 
@@ -208,20 +117,8 @@ export default function General() {
 
                 </select>
                 <p className={styles.dateAndTime}>{dataAndTime} </p>
-                {/* {
-                    timeZones.map((zone, i) => (
-                        <option key={i}
-                            value={zone}
-                        >
-                            {zone}
-                        </option>
-                    ))
-
-
-                } */}
 
             </div>
-
 
             <div className={styles.optionsVertical}>
 
@@ -294,7 +191,6 @@ export default function General() {
                     <label htmlFor="showTimeToggle" className={styles.toggleLabel}></label>
                 </div>
             </div>
-
 
         </SettingsLayout >
     )
