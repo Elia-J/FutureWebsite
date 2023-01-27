@@ -11,6 +11,9 @@ export function EventProvider({ children }) {
         id: "",
         title: "",
         description: "",
+        allDay: false,
+
+        //style
         backgroundColor: "#4c7987",
         icon: "",
 
@@ -21,11 +24,8 @@ export function EventProvider({ children }) {
         endTime: "",
 
         //repeat
-        allDay: false,
+        activeRecur: false,
         daysOfWeek: [],
-        startTime: "",
-        endTime: "",
-
     })
 
     return (
