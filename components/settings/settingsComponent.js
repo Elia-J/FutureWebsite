@@ -28,6 +28,7 @@ import { useTheme } from 'next-themes'
 
 //toast
 import toast, { Toaster } from 'react-hot-toast';
+import { useRouter } from 'next/router'
 
 
 export default function Setting() {
@@ -37,6 +38,7 @@ export default function Setting() {
     const session = useSession()
     const user = useUser()
 
+    const router = useRouter()
 
     //global state/variables
     const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel] = useStateStoreContext();
@@ -189,51 +191,45 @@ export default function Setting() {
         }
     }
 
-
     //handleDeleteAccount
     async function handleDeleteAccount() {
 
-        const { data, error } = await supabase.auth.getSession()
+        const { error: errorPic, data: dataPic } = await supabase.storage
+            .from('avatars')
+            .remove([`${user.id}.jpg`, `${user.id}.png`, `${user.id}.jpeg`, `${user.id}.gif`, `${user.id}.webp`, `${user.id}.svg`, `${user.id}.jfif`, `${user.id}.bmp`, `${user.id}.tiff`, `${user.id}.ico`, `${user.id}.webp`])
 
+
+        const { data, error } = await supabase.auth.getSession()
         if (error) {
             console.log(error)
         }
-
         else {
-
-            //make a request to the api/deleteUser route with body of the user id
-            const response = await ('/api/deleteUser', {
+            const responses = await fetch('/api/deleteUser', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(
-                    {
-                        access_token: data.session.access_token
-                    }
-                ),
+                body: JSON.stringify({
+                    access_token: data.session.access_token
+                }),
             })
 
-            //console log the response message
-            const responseMessage = await response.json()
+            const response = await responses.json()
 
-            if (responseMessage.message === "User deleted") {
-                toast.success('Account deleted', {
+            if (response.error) {
+                toast.error(response.error)
+            }
+            else if (response.message === "User deleted") {
+                toast.success(
+                    'Account deleted', {
                     iconTheme: {
                         primary: '#4C7987',
                         secondary: '#ffffff',
                     }
-                });
-
+                })
+                router.push('/')
                 //sign out the user
                 const { error } = await supabase.auth.signOut()
-                if (error) {
-                    console.log(error)
-                }
-                else {
-                    //redirect to the home page
-                    router.push("/")
-                }
             }
         }
     }
