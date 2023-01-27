@@ -19,6 +19,7 @@ import Shortcut from "/public/shortcut.svg"
 import { useTheme } from 'next-themes'
 
 
+
 export default function DropdownApp({ settingsState }) {
 
     //supabase
@@ -31,7 +32,7 @@ export default function DropdownApp({ settingsState }) {
     const [collapse, setCollapse] = useState(true);
     const dropdownIteam = collapse ? `${styles.dropdownListClose} ${styles.dropdownList}` : `${styles.dropdownListOpen} ${styles.dropdownList}`;
 
-    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy] = useStateStoreContext();
+    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel] = useStateStoreContext();
 
     //sign out function
     async function handleSignOut() {
@@ -46,47 +47,61 @@ export default function DropdownApp({ settingsState }) {
         }
     }
 
+    async function updateThemeIndatabase(theme1) {
+        const { error } = await supabase
+            .from('profiles')
+            .update({ mode: theme1 })
+            .eq('id', user.id)
+        if (error) {
+            console.log(error)
+        }
 
-
-
+    }
 
     //theme change, click counter until 3
     const { theme, setTheme } = useTheme()
-    const [count, setcount] = useState(1)
+    let count
+
+    function themeToNumber() {
+        if (theme == "light") {
+            count = 1
+        }
+        else if (theme == "dark") {
+            count = 2
+        }
+        else if (theme == "system") {
+            count = 3
+        }
+    }
+
+    themeToNumber()
 
     function counter() {
-
         if (count < 3) {
-            setcount(count + 1)
+            count++
             handleTheme()
         }
         else {
-            setcount(1)
+            count = 1
             handleTheme()
         }
-
     }
 
     //function handle theme
     function handleTheme() {
-
-        switch (count) {
-            case 1:
-                setTheme('light')
-                break;
-            case 2:
-                setTheme('dark')
-                break;
-            case 3:
-                setTheme('system')
-                break;
-            default:
-                setTheme('light')
-                break;
+        if (count == 1) {
+            setTheme("light")
+            updateThemeIndatabase("light")
         }
-
+        else if (count == 2) {
+            setTheme("dark")
+            updateThemeIndatabase("dark")
+        }
+        else if (count == 3) {
+            setTheme("system")
+            updateThemeIndatabase("system")
+        }
     }
-
 
 
     return (
@@ -100,7 +115,7 @@ export default function DropdownApp({ settingsState }) {
             }
             >
                 <Image
-                    src={settings.avatar_url.includes("http") ? settings.avatar_url : settings.profileImageUrl}
+                    src={settings.avatar_url}
                     alt="Profile Image"
                     fill
                     className={styles.image}

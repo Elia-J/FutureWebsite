@@ -38,19 +38,18 @@ a {
   height: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--Special-7);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgb(186 186 186);
+  background: var(--Special-8);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(56, 56, 56);
+  background: var(--Special-9);
 }
 
-.calendar2 .fc-daygrid-day-number {
-  background-color: aqua;
-}
+// rgb(97 97 97)
+// #121212
 
 @media (max-width: 1199.98px) {
 }

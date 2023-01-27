@@ -3,37 +3,24 @@ import styles from "/styles/navbar.module.scss"
 import LogoAndName from "/components/logoAndName.js";
 import Link from 'next/link'
 
-export default function navbar({ about }) {
+export default function navbar({ about, back }) {
     // So that we can check if you are on the about page and only have to return two different <li> instead of the whole <ul>
-    const data = [1]
     return (
         <ul className={styles.nav}>
             <div className={styles.left}>
                 <li className={`${styles.logo}`}>
                     <LogoAndName />
                 </li>
-                {data.map(() => {
-                    if (about) {
-                        return (
-                            <li key={1}
-                                className={`${styles.About} ${styles.active}`}>
-                                <Link className={`${styles.listNav}`} href="/about">
-                                    About
-                                </Link>
-                            </li>
-                        )
-                    }
-                    return (
-                        <li key={1}
-                            className={`${styles.About}`}>
-                            <Link className={`${styles.listNav}`} href="/about">
-                                About
-                            </Link>
-                        </li>
-                    )
-                })
+                <li
+                    // If your on the about page, it will toggle the active class to show that you're on the about page.
+                    className={about ? `${styles.About} ${styles.active}` : styles.About}>
+                    <Link className={`${styles.listNav}`} href="/about">
+                        About
+                    </Link>
+                </li>
+                {
+                    back ? <li><Link className={styles.listNav} href="/app/note">Back</Link></li> : console.log('')
                 }
-
             </div>
 
             <div className={`${styles.right}`}>

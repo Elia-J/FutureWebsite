@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import SettingsLayout from '../../layouts/settingsLayout'
 import styles from '/styles/general.module.scss'
-import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react'
-import toast, { Toaster } from 'react-hot-toast';
 
 //global variable
 import { useStateStoreContext } from "/layouts/stateStore"
@@ -11,149 +9,79 @@ import { useStateStoreContext } from "/layouts/stateStore"
 import { useTheme } from 'next-themes'
 
 export default function General() {
-    const supabase = useSupabaseClient()
-    const session = useSession()
-    const user = useUser()
 
-    const timeZones = Intl.supportedValuesOf('timeZone')
+    //moment-timezone
+    const moment = require('moment-timezone');
+
+    //variables
+    const [dataAndTime, setDataAndTime] = useState()
+
+    //List of time zones
+    const timeZonesFromMoment = moment.tz.names();
+
+
+    //global variables
+    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel] = useStateStoreContext();
 
     const { theme, setTheme } = useTheme()
+
     const [checkboxThemeSync, setCheckboxThemeSync] = useState(false)
     const [timeZone, setTimeZone] = useState('')
-    const [firstDayOfWeek, setFirstDayOfWeek] = useState('')
 
-    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy] = useStateStoreContext();
 
     //change theme by clicking on dropdown menu in settings
     function changeTheme(e) {
         setTheme(e.target.value)
     }
 
-
-    //Get data from database on page load
-    async function GetData() {
-        const { data, error } = await supabase
-            .from('profiles')
-            .select(`syncTheme , timeZone, firstDayOfWeek, mode`)
-            .eq('id', user.id)
-            .single()
-
-        if (error) {
-            console.log(error)
-        }
-        if (data) {
-            setCheckboxThemeSync(data.syncTheme)
-            setTimeZone(data.timeZone)
-            setRemoveCheckedTasks(data.removeCheckedTasks)
-            setShowTimeForTasks(data.showTimeForTasks)
-            console.log(data.timeZone)
-            // setFirstDayOfWeek(data.firstDayOfWeek)
-            // setTheme(data.mode)
-        }
-
+    //using moment-timezone to get the current time and date based on the time zone
+    function getDataAndTime() {
+        const date = moment().tz(`${settings.time_zone}`).format('MMMM Do YYYY, h:mm:ss a');
+        setDataAndTime(date)
     }
-
-
-    //update boolean value in database
-    async function updateThemeBoolean() {
-        const { data, error } = await supabase
-            .from('profiles')
-            .update({ syncTheme: !checkboxThemeSync })
-            .eq('id', user.id)
-        if (error) {
-            console.log(error)
-            toast.error(error.message)
-        }
-        if (data) {
-            console.log(data)
-            toast.success('Theme sync updated')
-        }
-
-    }
-
-    //update time zone in database
-    // async function UpdateTimeZone(e) {
-    //     const { data, error } = await supabase
-    //         .from('profiles')
-    //         .update({ timeZone: e })
-    //         .eq('id', user.id)
-
-    //     if (error) {
-    //         console.log(error)
-    //     }
-    //     else {
-    //         console.log(data)
-    //     }
-    // }
-
-    //updat theme in database
-    // async function UpdateTheme(e) {
-    //     const { data, error } = await supabase
-    //         .from('profiles')
-    //         .update({ mode: e })
-    //         .eq('id', user.id)
-
-    //     if (error) {
-    //         toast.error(error.message)
-    //     }
-    //     else {
-    //         toast.success('Theme updated', {
-    //             iconTheme: {
-    //                 primary: '#4C7987',
-    //                 secondary: '#ffffff',
-    //             }
-    //         });
-    //     }
-
-
-    // }
-
-    function lg() {
-        console.log(checkboxThemeSync)
-    }
-
-    //note done yet
-    // useEffect(() => {
-    //     if (checkboxThemeSync == true) {
-    //         UpdateTheme(theme)
-    //     }
-    // }, [theme, changeTheme, checkboxThemeSync])
 
     useEffect(() => {
-        GetData()
-    }, [])
+        getDataAndTime()
+
+        const interval = setInterval(() => {
+            getDataAndTime()
+        }
+            , 1000);
+        return () => clearInterval(interval);
+
+    }, [settings.time_zone])
+
 
     return (
         <SettingsLayout title="General">
-
 
             <div className={styles.optionsVertical}>
 
                 <div className={styles.details}>
 
                     <div className={styles.minititle}>Time Zone</div>
-                    <div className={styles.discription}>Your time zone is used to display the time in your calendar.</div>
+                    <div className={styles.discription}>Your time zone is used to display the time in your calendar. <br />PLEASE NOTE:
+                        This feature is currently in development. The calendar time zone is set to your browser time zone by default.</div>
+
 
                 </div>
 
                 <select name="timeZone" id="timeZone" className={styles.select}
-                    onChange={(e) => { setSettings({ ...settings, TimeZone: e.target.value }) }}
+                    onChange={(e) => { setSettings({ ...settings, time_zone: e.target.value }) }}
                 >
-
-                    <option value="Local" selected={"Local" === `${settings.TimeZone}` ? "selected" : null}>Local</option>
-                    {timeZones.map((zone) => (
+                    {timeZonesFromMoment.map((zone) => (
                         <option key={zone}
                             value={zone}
-                            selected={zone === `${settings.TimeZone}` ? "selected" : null}
+                            selected={zone === `${settings.time_zone}` ? "selected" : null}
                         >
                             {zone}
                         </option>
                     ))}
 
                 </select>
+                <p className={styles.dateAndTime}>{dataAndTime} </p>
 
             </div>
-
 
             <div className={styles.optionsVertical}>
 
@@ -200,8 +128,6 @@ export default function General() {
 
             </div>
             <Toaster position="bottom-right" reverseOrder={false} />
-
-
         </SettingsLayout >
     )
 }

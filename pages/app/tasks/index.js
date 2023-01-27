@@ -53,8 +53,8 @@ export default function Tasks() {
     // Create a new folder in supabase
     async function CreateFolderSupabase() {
         const { data, error } = await supabase
-                .from('todosFolders')
-                .insert({ user_id: user.id, title: folderTitle})
+            .from('todosFolders')
+            .insert({ user_id: user.id, title: folderTitle })
         GetFoldersSupabase()
         setFolderTitle("")
     }
@@ -83,7 +83,7 @@ export default function Tasks() {
         if (taskDate.getFullYear === nullDate.getFullYear && taskTime.getFullYear === nullDate.getFullYear) {
             const { data, error } = await supabase
                 .from('todos')
-                .insert({ user_id: user.id, title: taskTitle, date: null, time: null, description: taskDescription, priority: taskPriority, folder_id: folderID})
+                .insert({ user_id: user.id, title: taskTitle, date: null, time: null, description: taskDescription, priority: taskPriority, folder_id: folderID })
         }
         else if (taskDate.getFullYear === nullDate.getFullYear) {
             const { data, error } = await supabase
@@ -289,80 +289,78 @@ export default function Tasks() {
             <div>
                 <div className={creatingTask || editingTask ? styles.blur : null}>
                         <AppLayout>
-                                <div className={styles.body}>
-                                    <div className={openPanel ? `${styles.panel} ${styles.openFolderPanel}` : `${styles.panel} ${styles.closedFolderPanel}`}>
-                                        <div className={`${styles.nav} ${styles.navMargin}`}>
-                                            <button className={styles.mainButton} onClick={CreateTask}>
-                                            <span className={styles.create}>Create </span>
-                                            <span>+</span>
-                                            </button>  
-                                            <button className={AIPanel ? styles.hidden : (openPanel ? `${styles.button} ${styles.openButton}` : styles.button)} onClick={() => setOpenPanel(!openPanel)}>
-                                                {openPanel ? "Close" : "Open"}
-                                            </button>
+                        <div className={styles.body}>
+                                <div className={openPanel ? `${styles.panel} ${styles.openFolderPanel}` : `${styles.panel} ${styles.closedFolderPanel}`}>
+                                    <div className={`${styles.nav} ${styles.navMargin}`}>
+                                        <button className={styles.mainButton} onClick={CreateTask}>
+                                        <span className={styles.create}>Create </span>
+                                        <span>+</span>
+                                        </button>  
+                                        <button className={AIPanel ? styles.hidden : (openPanel ? `${styles.button} ${styles.openButton}` : styles.button)} onClick={() => setOpenPanel(!openPanel)}>
+                                            {openPanel ? "Close" : "Open"}
+                                        </button>
+                                    </div>
+                                    <div className={styles.foldersContainer}>
+                                        <hr className={styles.hr}></hr>
+                                        <div style={{ margin: "15px" }}>
+                                            <input className={`${styles.input} ${styles.folderInput}`}
+                                                id="title"
+                                                type="text"
+                                                name="folderTitle"
+                                                placeholder="Folder Title"
+                                                value={folderTitle}
+                                                required
+                                                onChange={(event) => setFolderTitle(event.target.value)}
+                                            ></input>
+                                            <button className={`${styles.mainButton} ${styles.createFolderMainButton}`} onClick={() => CreateFolderSupabase()}>Create Folder!</button>
                                         </div>
-                                        <div className={styles.foldersContainer}>
-                                            <hr className={styles.hr}></hr>
-                                            <div style={{ margin: "15px" }}>
-                                                <input className={`${styles.input} ${styles.folderInput}`}
-                                                    id="title"
-                                                    type="text"
-                                                    name="folderTitle"
-                                                    placeholder="Folder Title"
-                                                    value={folderTitle}
-                                                    required
-                                                    onChange={(event) => setFolderTitle(event.target.value)}
-                                                ></input>
-                                                <button className={`${styles.mainButton} ${styles.createFolderMainButton}`} onClick={() => CreateFolderSupabase()}>Create Folder!</button>
-                                            </div>
-                                            <hr className={styles.hr}></hr>
-                                            <div className={styles.foldersNav}>
-                                                <h2 className={styles.h2}>Folders</h2>
-                                                <select className={styles.select} onChange={(event) => setFolderSorter(event.target.value)}>
-                                                    <option value="AlphabeticalAscending">Alphabetical (a-z)</option>
-                                                    <option value="AlphabeticalDescending">Alphabetical (z-a)</option>
-                                                    <option value="CreatedAtAscending">Created At (ascending)</option>
-                                                    <option value="CreatedAtDescending">Created At (descending)</option>
-                                                </select>
-                                            </div>
-                                            {folders.map((folder, i) => (
-                                                <div key={i}>
-                                                    <div className={styles.folderContainer}>
-                                                        <div onClick={() => HandleFolderPress(folder.id)} className={selectedFolderID == folder.id ? `${styles.selectedFolderLabel} ${styles.folderLabel}` : styles.folderLabel}>
-                                                            <Image alt="Folder" src="/rich-text-icons-dark/todoFolder.svg" width={25} height={25} /> {folder.title} </div>
-                                                        <button onClick={() => DiscardFolderSupabase(folder.id)}><Image alt="Trashcan" src="/rich-text-icons-dark/trash.svg" width={25} height={25}/></button>
-                                                    </div>
-                                                    {selectedFolderID != folder.id ? null : 
-                                                        <div style={{ marginBottom:20}}> 
-                                                            {folderTasks.map((task, i) => (
-                                                            <div key={i} className={styles.folderTaskContainer}>
-                                                                <div onClick={() => router.push(`/app/tasks/${task.id}`)} className={styles.folderTaskLabel}>
-                                                                    <Image alt="Task" src="/rich-text-icons-dark/todo.svg" width={16} height={16}/> {task.title}</div>
-                                                                <button onClick={() => DiscardTaskFolderSupabase(task.id, folder.id)}>
-                                                                    <Image alt="Trashcan" src="/rich-text-icons-dark/delete-folder.svg" width={19} height={19}/></button>
-                                                            </div>
-                                                        ))}
-                                                        </div>
-                                                    } 
+                                        <hr className={styles.hr}></hr>
+                                        <div className={styles.foldersNav}>
+                                            <h2 className={styles.h2}>Folders</h2>
+                                            <select className={styles.select} onChange={(event) => setFolderSorter(event.target.value)}>
+                                                <option value="AlphabeticalAscending">Alphabetical (a-z)</option>
+                                                <option value="AlphabeticalDescending">Alphabetical (z-a)</option>
+                                                <option value="CreatedAtAscending">Created At (ascending)</option>
+                                                <option value="CreatedAtDescending">Created At (descending)</option>
+                                            </select>
+                                        </div>
+                                        {folders.map((folder, i) => (
+                                            <div key={i}>
+                                                <div className={styles.folderContainer}>
+                                                    <div onClick={() => HandleFolderPress(folder.id)} className={selectedFolderID == folder.id ? `${styles.selectedFolderLabel} ${styles.folderLabel}` : styles.folderLabel}><Image alt="Folder" src="/rich-text-icons-dark/todoFolder.svg" width={25} height={25} /> {folder.title} </div>
+                                                    <button onClick={() => DiscardFolderSupabase(folder.id)}><Image alt="Trashcan" src="/rich-text-icons-dark/trash.svg" width={25} height={25}/></button>
                                                 </div>
-                                            ))}
-                                        </div>
+                                                {selectedFolderID != folder.id ? null : 
+                                                    <div style={{ marginBottom:20}}> 
+                                                        {folderTasks.map((task, i) => (
+                                                        <div key={i} className={styles.folderTaskContainer}>
+                                                            <div onClick={() => router.push(`/app/tasks/${task.id}`)} className={styles.folderTaskLabel}><Image alt="Task" src="/rich-text-icons-dark/todo.svg" width={16} height={16}/> {task.title}</div>
+                                                            <button onClick={() => DiscardTaskFolderSupabase(task.id, folder.id)}><Image alt="Trashcan" src="/rich-text-icons-dark/delete-folder.svg" width={19} height={19}/></button>
+                                                        </div>
+                                                    ))}
+                                                    </div>
+                                                } 
+                                            </div>
+                                        ))}
                                     </div>
-                                                                    
-                                <div className={styles.main}>
-                                    <ListOfTasks reload={reload}></ListOfTasks>
                                 </div>
+                                                                
+                            <div className={styles.main}>
+                                <ListOfTasks reload={reload}></ListOfTasks>
+                            </div>
 
-                                <div className={openPanel ? styles.hidden : (AIPanel ? `${styles.panel} ${styles.openAIPanel}` : `${styles.panel} ${styles.closedAIPanel}`)}>
-                                        <div className={styles.navAI}>
-                                            <button className={AIPanel ? `${styles.button} ${styles.AIButton} ${styles.openAIButton}` : `${styles.button} ${styles.AIButton}`} onClick={() => setAIPanel(!AIPanel)}>
-                                                {AIPanel ? "Close" : "AI Assistance"}
-                                            </button>
-                                        </div>
-                                        <div>
-                                        </div>
+                            <div className={openPanel ? styles.hidden : (AIPanel ? `${styles.panel} ${styles.openAIPanel}` : `${styles.panel} ${styles.closedAIPanel}`)}>
+                                    <div className={styles.navAI}>
+                                        <button className={AIPanel ? `${styles.button} ${styles.AIButton} ${styles.openAIButton}` : `${styles.button} ${styles.AIButton}`} onClick={() => setAIPanel(!AIPanel)}>
+                                            {AIPanel ? "Close" : "AI Assistance"}
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <Ai type="tasks" />
                                     </div>
                                 </div>
-                        </AppLayout>
+                            </div>
+                    </AppLayout>
                 </div>
 
                 <div className={creatingTask || editingTask ? styles.taskForm : `${styles.hiddenTaskForm} ${styles.taskForm}`}>

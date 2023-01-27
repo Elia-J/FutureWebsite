@@ -2,8 +2,10 @@
   //   background-color: aqua;
   margin-top: 15px;
   padding-left: 20px;
-  margin-bottom: 65px;
+  margin-bottom: 30px;
   display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
@@ -57,7 +59,136 @@
   font-weight: 900;
   font-size: 22px;
 }
+.dayHeaderClassNames {
+  height: fit-content;
+  padding: 10px 0px 10px 0px !important;
+  border: none !important;
+  border-bottom: #ddd 1px solid !important;
+}
 
-.calendar2 {
-  background-color: aqua;
+.dayName {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 15px;
+  color: #868686;
+}
+.red {
+  color: red;
+}
+.daydate {
+  font-weight: 700;
+  font-size: 40px;
+}
+.weatherIconClase {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+
+.weather {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+
+.eventContent {
+  position: relative;
+  color: white;
+  padding: 4px 5px 5px 5px;
+}
+.eventIcon {
+  position: relative;
+  width: 16px;
+  height: 16px;
+}
+.evenIconHolder {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 22px;
+  height: 22px;
+  background-color: #ffffff;
+  border-radius: 5px;
+}
+
+.eventContentTitle {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 17px;
+  color: #ffffff;
+}
+.eventContentTitle::first-letter {
+  text-transform: uppercase;
+}
+.eventContentTime {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 22px;
+  color: #ffffff;
+}
+
+.eventClassNames {
+  border: none !important;
+  box-shadow: 0px 0px 0px 1px var(--white) !important;
+  overflow: hidden;
+}
+.moreLinkClassNames table {
+  // border: none !important;
+}
+
+@media (max-width: 1199.98px) {
+  .bigDate {
+    text-align: left;
+    min-width: 280px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .dayName {
+    font-size: 10px;
+  }
+  .daydate {
+    font-size: 30px;
+  }
+  .temperature {
+    display: none;
+  }
+
+  .buttonTools {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    justify-items: start;
+    margin-right: 0px;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .eventContentTime {
+    font-size: 9px;
+    line-height: 10px;
+    margin-bottom: 2px;
+  }
+
+  .eventContent {
+    padding: 1px 1px 0px 0px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .daydate {
+    font-size: 20px;
+  }
+  .buttonTools {
+    padding: 0px 10px;
+  }
+}
+
+@media (max-width: 320px) {
 }

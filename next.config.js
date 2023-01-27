@@ -35,7 +35,8 @@ module.exports = withTM({
 
   //image support
   images: {
-    domains: ["ixmpfpsjhdyjnhmhjglg.supabase.co"],
+    //multiple domains google and supabase
+    domains: ["ixmpfpsjhdyjnhmhjglg.supabase.co", "lh3.googleusercontent.com", "openweathermap.org"],
   },
 
 

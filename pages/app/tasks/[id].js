@@ -7,7 +7,7 @@ import ListOfTasks from "/components/listOfTasks"
 import { useRouter } from 'next/router'
 import LoadingLine from '/components/loadingLine'
 
-export default function Tasks( {taskID} ) {
+export default function Tasks({ taskID }) {
     const session = useSession()
     const supabase = useSupabaseClient()
     const user = useUser()
@@ -15,15 +15,15 @@ export default function Tasks( {taskID} ) {
     const [task, setTask] = useState([])
 
     async function GetTask() {
-        const{data, error} = await supabase
-        .from('todos')
-        .select('*')
-        .eq('id', taskID)
-        if(data) {
+        const { data, error } = await supabase
+            .from('todos')
+            .select('*')
+            .eq('id', taskID)
+        if (data) {
             setTask(data[0])
             console.log("Task" + task)
         }
-        if(error) {
+        if (error) {
             console.log(error)
         }
     }
@@ -68,8 +68,8 @@ export default function Tasks( {taskID} ) {
     // Create a new folder in supabase
     async function CreateFolderSupabase() {
         const { data, error } = await supabase
-                .from('todosFolders')
-                .insert({ user_id: user.id, title: folderTitle})
+            .from('todosFolders')
+            .insert({ user_id: user.id, title: folderTitle })
         GetFoldersSupabase()
         setFolderTitle("")
     }
@@ -99,7 +99,7 @@ export default function Tasks( {taskID} ) {
         if (taskDate.getFullYear === nullDate.getFullYear && taskTime.getFullYear === nullDate.getFullYear) {
             const { data, error } = await supabase
                 .from('todos')
-                .insert({ user_id: user.id, title: taskTitle, date: null, time: null, description: taskDescription, priority: taskPriority, folder_id: folderID})
+                .insert({ user_id: user.id, title: taskTitle, date: null, time: null, description: taskDescription, priority: taskPriority, folder_id: folderID })
         }
         else if (taskDate.getFullYear === nullDate.getFullYear) {
             const { data, error } = await supabase
@@ -486,8 +486,8 @@ export default function Tasks( {taskID} ) {
     }
 }
 
-export async function getServerSideProps({params}) {
-    const {id} = params
+export async function getServerSideProps({ params }) {
+    const { id } = params
     return {
         props: {
             taskID: id

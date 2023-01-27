@@ -1,0 +1,49 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+  gap: 10px 10px;
+  grid-template-areas:
+    ". . . . . "
+    ". . . . . "
+    ". . . . . ";
+  padding: 10px;
+}
+.icon {
+  position: relative;
+}
+
+.iconLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--special-3);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.iconInput[type="radio"]:checked + .iconLabel {
+  background: var(--dynamic-black-100);
+}
+//hide radio
+.iconInput[type="radio"] {
+  opacity: 0;
+  position: absolute;
+}
+.image {
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+  position: relative;
+}
+
+.componentIcons {
+  overflow-y: auto;
+  height: 120px;
+}
+
+.image svg path {
+  fill: var(--black);
+}

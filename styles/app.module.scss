@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: flex-end;
   padding-right: 16px;
-  z-index: 1;
+  z-index: 21;
 }
 
 .mainCalendar {
@@ -27,6 +27,7 @@
   flex-shrink: 0;
   padding: 20px 10px;
   overflow: hidden;
+  width: 420px;
 }
 .todoPnaelOpen {
   margin-right: 0px;
@@ -100,11 +101,39 @@
   align-items: flex-start;
 }
 
+.buttonAdd {
+  background: var(--special-3);
+  border: 1px solid var(--snowflake-100);
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 0px 6px;
+  height: 30px;
+  margin-right: 10px;
+}
+.todoListHeader {
+  padding-top: 15px;
+}
+
 @media (max-width: 1199.98px) {
 }
 @media (max-width: 991.98px) {
 }
 @media (max-width: 767.98px) {
+  .todoPnael {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 20;
+    width: 100%;
+  }
+  .todoPnaelOpen {
+    display: block;
+  }
+  .todoPnaelClose {
+    display: none;
+  }
 }
 @media (max-width: 575.98px) {
 }

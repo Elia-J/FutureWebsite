@@ -11,12 +11,21 @@ export function EventProvider({ children }) {
         id: "",
         title: "",
         description: "",
+        allDay: false,
+
+        //style
+        backgroundColor: "#4c7987",
+        icon: "",
+
+        //time
         startDate: "",
         startTime: "",
         endDate: "",
         endTime: "",
-        location: "",
-        allDay: false,
+
+        //repeat
+        activeRecur: false,
+        daysOfWeek: [],
     })
 
     return (

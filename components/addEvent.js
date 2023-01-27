@@ -1,180 +1,149 @@
 import React, { useState, useRef, useEffect } from 'react'
 import styles from "/styles/addevent.module.scss"
+
+//supabase
 import { useUser, useSupabaseClient, useSession } from '@supabase/auth-helpers-react'
+
+//components
 import toast, { Toaster } from 'react-hot-toast';
-import { ButtonWithShortCut, RightIconButton } from './buttons'
-import AddIcon from "/public/AddIcon.svg"
+import { ButtonWithShortCut } from './buttons'
+import moment from 'moment';
+import { TwitterPicker } from 'react-color';
 
 import { useStateStoreEventsContext } from "/layouts/stateStoreEvents"
-import moment from 'moment';
+import { useStateStoreContext } from "/layouts/stateStore"
+
+//icons
+import Icons from "/components/icons"
+import Image from 'next/image';
+
+const daysOfTheWeek = [
+    { name: "Mo", value: 1 },
+    { name: "Tu", value: 2 },
+    { name: "We", value: 3 },
+    { name: "Th", value: 4 },
+    { name: "Fr", value: 5 },
+    { name: "Sa", value: 6 },
+    { name: "Su", value: 0 },
+]
+
 
 export default function Addevent() {
-
-    //global state store
-    const [eventsPanel, setEventsPanel, input, setinput] = useStateStoreEventsContext()
 
     //supabase
     const supabase = useSupabaseClient()
     const user = useUser()
     const session = useSession()
 
-    console.log('input ', input)
-    //error detection
-    const [error, setError] = useState({
-        title: false,
-        description: false,
-        startDate: false,
-        startTime: false,
-        endDate: false,
-        endTime: false,
-        location: false,
-        allDay: false,
-    })
-
-    //empty the input fields
-    function clearInput() {
-        setinput({
-            id: "",
-            title: "",
-            description: "",
-            startDate: "",
-            startTime: "",
-            endDate: "",
-            endTime: "",
-            location: "",
-            allDay: false,
-        })
-    }
-
-    //empty the input date and time fields
-    function clearDateAndTime() {
-        setinput({
-            ...input,
-            startDate: "",
-            startTime: "",
-            endDate: "",
-            endTime: "",
-        })
-    }
-
-    //reset error detection
-    function resetError() {
-        setError({
-            title: false,
-            description: false,
-            startDate: false,
-            startTime: false,
-            endDate: false,
-            endTime: false,
-            location: false,
-            allDay: false,
-        })
-    }
+    //global state store
+    //posible input id , title , description , allDay , backgroundColor , icon , startDate , startTime , endDate , endTime , daysOfWeek , startRecur , endRecur , startTime , endTime
+    const [eventsPanel, setEventsPanel, input, setinput] = useStateStoreEventsContext()
+    const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel] = useStateStoreContext();
 
 
-    // const [visible, setVisible] = useState(false)
+
+    //variable
+    const [iconPanel, setIconPanel] = useState(false)
+    const iconpanelstyle = iconPanel ? `${styles.iconPanel} ${styles.iconPanelOpen}` : `${styles.iconPanel} ${styles.iconPanelHidden}`
+
+
+
+    //style
     const addEventStyle = eventsPanel ? `${styles.addEvent} ${styles.addEventOpen}` : `${styles.addEvent} ${styles.addEventHidden}`
 
-    const element = useRef(
-        document.getElementById('element')
-    );
 
-    //remove the hidden element with ref from the dom
-    function removeElement() {
-        // setTimeout(() => {
-        element.current.remove();
-        // }, 500);
-    }
 
-    //add the hidden element with ref to the dom inside the div with id="addEvent"
-    function addElement() {
-        // add the hidden element with ref to the dom inside the div with id="addEvent"
-        document.getElementById("addEvent").appendChild(element.current);
-    }
+    //##################################################################### createEvent , updateEvent , deleteEvent - start #############
 
-    // Create new events
+    // Create new events 
     async function createEvent() {
-        if (input.title === "") {
-            toast.error('Please add a title')
-            setError({
-                title: true,
-            })
+        if (checkIfTheTitleIsEmpty()) {
             return
         }
-
-        const beginDateValue = input.allDay ? input.startDate : input.startDate + " " + input.startTime
-        const endDateValue = input.allDay ? null : input.endDate + " " + input.endTime
-
-        const { error } = await supabase
-            .from('events')
-            .insert({
-                title: input.title,
-                description: input.description,
-                beginDate: beginDateValue,
-                endDate: endDateValue,
-                allDay: input.allDay,
-                user_id: user.id
-            })
-            .eq('user_id', user.id)
-
-        if (error) {
-            console.log('error', error)
-        }
         else {
-            clearInput()
-            setEventsPanel(false)
-            removeElement()
-            toast.success('Event created', {
-                iconTheme: {
-                    primary: '#4C7987',
-                    secondary: '#ffffff',
-                }
-            });
-        }
+            const { error } = await supabase
+                .from('events')
+                .insert({
+                    user_id: user.id,
 
+                    //event id auto generated
+
+                    title: input.title,
+                    description: input.description,
+                    allDay: input.allDay,
+
+                    backgroundColor: input.backgroundColor,
+                    icon: input.icon,
+
+                    startDate: input.startDate,
+                    startTime: input.allDay ? null : input.startTime,
+                    endDate: input.endDate,
+                    endTime: input.allDay ? null : input.endTime,
+
+                    activeRecur: input.activeRecur,
+                    daysOfWeek: input.activeRecur ? input.daysOfWeek : [],
+                })
+                .eq('user_id', user.id)
+
+            if (error) {
+                console.log('error', error)
+            }
+            else {
+                clearInput()
+                setEventsPanel(false)
+                removeElement()
+                toast.success('Event created', {
+                    iconTheme: {
+                        primary: '#4C7987',
+                        secondary: '#ffffff',
+                    }
+                });
+            }
+        }
     }
 
-    //convert date and time to one string using moment.js
-    function convertDateAndTime() {
-        const beginDateValue = input.allDay ? moment(input.startDate).format("YYYY-MM-DD") : moment(input.startDate + " " + input.startTime).format("YYYY-MM-DD HH:mm:ss")
-        const endDateValue = input.allDay ? null : moment(input.endDate + " " + input.endTime).format("YYYY-MM-DD HH:mm:ss")
-        return {
-            beginDateValue,
-            endDateValue
-        }
-    }
-
+    //update event based on the id
     async function updateEvent(id) {
-        console.log('id', id)
-        console.log('input', input)
-        console.log('input', input.startDate + " " + input.startTime)
-        const { data, error } = await supabase
-            .from('events')
-            .update({
-                title: input.title,
-                description: input.description,
-                beginDate: moment(input.startDate + " " + input.startTime).format("YYYY-MM-DD HH:mm:ss"),
-                endDate: moment(input.endDate + " " + input.endTime).format("YYYY-MM-DD HH:mm:ss"),
-            })
-            .eq('id', id)
-        if (error) {
-            console.log('error', error)
+        if (checkIfTheTitleIsEmpty()) {
+            return
         }
         else {
-            clearInput()
-            setEventsPanel(false)
-            removeElement()
-            toast.success('Event updated', {
-                iconTheme: {
-                    primary: '#4C7987',
-                    secondary: '#ffffff',
-                }
-            });
+            const { data, error } = await supabase
+                .from('events')
+                .update({
+                    title: input.title,
+                    description: input.description,
+                    allDay: input.allDay,
+
+                    backgroundColor: input.backgroundColor,
+                    icon: input.icon,
+
+                    startDate: input.startDate,
+                    startTime: input.allDay ? null : input.startTime,
+                    endDate: input.endDate,
+                    endTime: input.allDay ? null : input.endTime,
+
+                    activeRecur: input.activeRecur,
+                    daysOfWeek: input.activeRecur ? input.daysOfWeek : [],
+                })
+                .eq('id', id)
+            if (error) {
+                console.log('error', error)
+                toast.error('Error ' + error.message);
+            }
+            else {
+                clearInput()
+                setEventsPanel(false)
+                removeElement()
+
+                toast.success('Event updated', {
+                    iconTheme: {
+                        primary: '#4C7987',
+                        secondary: '#ffffff',
+                    }
+                });
+            }
         }
-
-
-
-
     }
 
     //delete event based on the id
@@ -197,44 +166,42 @@ export default function Addevent() {
         }
     }
 
+    //##################################################################### createEvent , updateEvent , deleteEvent - end #############
 
 
 
-    //auto change textarea height
+    //##################################################################### mini functions - start #############
+
+    //ref to the hidden element
+    const element = useRef(
+        document.getElementById('element')
+    );
+
+    //remove the hidden element with ref from the dom
+    function removeElement() {
+        // setTimeout(() => {
+        element.current.remove();
+        // }, 500);
+    }
+
+    //add the hidden element with ref to the dom inside the div with id="addEvent"
+    function addElement() {
+        // add the hidden element with ref to the dom inside the div with id="addEvent"
+        document.getElementById("addEvent").appendChild(element.current);
+    }
+
+    //add the hidden element with ref to the dom inside the div with id="addEvent" when the eventsPanel is true
+    useEffect(() => {
+        if (eventsPanel === true) {
+            addElement()
+        }
+    }, [eventsPanel])
+
+    //auto change textarea height based on the content
     function auto_grow(element) {
         element.style.height = "68px";
         element.style.height = (element.scrollHeight) + "px";
     }
-
-    //press control + enter to save or cmad + enter to save
-    //press esc to close the modal
-    //cntrl or cmd + shift + E to open the modal
-    function handleKeyDown1(e) {
-        if ((e.ctrlKey || e.metaKey) && e.keyCode == 13) {
-            console.log('ctrl + enter')
-            createEvent()
-        }
-        if (e.keyCode == 27) {
-            console.log('esc')
-            setEventsPanel(false)
-            removeElement()
-        }
-        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.keyCode == 69) {
-            console.log('ctrl + shift + E')
-            setEventsPanel(true)
-            addElement()
-        }
-        // //delete event with delete key
-        // if (e.keyCode == 46 || e.keyCode == 8) {
-        //     console.log('delete')
-        //     deleteEvent(input.id)
-        //     setEventsPanel(false)
-        //     removeElement()
-        // }
-
-    }
-
-
 
     //add event listener to the document
     useEffect(() => {
@@ -244,7 +211,105 @@ export default function Addevent() {
         return () => {
             document.removeEventListener('keydown', handleKeyDown1);
         };
+
     }, []);
+
+    //shortcuts event listener
+    function handleKeyDown1(e) {
+        //press control + enter to save or cmad + enter to save
+        if ((e.ctrlKey || e.metaKey) && e.keyCode == 13) {
+            console.log('ctrl + enter')
+            if (input.id === "") {
+                createEvent()
+            }
+            else {
+                updateEvent(input.id)
+            }
+        }
+        //press esc to close the modal
+        if (e.keyCode == 27) {
+            console.log('esc')
+            setEventsPanel(false)
+            removeElement()
+        }
+        //cntrl or cmd + shift + E to open the modal
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.keyCode == 69) {
+            console.log('ctrl + shift + E')
+            setEventsPanel(true)
+            addElement()
+        }
+
+    }
+
+    //Create a array with the days of the week you want to repeat the event on.
+    function handleCheckboxChange(event) {
+
+        //get the value of the checkbox and convert it to a number
+        const value = parseInt(event.target.value)
+        const list = [...input.daysOfWeek, value]
+
+        // //order the array from smallest to biggest
+        const orderTheListFromSmallestToBiggest = list.sort((a, b) => a - b)
+
+        console.log(orderTheListFromSmallestToBiggest)
+        setinput({
+            ...input,
+            activeRecur: true,
+            daysOfWeek: orderTheListFromSmallestToBiggest
+        })
+
+    }
+
+    function checkIfTheTitleIsEmpty() {
+        if (input.title === "" && eventsPanel === true) {
+            toast.error('Title is empty')
+            return true
+        }
+        else {
+            return false
+        }
+    }
+
+    //empty the input fields
+    function clearInput() {
+        setinput({
+            id: "",
+            title: "",
+            description: "",
+            allDay: false,
+
+            //style
+            backgroundColor: "#4c7987",
+            icon: "",
+
+            //time
+            startDate: "",
+            startTime: "",
+            endDate: "",
+            endTime: "",
+
+            //repeat
+            daysOfWeek: [],
+            startRecur: "",
+            endRecur: "",
+            startTime_recur: "",
+            endTime_recur: "",
+        })
+
+        setIconPanel(false)
+    }
+
+    //empty the input date and time fields
+    function clearDateAndTime() {
+        setinput({
+            ...input,
+            startTime: "",
+            endTime: "",
+
+            startTime_recur: "",
+            endTime_recur: "",
+        })
+    }
 
     //if the checkbox is checked, set the start and end date to empty
     useEffect(() => {
@@ -253,21 +318,26 @@ export default function Addevent() {
         }
     }, [input.allDay])
 
+    //##################################################################### mini functions - end #############
 
+
+    //##################################################################### useeffect date and time - start #############
+
+    //if the start date is bigger than the end date, set the end date to the start date. it prevents the end date to be before the start date.
     useEffect(() => {
-        if (new Date(input.startDate) > new Date(input.endDate) || input.endDate === "") {
+        if ((new Date(input.startDate) > new Date(input.endDate) || input.endDate === "") && eventsPanel === true) {
             setinput({
                 ...input,
                 endDate: input.startDate
             })
         }
-
     }, [input.startDate])
 
+
+    //if the end date is before the start date, set the end date to the start date. it prevents the end date to be before the start date.
     useEffect(() => {
         //check if the end date is before the start date
         if (new Date(input.startDate) > new Date(input.endDate) || input.endDate === "" && input.startDate !== "") {
-            console.log("end date is before start date")
             toast.error('Chosen end date was before the start date.')
             toast.error('End date is set to the start date.')
 
@@ -278,6 +348,8 @@ export default function Addevent() {
         }
     }, [input.endDate])
 
+
+    //if the start time is bigger than the end time, set the end time to one hour after the start time. it prevents the end time to be before the start time.
     useEffect(() => {
 
         //do that only if the end time is empty or if the end time is before the start time
@@ -306,10 +378,10 @@ export default function Addevent() {
         }
     }, [input.startTime])
 
+
     useEffect(() => {
         //check if the end time is before the start time
         if (new Date(input.startDate + " " + input.startTime) > new Date(input.endDate + " " + input.endTime)) {
-            console.log("end time is before start time")
             toast.error('Chosen end time was before the start time.')
             toast.error('End time is set to one hour after the start time.')
 
@@ -320,17 +392,8 @@ export default function Addevent() {
         }
     }, [input.endTime])
 
+    //##################################################################### useeffect date and time - end #############
 
-    useEffect(() => {
-        if (eventsPanel === true) {
-            addElement()
-        }
-    }, [eventsPanel])
-
-    // function console123() {
-    //     console.log("title " + input.title)
-
-    // }
 
     return (
         <div id="addEvent">
@@ -345,14 +408,15 @@ export default function Addevent() {
                             id="title"
                             placeholder='Event Title ..'
                             value={input.title}
+                            required
                             onChange={e => {
                                 setinput({
                                     ...input,
                                     title: e.target.value
                                 })
-                                setError({ title: false })
                             }}
-                            className={`${styles.eventTitleInput} ${styles.blok} ${error.title ? styles.error : styles.eventTitleInput}`} />
+                            className={`${styles.eventTitleInput} ${styles.blok} ${styles.eventTitleInput}`}
+                        />
 
                         <textarea
                             name="description"
@@ -372,33 +436,71 @@ export default function Addevent() {
                         >
                         </textarea>
 
-                        {/*  check box*/}
-                        <div className={`${styles.blok} ${styles.smallGroup} ${styles.displayFlexSpecial}`}>
-                            {/* check box */}
-                            <label htmlFor="allDay" className={styles.miniTitle}>All Day Event</label>
-                            <input type="checkbox"
-                                name="allDay"
-                                id="allDay"
-                                checked={input.allDay}
-                                className={styles.checkBox}
-                                onChange={
-                                    e => {
-                                        setinput({
-                                            ...input,
-                                            allDay: e.target.checked
-                                        })
-                                    }
-                                }
-                            />
-                        </div>
+                        <div className={`${styles.miniSection}`} >
 
+                            {/*  check box */}
+                            <div className={`${styles.blok} ${styles.smallGroup} ${styles.displayFlexSpecial}`}>
+                                {/* check box */}
+                                <label htmlFor="allDay" className={styles.miniTitle}>All Day Event</label>
+                                <input type="checkbox"
+                                    name="allDay"
+                                    id="allDay"
+                                    checked={input.allDay}
+                                    className={styles.checkBox}
+                                    onChange={
+                                        e => {
+                                            setinput({
+                                                ...input,
+                                                allDay: e.target.checked
+                                            })
+                                        }
+                                    }
+                                />
+                            </div>
+
+                            <div className={`${styles.blok} ${styles.smallGroup} ${styles.displayFlexSpecial}`}>
+                                <div className={styles.holder}>
+
+                                    <div className={`${styles.miniTitle} ${styles.addEmoji}`}
+                                        onClick={() => {
+                                            setIconPanel(!iconPanel)
+                                        }}
+                                    >
+                                        Add a emoji
+
+                                        {/*  if there is an icon selected, show it */}
+                                        {
+                                            input.icon !== "" ?
+                                                <div onClick={e => { setinput({ ...input, icon: "" }) }}  >
+
+                                                    <Image
+                                                        src={input.icon}
+                                                        alt="icon-selected"
+                                                        width={18}
+                                                        height={18}
+                                                    />
+
+                                                </div>
+
+                                                : ""
+                                        }
+
+                                    </div>
+
+                                    {/*  icons panel */}
+                                    <div className={iconpanelstyle}>
+                                        <Icons />
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
 
                         {/* input date and time */}
                         <div className={`${styles.miniSection}`} >
 
                             <div className={`${styles.blok} ${styles.smallGroup}`}>
-                                <div className={styles.miniTitle}>{input.allDay ? "" : "Starting"
-                                } <label htmlFor="date">Date</label> <label htmlFor="time" className={`${input.allDay ? styles.locked : null}`}>& Time</label></div>
+                                <div className={styles.miniTitle}>Starting <label htmlFor="date">Date</label> <label htmlFor="time" className={`${input.allDay ? styles.locked : null}`}>& Time</label></div>
 
                                 <div className={styles.dateAndTimeDiv}>
                                     <input type="date" name="date" id="date" className={styles.inputeDateAndTime}
@@ -425,9 +527,8 @@ export default function Addevent() {
                                 </div>
                             </div>
 
-
-                            <div className={`${styles.blok} ${styles.smallGroup} ${input.allDay ? styles.locked : null}`}>
-                                <div className={styles.miniTitle}>Ending <label htmlFor="date2">Date</label> & <label htmlFor="time2">Time</label></div>
+                            <div className={`${styles.blok} ${styles.smallGroup} `}>
+                                <div className={styles.miniTitle}>Ending <label htmlFor="date2">Date</label><label htmlFor="time2" className={input.allDay ? styles.locked : null}> & Time</label></div>
 
                                 <div className={styles.dateAndTimeDiv}>
                                     <input type="date" name="date2" id="date2" className={styles.inputeDateAndTime}
@@ -439,7 +540,7 @@ export default function Addevent() {
                                             })
                                         }}
                                     />
-                                    <input type="time" name="time2" id="time2" className={styles.inputeDateAndTime}
+                                    <input type="time" name="time2" id="time2" className={`${styles.inputeDateAndTime} ${input.allDay ? styles.locked : null}`}
                                         value={input.endTime}
                                         onChange={e => {
                                             setinput({
@@ -453,28 +554,105 @@ export default function Addevent() {
 
                         </div>
 
-                        {/* dropdown */}
-                        <div className={`${styles.blok} ${styles.smallGroup}`}>
-                            <label htmlFor="repeat" className={styles.miniTitle}>Repeat</label>
-                            <select name="repeat" id="repeat" className={styles.selectMenu}>
-                                <option value="none">None</option>
-                                <option value="daily">Daily</option>
-                                <option value="weekly">Weekly</option>
-                                <option value="monthly">Monthly</option>
-                                <option value="yearly">Yearly</option>
-                            </select>
+                        <div className={`${styles.miniSection}`} >
 
+                            <div className={`${styles.blok} ${styles.smallGroup}`}>
 
+                                {/* input checkbox for the repeat option like Mo Tu We Th Fr Sa Su */}
+                                <label htmlFor="repeat" className={styles.miniTitle}>Repeat on</label>
+
+                                <div className={styles.repeatOnItem}>
+                                    {
+                                        daysOfTheWeek.map((day, index) => {
+                                            return (
+
+                                                <label htmlFor={`repeat${index}`} className={styles.repeatDay} key={index}>
+                                                    <input type="radio" name={`repeat${index}`} id={`repeat${index}`} value={day.value} checked={input.daysOfWeek?.includes(day.value)}
+                                                        onChange={
+                                                            (e) => {
+                                                                handleCheckboxChange(e)
+                                                            }
+                                                        } />
+                                                    <span className={styles.repeatOnItemSpan}>{day.name}</span>
+                                                </label>
+                                            )
+                                        }
+                                        )
+                                    }
+                                </div>
+
+                                <button className={styles.restButton} onClick={
+                                    () => {
+                                        setinput({
+                                            ...input,
+                                            activeRecur: false,
+                                            daysOfWeek: []
+                                        })
+                                    }
+                                }>Reset</button>
+
+                                <p className={styles.info}>
+                                    Make sure to select good start and end dates/time for your event.
+                                </p>
+
+                            </div>
+
+                            <div className={`${styles.blok} ${styles.smallGroup}`}>
+
+                                {/* input checkbox for the repeat option like Mo Tu We Th Fr Sa Su */}
+                                <label htmlFor="Color" className={styles.miniTitle}>Color</label>
+
+                                {/* TwitterPicker is a color picker from react-color */}
+                                <TwitterPicker
+                                    color={input.backgroundColor}
+                                    onChangeComplete={color => {
+                                        setinput({
+                                            ...input,
+                                            backgroundColor: color.hex
+                                        })
+                                    }}
+
+                                    list of options
+                                    colors={[
+                                        "#4c7987",
+                                        "#ff6901",
+                                        "#fcb904",
+                                        "#7bddb6",
+                                        "#01d084",
+                                        "#8fd1fc",
+                                        "#0994e3",
+                                        "#abb8c3",
+                                        "#ec154d",
+                                        "#f88da7",
+                                    ]}
+
+                                    //remove the default styles
+                                    styles={{
+                                        default: {
+                                            card: {
+                                                boxShadow: "none",
+                                                border: "none",
+                                                borderRadius: "0px",
+                                                background: "none",
+                                            },
+                                            body: {
+                                                padding: "0px",
+                                                marginTop: "10px",
+                                            },
+                                            triangle: {
+                                                display: "none",
+                                            },
+                                            triangleShadow: {
+                                                display: "none",
+                                            },
+
+                                        },
+                                    }}
+                                />
+                                <div style={{ backgroundColor: input.backgroundColor }} className={styles.colorPicker}></div>
+                            </div>
                         </div>
-
-
-                        {/* <div className={styles.input}>
-                            <label htmlFor="location">Location</label>
-                            <input type="text" name="location" id="location" />
-                        </div> */}
-
                     </div>
-
 
                     <div className={styles.buttons}>
                         <div className={styles.subButtons1}>
@@ -487,8 +665,6 @@ export default function Addevent() {
                                     setEventsPanel(!eventsPanel)
                                     removeElement()
                                     clearInput()
-                                    resetError()
-
                                 }}
                             />
 
@@ -500,40 +676,31 @@ export default function Addevent() {
                             />
                         </div>
 
-
-
                         {input.id === "" ? null :
                             <div className={styles.subButtons2}>
 
                                 <ButtonWithShortCut
                                     text="Delete"
-                                    shortcut="⌘ + ⌫"
+                                    shortcut="🗑️"
                                     main={false}
                                     onClick={() => {
                                         deleteEvent(input.id)
                                         setEventsPanel(!eventsPanel)
                                         removeElement()
                                         clearInput()
-                                        resetError()
-
                                     }}
                                 />
-                                <span className={styles.eventId}>ID: {input.id}</span>
+
                             </div>
                         }
-
-
-                        {/* <button onClick={console123}>console</button> */}
-
                     </div>
                 </div>
 
-
+                {/* background to close the panel*/}
                 <div className={styles.bgClose} onClick={(e) => { { setEventsPanel(!eventsPanel) } removeElement(), clearInput() }}></div>
-
             </div>
-            <Toaster position="bottom-right" reverseOrder={false} />
 
+            <Toaster position="bottom-right" reverseOrder={false} theme="auto" />
         </div >
     )
 }

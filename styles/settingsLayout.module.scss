@@ -10,33 +10,10 @@
 }
 
 .settingsLayout {
-  padding: 15px 20px;
+  padding: 15px 20px 50px 20px;
 }
 .settingsLayoutContainer {
-}
-
-.closeButton {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--special-3);
-  transition: all 0.2s ease-in-out;
-  z-index: 3;
-
-  // &:hover {
-  //   background-color: rgb(241 241 241);
-  //   transition: all 0.2s ease-in-out;
-  // }
-}
-.closeButton svg path {
-  fill: var(--snowflake-1000);
+  height: 100%;
 }
 
 @media (max-width: 1199.98px) {

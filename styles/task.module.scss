@@ -79,7 +79,7 @@
 
 .AIButton {
   margin-right: 20px;
-  padding-right: 16px;
+  // padding-right: 16px;
 }
 
 .openButton {
@@ -87,7 +87,7 @@
 }
 
 .openAIButton {
-  margin-right: 340px;
+  // margin-right: 340px;
 }
 
 .saveButton {
@@ -289,7 +289,7 @@
   margin-top: 0px;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
-  transition: all 0.5s cubic-bezier(0, 0, 0, 0); 
+  transition: all 0.5s cubic-bezier(0, 0, 0, 0);
 }
 
 .taskCollapsed {
@@ -331,15 +331,15 @@
 }
 
 .taskCheckBox1 {
-  border-color: var(--anarchy-600) 
+  border-color: var(--anarchy-600);
 }
 
 .taskCheckBox2 {
-  border-color: var(--heat-wave-600) 
+  border-color: var(--heat-wave-600);
 }
 
 .taskCheckBox3 {
-  border-color: var(--blue-sparkle-600)
+  border-color: var(--blue-sparkle-600);
 }
 
 .taskCheckBoxChecked {
@@ -418,10 +418,10 @@
 }
 
 .panel {
-    background: var(--special-3);
-    flex-basis: 420px;
-    flex-grow: 0;
-    flex-shrink: 0;
+  background: var(--special-3);
+  flex-basis: 420px;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
 .openFolderPanel {
@@ -453,7 +453,7 @@
 .nav {
   position: absolute;
   display: flex;
-  left:0;
+  left: 0;
   align-items: center;
   justify-content: flex-start;
 }
@@ -474,7 +474,8 @@
 
 .main {
   width: 100%;
-  padding: 0px 10px;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .foldersContainer {

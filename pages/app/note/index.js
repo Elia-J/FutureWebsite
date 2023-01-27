@@ -1,34 +1,34 @@
 import styles from "../../../styles/notes.module.scss";
 import React, { useState, useEffect } from "react";
-import { useRouter } from 'next/router'
-import { createEditor } from "slate";
-import { withReact } from "slate-react";
 import ListOfNotes from '../../../components/listOfNotes'
 import LoadingLine from '/components/loadingLine'
 import Image from 'next/image'
 
+import { useRouter } from "next/router";
 import AppLayout from "/layouts/appLayout"
 import { useSession } from "@supabase/auth-helpers-react";
 import LoadingLine from '/components/loadingLine'
+
+import Ai from "/components/ai"
 
 
 export default function Index() {
 
     const session = useSession()
+    const router = useRouter()
 
-    const [collapsed, setCollapsed] = useState(false)
-
-    //get all notes where user_id = user.id
-
+    // create refs for all element which needs its classname to be edited
     let collapsableElementSavedNotes = React.createRef();
     let collapsableElementNotes = React.createRef();
     let collapsableElementAI = React.createRef();
     let openElement = React.createRef();
     let closeElement = React.createRef();
 
+    // toggles the appropriate classNames for the saved notesbar
     function changeSavedNotesBar() {
         openElement.current.classList.toggle(`${styles.openHide}`)
         closeElement.current.classList.toggle(`${styles.closeShow}`)
+        // if both the savednotes panel and ai panel are toggled it toggles the superCollapsed text editor
         if (collapsableElementAI.current.classList[1] == styles.showAIPanel) {
             collapsableElementNotes.current.classList.toggle(
                 `${styles.SuperCollapsedTextEditor}`
@@ -46,6 +46,7 @@ export default function Index() {
         }
     }
 
+    // does the same as changeSavedNotesBar() but without the openelement and close element.
     function changeAIPanel() {
         if (collapsableElementSavedNotes.current.classList[1] == undefined) {
             collapsableElementNotes.current.classList.toggle(
@@ -55,7 +56,7 @@ export default function Index() {
                 `${styles.showAIPanel}`
             )
         }
-         else {
+        else {
             collapsableElementNotes.current.classList.toggle(
                 `${styles.CollapsedTextEditor}`
             );
@@ -65,12 +66,6 @@ export default function Index() {
         }
     }
 
-    // useEffect(() => {
-    //     if (!session) {
-    //         router.push("/")
-    //     }
-    // })
-    
     if (session) {
         return (
             <AppLayout>
@@ -86,13 +81,13 @@ export default function Index() {
                         id="SavedNotes"
                         className={styles.SavedNotes}
                     >
-                        <ListOfNotes />
+                        <ListOfNotes inApp={false} />
                     </div>
                     <div
                         ref={collapsableElementNotes}
                         id="TextEditor"
                         className={`${styles.TextEditor} ${styles.CollapsedTextEditor} ${styles.titleNoNotes}`}
-                    >   
+                    >
                         <h1>Select one of your notes or create a note!</h1>
                     </div>
                     <div
@@ -100,6 +95,8 @@ export default function Index() {
                         id="AI"
                         className={styles.AI}
                     >
+                        <Ai type="notes" />
+
                     </div>
                     <div
                         className={styles.AIAssisctance}
