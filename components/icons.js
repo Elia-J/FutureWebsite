@@ -63,7 +63,9 @@ export default function Icons() {
                                 <Image
                                     src={icon.path}
                                     alt={icon.name}
-                                    fill
+                                    width={20}
+                                    height={20}
+
                                 />
                             </div>
                         </label>
