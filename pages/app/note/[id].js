@@ -440,12 +440,12 @@ export default function Notes({ notes }) {
     };
 
     const TaskElement = (props) => {
-        Transforms.select(editor, Editor.end(editor, []))
         return (
             <div style={{display: "flex", gap: '5px'}}>
                 <Image alt={'tasks'} className={styles.icon} src={`/Tasks.svg`} width={25} height={25} />
                 <Link
                     {...props.attributes}
+                    contentEditable={false}
                     style={{textAlign: globalAlign}}
                     href={`/app/tasks/${props.element.ID}`}
                 >
