@@ -90,7 +90,7 @@ export default function Setting1({ children }) {
                 variants={variants}
                 className={styles.settings} >
 
-                <Settings settingsState={changesettingsState} />
+                <Settings />
 
                 <div className={`${styles.blackBG} ${bgClick}`} onClick={() => setShowSettings(!showSettings)}></div>
 
