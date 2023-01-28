@@ -35,7 +35,9 @@ export function StateProvider({ children }) {
         iso_ode: "",
         city_name: "",
         latitude: "",
-        longitude: ""
+        longitude: "",
+        removeCheckedTasks: false,
+        showTimeForTasks: false,
     })
 
     return (

@@ -51,14 +51,12 @@ export default function Setting() {
     const [general, setGeneral] = useState(false);
     const [calendarSettings, setCalendarSettings] = useState(false);
     const [weatherSettings, setWeatherSettings] = useState(false);
+    const [tasksSettings, setTasksSettings] = useState(false);
 
     //warning panel settings
     const warningPanelStyle = warningPanel.show ? `${styles.warningPanel} ${styles.warningPanelOpen}` : `${styles.warningPanel} ${styles.warningPanelClose}`
 
 
-    const [tasksSettings, setTasksSettings] = useState(false);
-    const [notesSettings, setNotesSettings] = useState(false);
-    const [ai, setAi] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     // const [imageUrl, setImageUrl] = useState("")
 
@@ -122,6 +120,10 @@ export default function Setting() {
                 city_name: data[0].city_name,
                 latitude: data[0].latitude,
                 longitude: data[0].longitude,
+
+                //tasks
+                removeCheckedTasks: data[0].removeCheckedTasks,
+                showTimeForTasks: data[0].showTimeForTasks,
             }
 
             setSettings(
@@ -143,6 +145,7 @@ export default function Setting() {
                 setTheme(data[0].mode)
             }
         }
+
     }
 
     // update data in database
@@ -159,11 +162,9 @@ export default function Setting() {
                 syncTheme: settings.syncTheme,
                 firstDayOfWeek: settings.FirstDayOfTheWeek,
                 timeZone: settings.TimeZone,
-                removeCheckedTasks: settings.removeCheckedTasks,
                 BeginTimeDay: settings.BeginTimeDay,
                 EndTimeDay: settings.EndTimeDay,
                 ShowWeekends: settings.ShowWeekends,
-                showTimeForTasks: settings.showTimeForTasks,
                 avatar_url: settings.filepath,
                 time_zone: settings.time_zone,
                 BeginTimeDay: settings.BeginTimeDay,
@@ -179,6 +180,10 @@ export default function Setting() {
                 latitude: settings.latitude,
                 longitude: settings.longitude,
 
+                //tasks
+                showTimeForTasks: settings.showTimeForTasks,
+                removeCheckedTasks: settings.removeCheckedTasks,
+
             })
             .eq('id', user.id)
 
@@ -188,8 +193,6 @@ export default function Setting() {
 
     }
 
-    // console.log("settings " + JSON.stringify(settings))
-    // console.log("settingsCopy " + JSON.stringify(settingsCopy))
     //compare two lists of useStatuses and return true if they are different
     function compareSettings() {
         if (JSON.stringify(settings) !== JSON.stringify(settingsCopy)) {
@@ -275,10 +278,7 @@ export default function Setting() {
         setGeneral(false);
         setCalendarSettings(false);
         setWeatherSettings(false);
-
         setTasksSettings(false);
-        setNotesSettings(false);
-        setAi(false);
 
     }
 
@@ -289,10 +289,8 @@ export default function Setting() {
         setGeneral(true);
         setCalendarSettings(false);
         setWeatherSettings(false);
-
         setTasksSettings(false);
-        setNotesSettings(false);
-        setAi(false);
+
 
     }
 
@@ -303,10 +301,8 @@ export default function Setting() {
         setGeneral(false);
         setCalendarSettings(true);
         setWeatherSettings(false);
-
         setTasksSettings(false);
-        setNotesSettings(false);
-        setAi(false);
+
     }
 
     //handle tasks, show tasks settings
@@ -315,22 +311,20 @@ export default function Setting() {
         setAccount(false);
         setGeneral(false);
         setCalendarSettings(false);
+        setWeatherSettings(false);
         setTasksSettings(true);
-        setNotesSettings(false);
-        setAi(false);
 
     }
 
     //handle WeatherSettings, show WeatherSettings
     const handleWeather = () => {
+
         setAccount(false);
         setGeneral(false);
         setCalendarSettings(false);
         setWeatherSettings(true);
-
         setTasksSettings(false);
-        setNotesSettings(false);
-        setAi(false);
+
     }
 
 
@@ -374,8 +368,8 @@ export default function Setting() {
                             <ButtonWithIcon icon={<Account />} text="Account" onClick={handleAccount} active={account} />
                             <ButtonWithIcon icon={<General />} text="General" onClick={handleGeneral} active={general} />
                             <ButtonWithIcon icon={<Calendar />} text="Calendar" onClick={handleCalendar} active={calendarSettings} />
-                            <ButtonWithIcon icon={<Tasks />} text="Tasks" onClick={handleTasks} active={tasksSettings} />
                             <ButtonWithIcon icon={<Weather />} text="Weather" onClick={handleWeather} active={weatherSettings} />
+                            <ButtonWithIcon icon={<Tasks />} text="Tasks" onClick={handleTasks} active={tasksSettings} />
                         </div>
 
                     </div>
@@ -447,9 +441,6 @@ export default function Setting() {
                         </form>
                     </div>
 
-                    <Toaster position="bottom-right" reverseOrder={false} />
-
-
                     <div className={styles.bg} onClick={() => {
                         setWarningPanel(
                             {
@@ -470,4 +461,3 @@ export default function Setting() {
         </div>
     )
 }
-
