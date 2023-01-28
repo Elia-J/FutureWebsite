@@ -127,7 +127,6 @@ export default function General() {
                 </div>
 
             </div>
-            <Toaster position="bottom-right" reverseOrder={false} />
         </SettingsLayout >
     )
 }

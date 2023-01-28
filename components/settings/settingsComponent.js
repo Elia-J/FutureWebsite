@@ -65,24 +65,6 @@ export default function Setting() {
 
     //Get data from database
     async function GetProfileData() {
-
-            if (data) {
-                const dataFromDatabase = {
-                    //variable name : name in data
-                    FullName: data[0].full_name,
-                    UserName: data[0].username,
-                    Website: data[0].website,
-                    Theme: data[0].mode,
-                    syncTheme: data[0].syncTheme,
-                    FirstDayOfTheWeek: data[0].firstDayOfWeek,
-                    TimeZone: data[0].timeZone,
-                    removeCheckedTasks: data[0].removeCheckedTasks,
-                    BeginTimeDay: data[0].BeginTimeDay,
-                    EndTimeDay: data[0].EndTimeDay,
-                    ShowWeekends: data[0].ShowWeekends,
-                    showTimeForTasks: data[0].showTimeForTasks,
-                    avatar_url: data[0].avatar_url
-                }
         setIsLoading(true)
 
         const { data, error } = await supabase
@@ -488,4 +470,4 @@ export default function Setting() {
         </div>
     )
 }
-}
+
