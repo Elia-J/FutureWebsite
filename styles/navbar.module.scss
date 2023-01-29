@@ -5,6 +5,8 @@
     justify-content: space-between;
     margin: 0;
     padding: 0;
+    margin-right: 3px;
+    margin-left: 3px;
     @media screen and (min-width: 400px) {
         margin-right: 20px;
         margin-left: 20px;
@@ -16,19 +18,20 @@
     margin: 0 20px;
     padding: 0;
     overflow: hidden;
-    font-size: var(--fontSize);
+    font-size: medium;
 }
 
 .nav li {
     @media screen and (min-width: 400px) {
-        padding: 10px;
+        padding: 3px;
+        font-size: medium;
     }
-    padding: 2px;
+    margin-left: 3px;
+    padding: 3px;
     float: left;
     display: block;
     text-align: center;
     font-family: Times;
-    font-size: var(--fontSize);
     font-weight: bold;
 }
   
@@ -38,7 +41,7 @@
   
 .nav li.logo {
     padding: 10px 0px;
-    @media screen and (max-width: 250px) {
+    @media screen and (max-width: 276spx) {
         display: none;
     }
 }
