@@ -63,7 +63,6 @@ export default function Setting() {
 
     //Get data from database
     async function GetProfileData() {
-
         setIsLoading(true)
 
         const { data, error } = await supabase

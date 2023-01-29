@@ -5,8 +5,12 @@
     justify-content: space-between;
     margin: 0;
     padding: 0;
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-right: 3px;
+    margin-left: 3px;
+    @media screen and (min-width: 400px) {
+        margin-right: 20px;
+        margin-left: 20px;
+    }
 }
 
 .nav ul {
@@ -14,16 +18,20 @@
     margin: 0 20px;
     padding: 0;
     overflow: hidden;
-    font-size: var(--fontSize);
+    font-size: medium;
 }
 
 .nav li {
+    @media screen and (min-width: 400px) {
+        padding: 3px;
+        font-size: medium;
+    }
+    margin-left: 3px;
+    padding: 3px;
     float: left;
     display: block;
     text-align: center;
-    padding: 10px;
     font-family: Times;
-    font-size: var(--fontSize);
     font-weight: bold;
 }
   
@@ -32,11 +40,10 @@
 }
   
 .nav li.logo {
-    padding: 10px 3px;
-}
-
-.About {
-    margin-left: 20px;
+    padding: 10px 0px;
+    @media screen and (max-width: 276px) {
+        display: none;
+    }
 }
   
 .nav a.signup {

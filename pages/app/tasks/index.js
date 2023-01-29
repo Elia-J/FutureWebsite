@@ -293,7 +293,7 @@ export default function Tasks() {
                         <div className={styles.body}>
                                 <div className={openPanel ? `${styles.panel} ${styles.openFolderPanel}` : `${styles.panel} ${styles.closedFolderPanel}`}>
                                     <div className={`${styles.nav} ${styles.navMargin}`}>
-                                        <button className={styles.mainButton} onClick={CreateTask}>
+                                        <button className={AIPanel ? `${styles.mainButton} ${styles.createAIPanelOpen}` : styles.mainButton} onClick={CreateTask}>
                                         <span className={styles.create}>Create </span>
                                         <span>+</span>
                                         </button>  

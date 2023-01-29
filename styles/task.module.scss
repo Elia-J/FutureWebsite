@@ -155,6 +155,12 @@
   }
 }
 
+@media screen and (max-width: 600px) {
+  .createAIPanelOpen {
+    display: none;
+  }
+}
+
 .taskForm {
   position: absolute;
   display: -ms-inline-grid;
