@@ -134,6 +134,16 @@ export default function ListOfNotes({ inApp }) {
     
     // Same function as removeNote() but without the router.push because you can't edit the folder.
     async function removeFolder(id) {
+        for (let i=0; i<folderData.length; i++) {
+            if (folderData[i].id == id) {
+                for (let j=0; j<folderData[i].notes.length; j++) {
+                    const { dataNote, errorNote } = await supabase
+                        .from('notesv2')
+                        .update({inFolder: false})
+                        .eq('id', folderData[i].notes[j].id)
+                }
+            }
+        }
         const { data, error } = await supabase
             .from('folders')
             .delete()
@@ -145,7 +155,7 @@ export default function ListOfNotes({ inApp }) {
             console.log('error', error)
             return
         }
-
+        getNotes()
         getFolders()
     }
 
