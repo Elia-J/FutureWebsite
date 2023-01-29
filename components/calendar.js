@@ -34,10 +34,6 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     const supabase = useSupabaseClient()
     const user = useUser()
 
-    //moment
-    const momentTimezone = require('moment-timezone');
-    const momentWithoutTimezone = require('moment');
-
     //global state
     const [eventsPanel, setEventsPanel, input, setinput] = useStateStoreEventsContext()
     const [showSettings, setShowSettings, shortcutsPanel, setShortcutsPanel, settings, setSettings, saveButton, setSaveButton, settingsCopy, setSettingsCopy, warningPanel, setWarningPanel] = useStateStoreContext();
@@ -105,7 +101,6 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                 }])
             }
             )
-            console.log(data)
         }
     }
 
@@ -337,14 +332,10 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
         const data = await response.json()
 
         setWeatherData(data)
+        console.log(data)
 
     }
 
-    //Today date
-    const today2 = momentTimezone.tz(settings.time_zone).format('DD-MM-YYYY');
-
-    //Add 4 days to today date
-    const today3 = momentTimezone.tz(settings.time_zone).add(4, 'days').format('DD-MM-YYYY');
 
     //If weather is checked in the settings, show the weather data in the calendar
     function checkWeather(weatherTemp) {
@@ -352,23 +343,23 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
             return (
                 <div className={styles.weather}>
 
-                    {weatherTemp?.main.temp === undefined ? "" :
+                    {/* {weatherTemp?.main.temp === undefined ? "" : */}
 
-                        <>
-                            <div className={styles.temperature}>{
+                    {<>
+                        <div className={styles.temperature}>{
 
-                                Math.round(parseInt(weatherTemp?.main.temp))
+                            Math.round(parseInt(weatherTemp?.main.temp))
 
-                            } °C</div>
+                        } °C</div>
 
-                            <div className={styles.weatherIconClase}>
-                                <Image
-                                    src={`https://openweathermap.org/img/wn/${weatherTemp?.weather[0].icon}@2x.png`}
-                                    alt="weather icon"
-                                    fill
-                                />
-                            </div>
-                        </>
+                        <div className={styles.weatherIconClase}>
+                            <Image
+                                src={`https://openweathermap.org/img/wn/${weatherTemp?.weather[0].icon}@2x.png`}
+                                alt="weather icon"
+                                fill
+                            />
+                        </div>
+                    </>
                     }
 
                 </div>
@@ -380,19 +371,33 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
         }
     }
 
+
+    //Today date using moment.js withouth time zone
+    const startDate = moment().format("YYYY-MM-DD")
+
+    //Add 4 days to today date
+    const endDate = moment().add(5, 'days').format("YYYY-MM-DD")
+
+
     //Function to show and control the day header in the calendar. to add the weather data and icons to it.
     function dayHeaderContent(arg) {
 
-        const date = moment(arg.date).format('DD-MM-YYYY');
+        const dateToCompare = moment(arg.date)
+        const isBetweenDates = dateToCompare.isBetween(startDate, endDate, null, '[]');
 
-        //If the date is today or in the next 4 days, show the weather data
-        if (date >= today2 && date <= today3) {
+        console.log("isBetweenDates ", isBetweenDates)
+        console.log("arg.date ", dateToCompare)
+        console.log("startDate ", startDate)
+        console.log("endDate ", endDate)
+
+        if (isBetweenDates) {
 
             //Find the weather data for the current date
             const weatherTemp = weatherData?.list?.find(
                 (item) => item.dt_txt.includes(moment(arg.date).format('YYYY-MM-DD'))
             )
 
+            console.log("weatherTemp", weatherTemp)
             return (
 
                 <div className={styles.dayHeader}>
@@ -412,6 +417,7 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                             monthViewWeeknumber ? null :
                                 <>
                                     <div className={styles.daydate}> {arg.date.getDate()} </div>
+                                    <p>hello</p>
                                     {checkWeather(weatherTemp)}
                                 </>
                         }
@@ -439,13 +445,9 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
 
                         {/* Do not show the day number and the weather data in the month view */}
                         {
-                            monthViewWeeknumber ?
+                            monthViewWeeknumber ? null :
+                                <div className={styles.daydate}>{arg.date.getDate()}</div>
 
-                                null
-                                :
-                                <div className={styles.daydate}>
-                                    {arg.date.getDate()}
-                                </div>
                         }
 
                     </div>
