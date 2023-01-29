@@ -55,7 +55,6 @@ You can find a list of the libraries used in this project in the `package.json` 
 </br></br>
 
 ## Handy Websites and Documents
-
 - [Next.js Website](https://nextjs.org/)
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Supabase Website](https://www.supabase.io/)
