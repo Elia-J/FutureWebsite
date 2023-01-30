@@ -16,6 +16,7 @@ export default function AuseStatei({ type }) {
     const [notesData, setNotesData] = useState("")
     const [loadingNotes, setLoadingNotes] = useState(false)
 
+    //Notes
     async function handleNotesGenerate(e) {
         e.preventDefault()
         setLoadingNotes(true)
@@ -55,15 +56,36 @@ export default function AuseStatei({ type }) {
         const data = await response.json()
         fromStringToArray(data.choices[0].text)
         setLoadingTasks(false)
+
+        console.log(data.choices[0].text)
     }
 
     function fromStringToArray(string) {
+
+        //Split string into array
         const array = string.split('\n')
 
+        //Remove empty strings
         const modifiedArray = array
             .filter((item) => item !== '')
 
-        setTasksData(modifiedArray)
+        //Remove numbers
+        const modifiedArray2 = modifiedArray.map((item) => {
+            if (isNaN(parseInt(item[0]))) {
+                return item
+            }
+            else {
+                if (item[1] === '.') {
+                    return item.substring(2)
+                }
+                if (item[2] === '.') {
+                    return item.substring(3)
+                }
+            }
+        }
+        )
+
+        setTasksData(modifiedArray2)
     }
 
     async function handleTasksAdd(task) {
@@ -99,23 +121,25 @@ export default function AuseStatei({ type }) {
                         required
                         rows="10"
                     />
+
+                    {/* Button to generate tasks */}
                     <button type="submit" className={styles.generateButton}>
                         Generate
                         {loadingTasks && <div className={styles.loader}>
                             &#160; Loading
                         </div>}
-
                     </button>
+
                 </form>
+
                 <div className={styles.view}>
                     <div className={styles.content}>
                         {tasksData.map((task, index) => {
                             return (
                                 <div className={styles.task} key={index}>
-                                    <div className={styles.taskText}>{task.slice(2)}</div>
+                                    <div className={styles.taskText}>{task}</div>
                                     <button className={styles.taskButton}
-                                        onClick={() => handleTasksAdd(task.slice(2))}
-
+                                        onClick={() => handleTasksAdd(task)}
                                     >
                                         Add
                                     </button>
@@ -129,7 +153,6 @@ export default function AuseStatei({ type }) {
                     position="bottom-right"
                     reverseOrder={false}
                     theme="auto"
-
                 />
             </div >
         )
