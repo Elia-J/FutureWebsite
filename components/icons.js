@@ -4,6 +4,7 @@ import styles from '../styles/icons.module.scss'
 
 import { useStateStoreEventsContext } from "/layouts/stateStoreEvents"
 
+
 const iconOptions = [
     { name: "fi-sr-asterik", path: "/icons/fi-sr-asterik.svg" },
     { name: "fi-sr-balloons", path: "/icons/fi-sr-balloons.svg" },
@@ -26,9 +27,9 @@ const iconOptions = [
     { name: "fi-sr-thumbtack", path: "/icons/fi-sr-thumbtack.svg" },
     { name: "fi-sr-train", path: "/icons/fi-sr-train.svg" },
     { name: "fi-sr-utensils", path: "/icons/fi-sr-utensils.svg" },
-
-
 ]
+
+
 
 
 export default function Icons() {
