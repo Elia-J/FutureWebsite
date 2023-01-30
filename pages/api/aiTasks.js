@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     //create a completion
     const response = await openai.createCompletion({
         model: "text-davinci-003",
-        prompt: `Create a to-do list that does not include numbering and -: ${prompt} \n`,//wihout numbering and - 
+        prompt: `Create a to-do list for ${prompt} \n`,//wihout numbering and - 
         temperature: 0.7,
         max_tokens: 256,
         top_p: 1,
