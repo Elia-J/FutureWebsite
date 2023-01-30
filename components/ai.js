@@ -56,8 +56,6 @@ export default function AuseStatei({ type }) {
         const data = await response.json()
         fromStringToArray(data.choices[0].text)
         setLoadingTasks(false)
-
-        console.log(data.choices[0].text)
     }
 
     function fromStringToArray(string) {
