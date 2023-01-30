@@ -60,26 +60,28 @@ export default function Shortcuts() {
 
 
             <div className={styles.shortcutsPanel} ref={shortcuts}>
+                <div className={styles.panel}>
+                    <div className={styles.shortcutsPanelHeader}>
 
-                <div className={styles.shortcutsPanelHeader}>
+                        <h3 className={styles.shortcutsPanelTitle}>Shortcuts</h3>
+                        <button onClick={() => { setShortcutsPanel(!shortcutsPanel) }}>Close</button>
 
-                    <h3 className={styles.shortcutsPanelTitle}>Shortcuts</h3>
-                    <button onClick={() => { setShortcutsPanel(!shortcutsPanel) }}>Close</button>
+                    </div>
+                    <div className={styles.shortcutsPanelBody}>
+
+                        {data.map((shortcut) => {
+                            return (
+                                <div className={styles.nameAndShortcut} key={shortcut.id}>
+                                    <h4>{shortcut.shortcut_name}</h4>
+                                    <div className={styles.shortcut}>{shortcut.shortcut}</div>
+                                </div>
+
+                            )
+                        })
+                        }
+                    </div>
+
                 </div>
-                <div className={styles.shortcutsPanelBody}>
-
-                    {data.map((shortcut) => {
-                        return (
-                            <div className={styles.nameAndShortcut} key={shortcut.id}>
-                                <h4>{shortcut.shortcut_name}</h4>
-                                <div className={styles.shortcut}>{shortcut.shortcut}</div>
-                            </div>
-
-                        )
-                    })
-                    }
-                </div>
-
             </div>
 
         </div >
