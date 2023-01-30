@@ -32,6 +32,8 @@ This is a Next.js web application that uses a Supabase database and is hosted on
 
 [Project vision](<https://github.com/Elia-J/FutureWebsite/blob/main/Team%5B19%5D_Vision_SP%5B1%5D%20(1).pdf>) <br/>
 [MidTerm Report](https://github.com/Elia-J/FutureWebsite/blob/main/Team%5B19%5D_Report.pdf)
+[End Report](https://github.com/Elia-J/FutureWebsite/blob/main/Team%5B19%5D_End_Report.pdf)
+
 
 </br></br>
 
@@ -53,7 +55,6 @@ You can find a list of the libraries used in this project in the `package.json` 
 </br></br>
 
 ## Handy Websites and Documents
-
 - [Next.js Website](https://nextjs.org/)
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Supabase Website](https://www.supabase.io/)
