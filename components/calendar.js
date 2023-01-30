@@ -122,15 +122,10 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
     //Show the event panel when the user click already existing event.
     async function eventClick(arg) {
 
-        console.log("eventClick" + arg)
-
         convertFullDataToDataAndTime(arg.event.startStr)
         convertFullDataToDataAndTime(arg.event.endStr)
 
         setEventsPanel(true)
-
-        console.log(arg)
-        console.log("test" + convertFullDataToDataAndTime(arg.event._instance.range.end).dateWithouthTime)
 
         setinput({
             ...input,
