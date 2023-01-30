@@ -337,23 +337,23 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
             return (
                 <div className={styles.weather}>
 
-                    {/* {weatherTemp?.main.temp === undefined ? "" : */}
+                    {weatherTemp?.main.temp === undefined ? "" :
 
-                    {<>
-                        <div className={styles.temperature}>{
+                        <>
+                            <div className={styles.temperature}>{
 
-                            Math.round(parseInt(weatherTemp?.main.temp))
+                                Math.round(parseInt(weatherTemp?.main.temp))
 
-                        } °C</div>
+                            } °C</div>
 
-                        <div className={styles.weatherIconClase}>
-                            <Image
-                                src={`https://openweathermap.org/img/wn/${weatherTemp?.weather[0].icon}@2x.png`}
-                                alt="weather icon"
-                                fill
-                            />
-                        </div>
-                    </>
+                            <div className={styles.weatherIconClase}>
+                                <Image
+                                    src={`https://openweathermap.org/img/wn/${weatherTemp?.weather[0].icon}@2x.png`}
+                                    alt="weather icon"
+                                    fill
+                                />
+                            </div>
+                        </>
                     }
 
                 </div>
