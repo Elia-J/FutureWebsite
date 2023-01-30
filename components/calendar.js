@@ -332,7 +332,6 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
         const data = await response.json()
 
         setWeatherData(data)
-        console.log(data)
 
     }
 
@@ -385,11 +384,6 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
         const dateToCompare = moment(arg.date)
         const isBetweenDates = dateToCompare.isBetween(startDate, endDate, null, '[]');
 
-        console.log("isBetweenDates ", isBetweenDates)
-        console.log("arg.date ", dateToCompare)
-        console.log("startDate ", startDate)
-        console.log("endDate ", endDate)
-
         if (isBetweenDates) {
 
             //Find the weather data for the current date
@@ -397,7 +391,6 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                 (item) => item.dt_txt.includes(moment(arg.date).format('YYYY-MM-DD'))
             )
 
-            console.log("weatherTemp", weatherTemp)
             return (
 
                 <div className={styles.dayHeader}>
