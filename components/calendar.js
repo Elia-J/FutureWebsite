@@ -417,7 +417,6 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                             monthViewWeeknumber ? null :
                                 <>
                                     <div className={styles.daydate}> {arg.date.getDate()} </div>
-                                    <p>hello</p>
                                     {checkWeather(weatherTemp)}
                                 </>
                         }
