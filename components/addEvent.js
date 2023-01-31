@@ -9,6 +9,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { ButtonWithShortCut } from './buttons'
 import moment from 'moment';
 import { TwitterPicker } from 'react-color';
+import LinkTN from "/components/linkTN"
 
 import { useStateStoreEventsContext } from "/layouts/stateStoreEvents"
 import { useStateStoreContext } from "/layouts/stateStore"
@@ -592,7 +593,7 @@ export default function Addevent() {
                                 }>Reset</button>
 
                                 <p className={styles.info}>
-                                    Make sure to select good start and end dates/time for your event.
+                                    Make sure to select good start and end dates for your event.
                                 </p>
 
                             </div>
@@ -652,7 +653,13 @@ export default function Addevent() {
                                 <div style={{ backgroundColor: input.backgroundColor }} className={styles.colorPicker}></div>
                             </div>
                         </div>
+                        {
+                            input.id === "" ? null :
+                                <LinkTN id={input.id} user_id={user} />
+                        }
+
                     </div>
+
 
                     <div className={styles.buttons}>
                         <div className={styles.subButtons1}>
