@@ -186,9 +186,7 @@
     position: fixed;
     bottom: 70px;
     width: 100vw;
-    resize: vertical;
-    min-height: 45vh;
-    max-height: calc(100vh - 100px);
+    height: calc(100vh - 150px);
     border-top: 1px solid var(--Special-darker-gray);
     overflow: auto;
     z-index: 100;
@@ -199,7 +197,7 @@
     position: fixed;
     bottom: 70px;
     width: 100vw;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 110px);
     border-top: 1px solid var(--Special-darker-gray);
     overflow: auto;
     z-index: 100;
