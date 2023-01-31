@@ -64,6 +64,12 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
         return { dateWithouthTime, time }
     }
 
+    //convert date to time - 1 hour
+    function timeHourLess(date) {
+        const timeHourLess = moment(date).subtract(1, 'hours').format("HH:mm");
+        return timeHourLess
+    }
+
     //get the list of events from supabase to calendar
     async function getEvents() {
         const { data, error } = await supabase
@@ -111,6 +117,7 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
         console.log(event)
         setinput({
             ...input,
+            allDay: event.allDay,
             startDate: convertFullDataToDataAndTime(event.start).dateWithouthTime,
             startTime: convertFullDataToDataAndTime(event.startStr).time,
             endDate: convertFullDataToDataAndTime(event.end).dateWithouthTime,
@@ -151,16 +158,18 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
 
     //event handlers for the calendar change
     async function eventChange(event) {
+
+        console.log()
         const { data, error } = await supabase
             .from('events')
             .update([
                 {
                     allDay: event.event.allDay,
                     startDate: event.event.extendedProps.activeRecur ? convertFullDataToDataAndTime(event.event._def.recurringDef.typeData.startRecur).dateWithouthTime : convertFullDataToDataAndTime(event.event._instance.range.start).dateWithouthTime,
-                    startTime: convertFullDataToDataAndTime(event.event.startStr).time,
+                    startTime: event.event.allDay ? null : timeHourLess(event.event._instance.range.start),
 
                     endDate: event.event.extendedProps.activeRecur ? convertFullDataToDataAndTime(event.event._def.recurringDef.typeData.endRecur).dateWithouthTime : convertFullDataToDataAndTime(event.event._instance.range.end).dateWithouthTime,
-                    endTime: convertFullDataToDataAndTime(event.event.endStr).time,
+                    endTime: event.event.allDay ? null : timeHourLess(event.event._instance.range.end),
                 }
             ])
             .eq('id', event.event.id)
