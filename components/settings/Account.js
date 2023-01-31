@@ -121,7 +121,8 @@ export default function Account() {
                     <Image
                         src={settings.avatar_url}
                         alt="avatar"
-                        fill
+                        fill={true}
+                        sizes="100vw"
                         className={styles.avatar}
                     />
                 </div>
