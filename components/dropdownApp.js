@@ -115,9 +115,10 @@ export default function DropdownApp({ settingsState }) {
             }
             >
                 <Image
+                    fill={true}
+                    sizes="100vw"
                     src={settings.avatar_url}
                     alt="Profile Image"
-                    fill
                     className={styles.image}
                 />
             </div>
