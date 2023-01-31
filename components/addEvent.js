@@ -220,12 +220,9 @@ export default function Addevent() {
         //press control + enter to save or cmad + enter to save
         if ((e.ctrlKey || e.metaKey) && e.keyCode == 13) {
             console.log('ctrl + enter')
-            if (input.id === "") {
-                createEvent()
-            }
-            else {
-                updateEvent(input.id)
-            }
+
+            //click the save/update button
+            document.getElementById("createEventOrUpadateEvent").click()
         }
         //press esc to close the modal
         if (e.keyCode == 27) {
@@ -680,6 +677,7 @@ export default function Addevent() {
                                 shortcut="⌘ + ↵"
                                 main={true}
                                 onClick={input.id === "" ? () => { createEvent() } : () => { updateEvent(input.id) }}
+                                id="createEventOrUpadateEvent"
                             />
                         </div>
 
