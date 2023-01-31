@@ -107,8 +107,8 @@ export default function WeatherSettings() {
                         }}
                     >
 
-                        {CityArray.map((city) => (
-                            <option key={city.name}
+                        {CityArray.map((city, i) => (
+                            <option key={i}
                                 value={
                                     [
                                         city.name,
