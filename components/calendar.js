@@ -151,7 +151,6 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
 
     //event handlers for the calendar change
     async function eventChange(event) {
-        console.log(event.event)
         const { data, error } = await supabase
             .from('events')
             .update([
@@ -348,9 +347,10 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
 
                             <div className={styles.weatherIconClase}>
                                 <Image
+                                    fill={true}
                                     src={`https://openweathermap.org/img/wn/${weatherTemp?.weather[0].icon}@2x.png`}
                                     alt="weather icon"
-                                    fill
+                                    sizes='(max-width: 600px) 100vw, 50vw'
                                 />
                             </div>
                         </>
@@ -464,9 +464,10 @@ export default function Calendar1({ panel, setPanel, toggleValue }) {
                             <div className={styles.eventIcon}>
 
                                 <Image
+                                    fill={true}
                                     src={arg.event.extendedProps.icon}
                                     alt="icon"
-                                    fill
+                                    sizes='(max-width: 600px) 100vw, 50vw'
                                 />
                             </div>
 
