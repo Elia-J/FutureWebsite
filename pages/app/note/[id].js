@@ -314,7 +314,7 @@ export default function Notes({ notes }) {
             setDataTasks(data)
             let taskID = []
             for (let i=0; i<data.length; i++) {
-                taskID.indexOf(data[i].id) == -1 ? taskID.push(data[i].id) : console.log('')
+                taskID.indexOf(data[i].id) == -1 ? taskID.push(data[i].id) : null
             }
             setTaskID(taskID)
             setLoadingTask(false)

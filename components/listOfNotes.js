@@ -291,7 +291,7 @@ export default function ListOfNotes({ inApp }) {
     // Adds the note to a folder
     async function addToFolder(folder, note) {
         // If it's not yet in the folder notes list it will push it.
-        folder.notes.indexOf(note) === -1 ? folder.notes.push(note) : console.log('')
+        folder.notes.indexOf(note) === -1 ? folder.notes.push(note) : null
         // it first sets the inFolder variable to true on the database
         const { dataNote, errorNote } = await supabase
             .from('notesv2')
