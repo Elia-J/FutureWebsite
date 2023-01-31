@@ -19,7 +19,7 @@ export default function navbar({ about, back }) {
                     </Link>
                 </li>
                 {
-                    back ? <li><Link className={styles.listNav} href="/app/note">Back</Link></li> : console.log('')
+                    back ? <li><Link className={styles.listNav} href="/app/note">Back</Link></li> : null
                 }
             </div>
 
