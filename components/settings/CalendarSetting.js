@@ -28,14 +28,9 @@ export default function CalendarSetting() {
             time2Arr[0] = parseInt(time2Arr[0]) + 12
         }
 
-        console.log(time1Arr[0] + " " + time1Arr[1]) // 13 00
-        console.log(time2Arr[0] + " " + time2Arr[1]) // 23 00
-
         // check if time1Arr is not greater than time2Arr
-        console.log(time1Arr[0] < time2Arr[0])
         if (time1Arr[0] < time2Arr[0]) {
 
-            console.log(time2Arr[0] - time1Arr[0] >= 6)
             // check if time difference is 6 hours
             if (time2Arr[0] - time1Arr[0] >= 6) {
 
@@ -75,10 +70,11 @@ export default function CalendarSetting() {
                     onChange={(e) => {
                         setSettings({ ...settings, FirstDayOfTheWeek: e.target.value })
                     }}
+                    value={settings.FirstDayOfTheWeek}
                 >
 
                     {dayOfWeek.map((day) => (
-                        <option key={day} value={day} selected={day === `${settings.FirstDayOfTheWeek}` ? "selected" : null}>
+                        <option key={day} value={day}>
                             {day}
                         </option>
                     ))}
