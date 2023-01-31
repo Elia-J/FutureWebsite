@@ -23,6 +23,8 @@ export default function Index() {
     let openElement = React.createRef();
     let closeElement = React.createRef();
 
+    const [openAI, setOpenAI] = useState(false)
+
     // toggles the appropriate classNames for the saved notesbar
     function changeSavedNotesBar() {
         openElement.current.classList.toggle(`${styles.openHide}`)
@@ -69,11 +71,11 @@ export default function Index() {
         return (
             <AppLayout>
                 <div className={styles.content}>
-                    <div ref={openElement} onClick={changeSavedNotesBar} className={`${styles.openStyle} ${styles.openHide}`}>
-                        <strong>Open</strong>
+                    <div ref={openElement} onClick={changeSavedNotesBar} className={`${styles.button} ${styles.openStyle} ${styles.openHide}`}>
+                        Open
                     </div>
-                    <div ref={closeElement} onClick={changeSavedNotesBar} className={`${styles.closeStyle} ${styles.closeShow}`}>
-                        <strong>Close</strong>
+                    <div ref={closeElement} onClick={changeSavedNotesBar} className={`${styles.button} ${styles.closeStyle} ${styles.closeShow}`}>
+                        Close
                     </div>
                     <div
                         ref={collapsableElementSavedNotes}
@@ -101,7 +103,10 @@ export default function Index() {
                         className={styles.AIAssisctance}
                         onClick={changeAIPanel}
                     >
-                        AI Assistance
+                        <button className={styles.button} onClick={()=>{setOpenAI(!openAI)}}>
+
+                        {openAI ? "close" : "AI Assistance"}
+                        </button>
                     </div>
                 </div>
 

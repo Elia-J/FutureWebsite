@@ -171,6 +171,16 @@
   cursor: pointer;
 }
 
+.button {
+  background: var(--special-3);
+  border: 1px solid var(--snowflake-100);
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 14px;
+  align-items: center;
+  padding: 2px 5px;
+}
+
 @media (max-width: 575.98px) {
   .showAIPanel {
     position: fixed;
@@ -205,6 +215,7 @@
 
   .closeShow {
     left: 10px;
+    z-index: 100000;
   }
 
   .close {
