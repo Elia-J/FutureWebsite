@@ -142,6 +142,7 @@ export default function Notes({ notes }) {
     const [taskID, setTaskID] = useState([])
     const [loadingTask, setLoadingTask] = useState(true)
     const [loadingUpdate, setLoadingUpdate] = useState(false)
+    const [openAI, setOpenAI] = useState(false)
     useEffect(() => {
         getTasks()
     }, [])
@@ -521,10 +522,10 @@ export default function Notes({ notes }) {
             // The settingsProvider and AppLayout add the sidebar with settings functions
             <AppLayout>
                 <div className={styles.content}>
-                    <div ref={openElement} onClick={changeSavedNotesBar} className={`${styles.openStyle}`}>
+                    <div ref={openElement} onClick={changeSavedNotesBar} className={`${styles.button} ${styles.openStyle}`}>
                         <strong>Open</strong>
                     </div>
-                    <div ref={closeElement} onClick={changeSavedNotesBar} className={`${styles.closeStyle}`}>
+                    <div ref={closeElement} onClick={changeSavedNotesBar} className={`${styles.button} ${styles.closeStyle}`}>
                         <strong>Close</strong>
                     </div>
                     <div
@@ -679,7 +680,10 @@ export default function Notes({ notes }) {
                         className={styles.AIAssisctance}
                         onClick={changeAIPanel}
                     >
-                        <strong>AI Assistance</strong>
+                        <button className={styles.button} onClick={()=>{setOpenAI(!openAI)}}>
+
+                        {openAI ? "close" : "AI Assistance"}
+                        </button>
                     </div>
                 </div>
             </AppLayout>
