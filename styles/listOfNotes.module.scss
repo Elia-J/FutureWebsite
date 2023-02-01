@@ -24,7 +24,7 @@
 .input {
     border: none;
     height: 30px;
-    width: 120px;
+    width: 50%;
     background-color: var(--lightGrey);
     border-radius: 12px;
     padding: 0.5rem 0.5rem 0.5rem 0.8rem; // top right bottom left
@@ -47,7 +47,7 @@
 }
 
 .mainButton {
-    width: 120px;
+    width: 50%;
     height: 30px;
     background-color: var(--primary);
     border-radius: 12px;
