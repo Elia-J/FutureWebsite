@@ -521,16 +521,16 @@ export default function Notes({ notes }) {
             // The settingsProvider and AppLayout add the sidebar with settings functions
             <AppLayout>
                 <div className={styles.content}>
-                    <div ref={openElement} onClick={changeSavedNotesBar} className={`${styles.openStyle} ${styles.openHide}`}>
+                    <div ref={openElement} onClick={changeSavedNotesBar} className={`${styles.openStyle}`}>
                         <strong>Open</strong>
                     </div>
-                    <div ref={closeElement} onClick={changeSavedNotesBar} className={`${styles.closeStyle} ${styles.closeShow}`}>
+                    <div ref={closeElement} onClick={changeSavedNotesBar} className={`${styles.closeStyle}`}>
                         <strong>Close</strong>
                     </div>
                     <div
                         ref={collapsableElementSavedNotes}
                         id="SavedNotes"
-                        className={styles.SavedNotes}
+                        className={`${styles.SavedNotes} ${styles.hideNotesPanel}`}
                     >
                         {/* Returns the list of notes */}
                         <ListOfNotes inApp={false} />
@@ -538,7 +538,7 @@ export default function Notes({ notes }) {
                     <div
                         ref={collapsableElementNotes}
                         id="TextEditor"
-                        className={`${styles.TextEditor} ${styles.CollapsedTextEditor}`}
+                        className={`${styles.TextEditor}`}
                     >
                         <div className={styles.editorDiv}>
                             {/* Title editor */}
